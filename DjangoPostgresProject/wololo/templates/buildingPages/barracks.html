@@ -1,0 +1,89 @@
+{% extends "partials/layout.html" %}
+{% load static %}
+{% load custom_template_tags %}
+
+{% block headcdn %}
+
+{% endblock %}
+
+{% block content %}
+    <div id="villageDataJSON" data='{{data.selectedVillage}}'></div>
+    <div id="gameConfigData" data='{{data.gameConfig}}'></div>
+    {% include "partials/villageResources.html" %}
+
+    <div class = "trainingQueueHolder">
+        {% if data.selectedVillage.troops.trainingQueue.infantry|length > 0 %}
+        <table class="table text-center" id="trainingQueue">
+            <thead>
+                <tr>
+                    <th scope="col">Unit Name</th>
+                    <th scope="col">Will End At</th>
+                    <th scope="col">Time Left</th>
+                </tr>
+            </thead>
+            <tbody class="queueElements">
+                {% for infantryUnit in data.selectedVillage.troops.trainingQueue.infantry %}
+                    <tr class="queueElement">
+                        <td class="unitsLeft">{{infantryUnit.unitsLeft}} {{infantryUnit.unitName}}</td>
+                        <td class="willEndAt">{{infantryUnit.willEndAt}}</td>
+                        <td class="timeLeft">X</td>
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    <table class="table text-center">
+        <thead>
+          <tr>
+            <th style="width: 20%">Unit</th>
+            <th style="width: 55%"></th>
+            <th style="width: 10%">In village/Total</th>
+            <th style="width: 15%">Train</th>
+
+          </tr>
+        </thead>
+        <tbody>
+            {% for infantryUnitName, infantryUnit in data.gameConfig.units.infantry.items %}
+            <tr class="trainUnitRow">
+                <th style="width: 20%">{{infantryUnitName}}</th>
+                <td style="width: 55%"> 
+                    {% for resourceName, resourceAmount in infantryUnit.Cost.items %}
+                        <span class="badge badge-info required-{{resourceName}}" amount="{{resourceAmount}}">
+                            {{resourceAmount}}<div>{{resourceName}}</div>
+                        </span>
+                    {%endfor%}
+                    <span class="badge badge-info required-pop" amount="{{infantryUnit.neededPopulation}}">
+                        {{infantryUnit.neededPopulation}} <div>Population</div>
+                    </span>
+                    <span class="badge badge-info neededTime" unitName="{{infantryUnitName}}">
+                        
+                    </span>
+                </td>
+
+                <td style="width: 10%">
+                    {{data.selectedVillage.troops.inVillage.infantry|keyvalue:infantryUnitName}} / {{data.selectedVillage.troops.total.infantry|keyvalue:infantryUnitName}}
+                </td>
+                <td style="width: 15%">  
+                    <input type="number" class="form-control unitsToTrainValue" min="0" unitName="{{infantryUnitName}}">
+                    {% if data.selectedVillage.barracks.level < infantryUnit.neededBuildings.barracks.level %}
+                        <a class="dropdown-item" href="/game/{{village.index}}">{{village.villageName}}</a>
+                    {% endif %} 
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    <div class="text-right">
+        <button class="btn btn-primary" id="trainUnits">Train</button>
+    </div>
+
+
+{% endblock %}
+
+
+{% block footerjs %}
+<script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
+<script type="text/javascript" src="{% static 'wololo/js/buildings/barracks.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "/usr/bin/python3",
+    "search.exclude": {
+        "**/__pycache__": true
+    },
+    "files.exclude": {
+        "**/__pycache__": true
+    }
+}

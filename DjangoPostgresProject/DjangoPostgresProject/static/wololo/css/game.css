@@ -1,0 +1,43 @@
+#game-container {
+    margin: 0;
+    padding: 0;
+}
+
+#game-container {
+    /* min-width: 100vw; */
+    /* min-height: 100vh; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-container>canvas {
+    border-radius: 5px;
+}
+
+#tooltip {
+    margin-left: 1.9%;
+    width: 5%;
+    height: 15%;
+    position: absolute;
+    display: none;
+    /* text-align: center; */
+    background: url("../mapAssets/hoverBackground.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    padding-top: 1.5%;
+}
+
+.hover {
+    width: 40px;
+    height: 80px;
+    background: red;
+    position: absolute;
+    bottom: 200px;
+    left: 200px;
+    text-align: center;
+    color: #fff;
+    padding-top: 10px;
+}
+
+html{ overflow-y: scroll;} /* for avoiding shaking on reload */

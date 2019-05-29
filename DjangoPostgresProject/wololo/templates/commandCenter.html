@@ -1,0 +1,160 @@
+{% extends "partials/layout.html" %}
+{% load static %}
+{% load custom_template_tags %}
+
+{% block headcdn %}
+<link rel="stylesheet" href="{% static 'wololo/css/commandCenter.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+    <div id="villageDataJSON" data='{{data.selectedVillage}}'></div>
+    <div id="gameConfigData" data='{{data.gameConfig}}'></div>
+    
+    {% include "partials/villageResources.html" %}
+    <div id="game-container" style="display:none;"></div>
+
+    <div class="row">
+        <div class="col ">
+            <div class="card">
+                <h5 class="card-header text-center">Send Troops</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            
+                            {% for unitName in data.gameConfig.units.infantry %}
+                                
+                                <div class="input-group input-group-sm mb-3 col">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" >{{unitName}}</span>
+                                    </div>
+                                    <input {% if data.selectedVillage.troops.inVillage.infantry|keyvalue:unitName == 0 %}disabled{% endif %} 
+                                    class="troopsToSend" unitType="infantry" unitName="{{unitName}}"
+                                    type="number" min="0" max="{{data.selectedVillage.troops.inVillage.infantry|keyvalue:unitName}}" class="form-control" aria-label="Small">
+                                    <div class="mt-1 ml-1 inVillageTroopMarker {% if data.selectedVillage.troops.inVillage.infantry|keyvalue:unitName == 0 %}disabled{% endif %}">
+                                        (<span class="troopAmount">{{data.selectedVillage.troops.inVillage.infantry|keyvalue:unitName}}</span>)
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col">
+                            {% for unitName in data.gameConfig.units.cavalry %}
+
+                                <div class="input-group input-group-sm mb-3 col">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{unitName}}</span>
+                                    </div>
+                                    <input {% if data.selectedVillage.troops.inVillage.cavalry|keyvalue:unitName == 0 %}disabled{% endif %}
+                                    class="troopsToSend" unitType="cavalry" unitName="{{unitName}}" 
+                                    type="number" min="0" max="{{data.selectedVillage.troops.inVillage.cavalry|keyvalue:unitName}}" class="form-control" aria-label="Small">
+                                    <div class="mt-1 ml-1 inVillageTroopMarker {% if data.selectedVillage.troops.inVillage.cavalry|keyvalue:unitName == 0 %}disabled{% endif %}">
+                                        (<span class="troopAmount">{{data.selectedVillage.troops.inVillage.cavalry|keyvalue:unitName}}</span>)
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="col">
+                            {% for unitName in data.gameConfig.units.siegeWeapons %}
+                                <div class="input-group input-group-sm form-row mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" >{{unitName}}</span>
+                                    </div>
+                                    <input {% if data.selectedVillage.troops.inVillage.siegeWeapons|keyvalue:unitName == 0 %}disabled{% endif %} 
+                                    class="troopsToSend" unitType="siegeWeapons" unitName="{{unitName}}" 
+                                    type="number" min="0" max="{{data.selectedVillage.troops.inVillage.siegeWeapons|keyvalue:unitName}}" aria-label="Small">
+                                    <div class="mt-1 ml-1 inVillageTroopMarker {% if data.selectedVillage.troops.inVillage.siegeWeapons|keyvalue:unitName == 0 %}disabled{% endif %}">
+                                        (<span class="troopAmount">{{data.selectedVillage.troops.inVillage.siegeWeapons|keyvalue:unitName}}</span>)
+                                    </div>
+                                </div>
+                            {% endfor %}                     
+                        </div>
+                        <div class="col">
+               
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Target
+                    </h3>
+                    <div class="row">
+                        <table class="table table-bordered col-4">
+                            <tbody>
+                                <tr>
+                                    <td>Village Name</td>
+                                    <td>{{data.targetVillage.villageName}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Coordinates</td>
+                                    <td>{{data.targetVillage.coords}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Player</td>
+                                    <td>{{data.targetVillage.playerName}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Points</td>
+                                    <td>{{data.targetVillage.points}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Distance(Land)</td>
+                                    <td id="distance">X</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="col text-center card">
+                            Commands
+
+                            <div class="row justify-content-center p-2">
+                                {% if currentUser.id != data.targetVillage.village_id %}
+                                <form class="mr-5" action="/game/commandCenter/attack" method="post">
+                                    {% csrf_token %}
+                                    <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
+                                    <input class="troops-form-input" type="hidden" name="troops" value=""/>
+                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                    <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
+                                    <button type="submit" class="btn btn-danger">Attack</button>
+                                </form>
+                                <form action="/game/commandCenter/support" method="post">
+                                    {% csrf_token %}
+                                    <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
+                                    <input class="troops-form-input" type="hidden" name="troops" value=""/>
+                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                    <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
+                                    <button type="submit" class="btn btn-success">Support</button>
+                                </form>
+                                {% else %}
+                                    <form action="/game/commandCenter/relocateTroops" method="post">
+                                        {% csrf_token %}
+                                        <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
+                                        <input class="troops-form-input" type="hidden" name="troops" value=""/>
+                                        <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                        <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
+                                        <button type="submit" class="btn btn-success">Relocate Troops</button>
+                                    </form>
+                                {% endif %} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class='map-data' map-data='{{publicVillages}}'></div>
+    <div class='selected-village' data='{{data.selectedVillage}}'></div>
+    <div id="targetVillageData" data='{{data.targetVillage}}'></div>
+
+
+{% endblock %}
+
+
+{% block footerjs %}
+    <script type="text/javascript" src="{% static 'wololo/assets/js/phaser/build/phaser.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wololo/assets/js/easystar-0.2.3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wololo/assets/js/Pathfinding.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wololo/js/commandCenter.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'wololo/js/profiles/playerProfile.js' %}"></script> -->
+
+{% endblock %}
