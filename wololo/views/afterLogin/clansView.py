@@ -9,11 +9,11 @@ from wololo.commonFunctions import getGameConfig, getVillageIndex
 def clans(request, village_index=None):
     user_id = request.user.id
     user = request.user
-    if user.regionSelected is False :
+    if user.is_region_selected is False :
         return redirect("selectRegion")
-
+       
     selected_village_index = getVillageIndex(request, user, village_index)
-    if(selected_village_index == 'outOfList'):
-        return redirect('clans')
+    if(selected_village_index is 'outOfList'):
+        return redirect('myVillage')
 
     return render(request, 'clans.html')

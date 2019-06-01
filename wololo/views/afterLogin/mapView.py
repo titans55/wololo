@@ -23,8 +23,11 @@ def map(request, village_index=None):
     user = request.user
     my_villages = user.get_my_villages()
 
+    if user.is_region_selected is False :
+        return redirect("selectRegion")
+       
     selected_village_index = getVillageIndex(request, user, village_index)
-    if(selected_village_index == 'outOfList'):
+    if(selected_village_index is 'outOfList'):
         return redirect('map')
 
     my_villages = user.get_my_villages()
@@ -38,7 +41,6 @@ def map(request, village_index=None):
             totalIncomingStrangerTroops.append(incomingStrangerTroopsElement)
 
     public_villages = Villages.objects.exclude(user_id=None)
-    print(public_villages)
     # publicVillages = public_villages_ref.get()
     publicVillagesInfo = []
 

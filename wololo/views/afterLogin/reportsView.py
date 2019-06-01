@@ -15,13 +15,12 @@ def reportsList(request, village_index=None):
 
     user_id = request.user.id
     user = request.user
-    if user.regionSelected is False :
+    if user.is_region_selected is False :
         return redirect("selectRegion")
-    print (1, str(datetime.datetime.now()))
-
+       
     selected_village_index = getVillageIndex(request, user, village_index)
-    if(selected_village_index == 'outOfList'):
-        return redirect('reportsList')
+    if(selected_village_index is 'outOfList'):
+        return redirect('myVillage')
     print (2, str(datetime.datetime.now()))
 
 

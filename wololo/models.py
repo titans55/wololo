@@ -150,6 +150,10 @@ class Users(AbstractUser):
         
         return my_villages
 
+    def get_reports(self):
+        reports = []
+        return reports
+
 class Villages(models.Model):
 
     # Fields

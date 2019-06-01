@@ -12,6 +12,8 @@ game_config = getGameConfig()
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = Users
+        fields = '__all__'
+
 
 class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm

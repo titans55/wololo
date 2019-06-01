@@ -9,6 +9,7 @@ from .commonFunctions import getGameConfig
 import datetime
 import math
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
+from wololo.models import Users
 
 db = get_db()
 
@@ -85,19 +86,19 @@ def calculatePointsForPlayer(user_id):
         'points': calculatedPoints
     })
     
-        
+from wololo.models import Users
 def getAllPlayersOrderedByPoints():
 
-    players_ref = db.collection('players')
+    users = Users.objects.all().filter(number_of_villages__gte = 0)
+    print(users)
     players = []
-    for player in players_ref.get(): 
-        numberOfVillages = 0
-        for village in players_ref.document(player.reference.id).collection('villages').get(): numberOfVillages += 1
-        print(numberOfVillages, " wololo")
-        playerDict = player.to_dict()
-        playerDict['numberOfVillages'] = numberOfVillages
-        playerDict['id'] = player.reference.id
-        players.append(playerDict)
+    for player in users: 
+        player_dict = {}
+        player_dict['username'] = str(player)
+        player_dict['numberOfVillages'] = player.number_of_villages
+        player_dict['id'] = player.id
+        player_dict['points'] = player.points
+        players.append(player_dict)
 
 
     players = sorted(players, key = lambda i: i['points'], reverse=True) 
