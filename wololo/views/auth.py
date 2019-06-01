@@ -72,7 +72,7 @@ def verifyLogin(request):
             print(user)
 
             # request.user.id = user['localId']
-            # request.session['loggedIn'] = True
+            request.session['userID'] = str(user.id)
 
             if False :
                 return redirect("selectRegion")

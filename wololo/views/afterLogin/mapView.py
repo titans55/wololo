@@ -20,12 +20,12 @@ def map(request, village_index=None):
 
     user_id = request.user.id
     user = request.user
+    my_villages = user.get_my_villages()
 
     selected_village_index = getVillageIndex(request, user, village_index)
     if(selected_village_index == 'outOfList'):
         return redirect('map')
 
-    public_villages_ref = db.collection('villages')
     publicVillages = public_villages_ref.get()
     publicVillagesInfo = []
     for village in publicVillages:
@@ -42,10 +42,10 @@ def map(request, village_index=None):
             publicVillagesInfo.append(village._data)
 
     data = { 
-        'selectedVillage': user.myVillages[selected_village_index],
+        'selectedVillage': my_villages[selected_village_index],
         'gameConfig' : gameConfig,
         'unviewedReportExists' : user.unviewedReportExists,
         'page' : 'map'
     }
-
+    print(data)
     return render(request, 'map.html', {'publicVillages' : json.dumps(publicVillagesInfo), 'myVillages':user.myVillages, 'data' : data })

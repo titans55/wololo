@@ -8,7 +8,7 @@ class ChatConsumer(WebsocketConsumer):
     def connect ( self ) :
         # Connects the channel named `self.channel_name`
         # to the group `jokes`
-        print(self.channel_name)
+        
         async_to_sync ( self. channel_layer . group_add ) (
             self.scope["session"]['userID'] , self. channel_name
         )
