@@ -162,11 +162,11 @@ class Villages(models.Model):
     has_village_troops = models.BooleanField(default=False)
 
     # Relationship Fields
-    region_id = models.ForeignKey(
+    region = models.ForeignKey(
         'wololo.Regions',
         on_delete=models.CASCADE, related_name="villagess", 
     )
-    user_id = models.ForeignKey(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="villagess", blank=True, null=True
     )
@@ -252,7 +252,7 @@ class TrainingQueue(models.Model):
     will_end_at = models.DateTimeField()
 
     # Relationship Fields
-    village_id = models.ForeignKey(
+    village = models.ForeignKey(
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="trainingqueues", 
     )
@@ -279,7 +279,7 @@ class Reports(models.Model):
     is_viewed = models.BooleanField(default=False)
 
     # Relationship Fields
-    sended_to_user_id = models.ForeignKey(
+    sended_to_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="reportss", 
     )
@@ -328,7 +328,7 @@ class BattleReports(models.Model):
         'wololo.Reports',
         on_delete=models.CASCADE, related_name="battlereportss", 
     )
-    attacker_id = models.ForeignKey(
+    attacker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="battlereportss", 
     )
@@ -336,7 +336,7 @@ class BattleReports(models.Model):
         'wololo.BattleResults',
         on_delete=models.CASCADE, related_name="battlereportss", 
     )
-    defender_id = models.ForeignKey(
+    defender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="battlereportss_2", 
     )
@@ -369,11 +369,11 @@ class TroopMovements(models.Model):
     state = models.CharField(max_length=9) #going/returning
 
     # Relationship Fields
-    home_village_id = models.ForeignKey(
+    home_village = models.ForeignKey(
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="troopmovementss", 
     )
-    target_village_id = models.ForeignKey(
+    target_village = models.ForeignKey(
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="troopmovementss_2", 
     )
@@ -401,7 +401,7 @@ class VillageBuildings(models.Model):
     level = models.PositiveIntegerField(default=0)
 
     # Relationship Fields
-    village_id = models.ForeignKey(
+    village = models.ForeignKey(
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="villagebuildingss", 
     )

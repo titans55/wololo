@@ -9,7 +9,7 @@ import urllib.error
 import json
 
 from django.contrib.auth.decorators import login_required
-
+from wololo.models import Villages
 
 db = get_db()
 auth = get_auth()
@@ -26,20 +26,22 @@ def map(request, village_index=None):
     if(selected_village_index == 'outOfList'):
         return redirect('map')
 
-    publicVillages = public_villages_ref.get()
+    public_villages = Villages.objects.exclude(user_id=None)
+    print(public_villages)
+    # publicVillages = public_villages_ref.get()
     publicVillagesInfo = []
-    for village in publicVillages:
-        if(village._data['user_id']!=''):
-            village._data['village_id'] = village.reference.id
-            if(village._data['user_id'] == user_id):
-                village._data['owner'] = True
-                for myVillage in user.myVillages:
-                    if (village._data['village_id'] == myVillage['id']):
-                        myVillage['coords'] = {
-                            'x' : village._data['coords']['x'],
-                            'y' : village._data['coords']['y']
-                        }
-            publicVillagesInfo.append(village._data)
+    for village in public_villages:
+        print(village.user_id_id)
+        village._data['village_id'] = village.id
+        if(village._data['user_id'] == village.user_id):
+            village._data['owner'] = True
+            for myVillage in user.myVillages:
+                if (village._data['village_id'] == myVillage['id']):
+                    myVillage['coords'] = {
+                        'x' : village._data['coords']['x'],
+                        'y' : village._data['coords']['y']
+                    }
+        publicVillagesInfo.append(village._data)
 
     data = { 
         'selectedVillage': my_villages[selected_village_index],
