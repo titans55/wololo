@@ -1,5 +1,4 @@
-DjangoFirebaseProject/.vscode
-DjangoFirebaseProject/wololo/initFirestore.py
+DjangoPostgresProject/wololo/initFirestore.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
