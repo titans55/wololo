@@ -1,5 +1,4 @@
 from django.urls import reverse
-from django_extensions.db.fields import AutoSlugField
 from django.contrib.postgres.fields import JSONField
 from django.db.models import AutoField
 from django.db.models import BooleanField
@@ -20,6 +19,11 @@ from django_extensions.db import fields as extension_fields
 from django.contrib.auth.models import AbstractUser
 
 from wololo.commonFunctions import default_fresh_troops_dict
+from dateutil import parser
+import pytz, datetime
+from wololo.commonFunctions import getGameConfig
+
+gameConfig = getGameConfig()
 
 class Users(AbstractUser):
 
@@ -63,7 +67,8 @@ class Users(AbstractUser):
                     'resources' : {}
                 },
                 'villageName' : village.village_name,
-                'troops' : {}
+                'troops' : {},
+                'village_id' : village.id
             }
             village_building_querysets = VillageBuildings.objects.filter(village_id = village)
             for village_building in village_building_querysets:
@@ -153,6 +158,59 @@ class Users(AbstractUser):
     def get_reports(self):
         reports = []
         return reports
+
+    def get_current_resources(self, village_id):
+        currentResources = {}
+        for resourceBuildingName, rb in gameConfig['buildings']['resources'].items():
+            print(resourceBuildingName, "wololo")
+            print(village_id, "tata")
+            resource_building = VillageBuildings.objects.get(village_id = int(village_id), building_name = resourceBuildingName)
+            rbd = ResourceBuildingDetails.objects.get(id = str(resource_building.resource_building_detail_id))
+            now = datetime.datetime.now(pytz.utc)
+            # village = self.getVillageById(village_id)
+            resourceSum = rbd.sum
+            resourceLevel = str(resource_building.level)
+            resourceLastInteractionDate = rbd.last_interaction_date
+            hourlyProductionByLevel = gameConfig['buildings']['resources'][resource_building.building_name]['hourlyProductionByLevel'][resourceLevel]
+            totalHoursOfProduction = (now-resourceLastInteractionDate).total_seconds() / 60 / 60
+            totalCurrentResource = (totalHoursOfProduction * hourlyProductionByLevel) + resourceSum
+            storage_level = str(VillageBuildings.objects.get(village_id = village_id, building_name='storage').level)
+            if totalCurrentResource >= gameConfig['buildings']['storage']['capacity'][storage_level]:
+                totalCurrentResource = gameConfig['buildings']['storage']['capacity'][storage_level]
+            currentResources[resourceBuildingName] = int(totalCurrentResource)
+        return currentResources
+
+    def set_upgrading_time_and_state(self, village_id, building_path, reqiured_time, task_id, now):
+        user_id = self.id
+        # village = db.collection('players').document(user_id).collection('villages').document(village_id)
+        # now = datetime.datetime.now()
+        # now = datetime.datetime.fromtimestamp(now)
+        willEnd = now+datetime.timedelta(0, reqiured_time)
+
+
+        if '.' in building_path :
+            vb = VillageBuildings.objects.get(building_name = building_path.split('.')[1], village_id = village_id)
+            ud = UpgradingDetails.objects.create(
+                    task_id = task_id,
+                    started_upgrading_at = now,
+                    will_be_upgraded_at = willEnd,
+            )
+            
+        else :
+            vb = VillageBuildings.objects.get(building_name = building_path, village_id = village_id)
+            ud = UpgradingDetails.objects.update_or_create(
+                task_id = task_id,
+                started_upgrading_at = now,
+                will_be_upgraded_at = willEnd,
+            )
+        vb.is_upgrading = True
+        vb.save()
+        # village.update({
+        #     'buildings.'+building_path+'.upgrading.time.startedUpgradingAt' : now,
+        #     'buildings.'+building_path+'.upgrading.time.willBeUpgradedAt' : willEnd,
+        #     'buildings.'+building_path+'.upgrading.state' : True,
+        #     'buildings.'+building_path+'.upgrading.task_id' : task_id
+        # })
 
 class Villages(models.Model):
 
@@ -436,7 +494,7 @@ class UpgradingDetails(models.Model):
 
     # Fields
     id = models.AutoField(primary_key=True)
-    task_id = models.CharField(max_length=30)
+    task_id = models.CharField(max_length=100)
     started_upgrading_at = models.DateTimeField()
     will_be_upgraded_at = models.DateTimeField()
 

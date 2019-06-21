@@ -64,20 +64,23 @@ def villages(request, village_index=None):
 @login_required
 def upgrade(request):
     if request.method == "POST":
+        print(datetime.datetime.now(pytz.utc))
+
         now = datetime.datetime.now(pytz.utc)
         firing_time = request.POST.get("firingTime") #we should use this instead of now
         village_id = request.POST.get("village_id")
+        print("village_id arrived => ", village_id)
         building_path = request.POST.get("building_path")
 
         user_id = request.user.id
         user = request.user
-        if user.regionSelected is False :
-            return redirect("selectRegion")
+        # if user.regionSelected is False :
+        #     return redirect("selectRegion")
 
         selected_village_index = getVillageIndex(request, user, None)  
 
 
-        village = user.myVillages[selected_village_index]
+        village = user.get_my_villages()[selected_village_index]
         #upgrade_levelTo = village[building_path]['level'] + 1
         if '.' in building_path : 
             # print(village['resources'],"kololo")
@@ -93,9 +96,10 @@ def upgrade(request):
         #retrieve required resources from gameConfig.json with upgrade_level
         reqiured_time = getRequiredTimeForUpgrade(village, building_path, upgrade_levelTo)
         # reqiured_time = 10
-        wood_total = user.getCurrentResource(village_id, 'woodCamp')
-        clay_total = user.getCurrentResource(village_id, 'clayPit')
-        iron_total = user.getCurrentResource(village_id, 'ironMine')
+        current_resources = user.get_current_resources(village_id)
+        wood_total = current_resources['woodCamp']
+        clay_total = current_resources['clayPit']
+        iron_total = current_resources['ironMine']
 
         if(wood_total >= required_wood and iron_total >= required_iron and clay_total >= required_clay):
             #update sum and lastInteractionDate of resources (-cost)
@@ -103,17 +107,18 @@ def upgrade(request):
             setSumAndLastInteractionDateOfResource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
             setSumAndLastInteractionDateOfResource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
             
-            task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo),countdown = reqiured_time)
+            task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
             task_id = task_id.id
                         
-            user.setUpgradingTimeAndState(village_id, building_path, reqiured_time, str(task_id), now)
+            user.set_upgrading_time_and_state(village_id, building_path, reqiured_time, str(task_id), now)
 
-            print(user.myVillages[selected_village_index]['buildings']['resources'])
-            print(datetime.datetime.now(pytz.utc))
-            user.update()
-            print(datetime.datetime.now(pytz.utc))
-            newResources = user.myVillages[selected_village_index]['buildings']['resources']
-            print(user.myVillages[selected_village_index]['buildings']['resources'])
+            # print(user.myVillages[selected_village_index]['buildings']['resources'])
+            # user.update()
+            # newResources = user.myVillages[selected_village_index]['buildings']['resources']
+
+            newResources = user.get_my_villages()[selected_village_index]['buildings']['resources']
+
+            print(newResources)
             data = {
                 'result' : 'Success',
                 'newResources' : newResources
@@ -123,6 +128,9 @@ def upgrade(request):
             
 
             print("upgrading")
+
+            print(datetime.datetime.now(pytz.utc))
+
             return JsonResponse(data)
         else:
             data = {

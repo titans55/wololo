@@ -57,7 +57,6 @@ def map(request, village_index=None):
         village_dict['villageName'] = village.village_name
         village_dict['playerName'] = str(village.user)
         village_dict['points'] = village.points
-        print(village_dict)
             # for myVillage in user.myVillages:
             #     if (village_dict['village_id'] == myVillage['id']):
             #         myVillage['coords'] = {
@@ -74,5 +73,5 @@ def map(request, village_index=None):
     }
     data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
     my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
-    print(publicVillagesInfo)
+
     return render(request, 'map.html', {'publicVillages' : json.dumps(publicVillagesInfo), 'myVillages':my_villages, 'data' : data })

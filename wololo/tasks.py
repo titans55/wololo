@@ -9,7 +9,10 @@ import os
 from .initFirestore import get_db
 import pytz
 from DjangoPostgresProject import settings
-from wololo.firebaseUser import firebaseUser
+print("a")
+print("a")
+import django
+django.setup()
 from wololo.helperFunctions import calculatePointsForVillage, getUserIdByVillageId, getResults
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from random import randint

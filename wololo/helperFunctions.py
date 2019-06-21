@@ -9,7 +9,7 @@ from .commonFunctions import getGameConfig
 import datetime
 import math
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
-from wololo.models import Users
+from wololo.models import Users, VillageBuildings, ResourceBuildingDetails
 
 db = get_db()
 
@@ -20,12 +20,17 @@ gameConfig = getGameConfig()
 
 
 def setSumAndLastInteractionDateOfResource(user_id, village_id, resourceBuilding, newSum, now):
-    village = db.collection('players').document(user_id).collection('villages').document(village_id)
-    village.update({
-        'buildings.resources.'+resourceBuilding+'.sum' : newSum,
-        'buildings.resources.'+resourceBuilding+'.lastInteractionDate' : now,
-    })
 
+    resource_building = VillageBuildings.objects.get(village_id = village_id, building_name = resourceBuilding)
+    rbd = ResourceBuildingDetails.objects.get(id = str(resource_building.resource_building_detail_id))
+    rbd.sum = newSum
+    rbd.last_interaction_date = now
+    rbd.save()
+    # village = db.collection('players').document(user_id).collection('villages').document(village_id)
+    # village.update({
+    #     'buildings.resources.'+resourceBuilding+'.sum' : newSum,
+    #     'buildings.resources.'+resourceBuilding+'.lastInteractionDate' : now,
+    # })
 
     return True
 

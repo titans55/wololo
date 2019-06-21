@@ -1,10 +1,8 @@
 "use strict";
-var village_id
 var gameConfigs = JSON.parse(($("#gameConfigData").attr("data")).replace(/'/g, '"'))
 var villageData = JSON.parse(($("#villageDataJSON").attr("data")).replace(/'/g, '"'))
 $(function(){
     // data = JSON.parse(data.replace(/'/g, '"'))
-    village_id = villageData.id
     initToggleVisualVillageSwitch()
     initVillage()
 })
@@ -32,7 +30,7 @@ function initUpgradeButtons(){
                     url: '/game/upgrade',
                     data: {
                         building_path: building_path,
-                        village_id: village_id,
+                        village_id: villageData.village_id,
                         firingTime: firingTime,
                         csrfmiddlewaretoken: csrftoken 
                     },
@@ -80,7 +78,7 @@ function initCancelButtons(){
                     url: '/game/cancelUpgrade',
                     data: {
                         building_path: building_path,
-                        village_id: village_id,
+                        village_id: villageData.village_id,
                         firingTime: firingTime,
                         csrfmiddlewaretoken: csrftoken 
                     },
