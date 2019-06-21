@@ -21,6 +21,8 @@ from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from wololo.models import Users, Villages
+
 db = get_db()
 gameConfig = getGameConfig()
 
@@ -52,27 +54,25 @@ def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level)
     os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
     channel_layer = get_channel_layer()
 
-    user = request.user
-    user.upgradeBuilding(village_id, building_path)
+    user = Users.objects.get(id=user_id)
+    user.upgrade_building(village_id, building_path)
 
    
-    
-    user.update()
 
-    village = user.getVillageById(village_id)
-    newBuildings = village['buildings']
-    notifyData = {
-        'messageType': 'upgradeBuilding',
-        'target': building_path,
-        'newBuildings' : newBuildings,
-        'village_id' : village_id
-    }    
+    # village = user.getVillageById(village_id)
+    # newBuildings = village['buildings']
+    # notifyData = {
+    #     'messageType': 'upgradeBuilding',
+    #     'target': building_path,
+    #     'newBuildings' : newBuildings,
+    #     'village_id' : village_id
+    # }    
 
-    async_to_sync ( channel_layer. group_send ) (
-        user_id , { "type" : "notify.user" , "json" : notifyData }
-    )
+    # async_to_sync ( channel_layer. group_send ) (
+    #     user_id , { "type" : "notify.user" , "json" : notifyData }
+    # )
 
-    calculatePointsForVillage(village_id) #put this into another task later
+    # calculatePointsForVillage(village_id) #put this into another task later
         
     return True
 

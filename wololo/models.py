@@ -195,7 +195,7 @@ class Users(AbstractUser):
                     started_upgrading_at = now,
                     will_be_upgraded_at = willEnd,
             )
-            
+            vb.upgrading_details_id = ud
         else :
             vb = VillageBuildings.objects.get(building_name = building_path, village_id = village_id)
             ud = UpgradingDetails.objects.update_or_create(
@@ -203,6 +203,7 @@ class Users(AbstractUser):
                 started_upgrading_at = now,
                 will_be_upgraded_at = willEnd,
             )
+            vb.upgrading_details_id = ud
         vb.is_upgrading = True
         vb.save()
         # village.update({
@@ -211,6 +212,18 @@ class Users(AbstractUser):
         #     'buildings.'+building_path+'.upgrading.state' : True,
         #     'buildings.'+building_path+'.upgrading.task_id' : task_id
         # })
+
+    def upgrade_building(self, village_id, building_path):
+        if '.' in building_path :
+            vb = VillageBuildings.objects.get(building_name = building_path.split('.')[1], village_id = village_id)
+        else :
+            vb = VillageBuildings.objects.get(building_name = building_path, village_id = village_id)
+        vb.level += 1 
+        vb.is_upgrading = False
+        ud = vb.upgrading_details_id
+        ud.delete()
+        vb.upgrading_details_id = None
+        vb.save()
 
 class Villages(models.Model):
 
