@@ -9,8 +9,8 @@ from .commonFunctions import getGameConfig
 import datetime
 import math
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
-from wololo.models import Users, VillageBuildings, ResourceBuildingDetails
-
+from wololo.models import Users, VillageBuildings, ResourceBuildingDetails, VillageBuildings, Villages, \
+Users    
 db = get_db()
 
 gameConfig = getGameConfig()
@@ -55,43 +55,35 @@ def getRequiredTimeForTrainUnits(village, unitType, unitName):
     
     return reqiured_time
 
-def calculatePointsForVillage(village_id):
+def calculate_points_for_village(village_id):
 
-    public_village_ref = db.collection('villages').document(village_id)
-    public_village = public_village_ref.get().to_dict()
-    user_id = public_village['user_id']
-    village = db.collection('players').document(user_id).collection('villages').document(village_id).get().to_dict()
+    village_buildings = VillageBuildings.objects.filter(village_id=village_id)
+    calculated_points = 0
 
-    calculatedPoints = 0
-    for buildingName, building in village['buildings'].items():
-        if buildingName == 'resources':
-            for resourceBuildingName, resourceBuilding in building.items():
-                pointOfBuilding = gameConfig['buildings']['resources'][resourceBuildingName]['pointByLevel'][resourceBuilding['level']]
-                calculatedPoints += pointOfBuilding
+    for vb in village_buildings:
+        if vb.is_resource_building:
+            point_of_building = gameConfig['buildings']['resources'][vb.building_name]['pointByLevel'][str(vb.level)]
+            calculated_points += point_of_building
         else:
-            pointOfBuilding = gameConfig['buildings'][buildingName]['pointByLevel'][building['level']]
-            calculatedPoints += pointOfBuilding
+            point_of_building = gameConfig['buildings'][vb.building_name]['pointByLevel'][str(vb.level)]
+            calculated_points += point_of_building
+    vil = Villages.objects.get(id=village_id)
+    vil.points = calculated_points
+    vil.save()
+    calculate_points_for_player(vil.user.id)
 
-    # calculatedPoints = 5
-
-    public_village_ref.update({
-        'points': calculatedPoints
-    })
-    calculatePointsForPlayer(user_id)
-
-def calculatePointsForPlayer(user_id):
-    player_ref = db.collection('players').document(user_id)
-    villages_ref = db.collection('villages')
-    playersVillagesGenerator = player_ref.collection('villages').get()
-    calculatedPoints = 0
-    for village in playersVillagesGenerator: 
-        villagePoints = villages_ref.document(village.reference.id).get({'points'}).to_dict()['points']      
-        calculatedPoints+=villagePoints
-    player_ref.update({
-        'points': calculatedPoints
-    })
+def calculate_points_for_player(user_id):
+  
+    player = Users.objects.get(id=user_id)
+    players_villages = Villages.objects.filter(user=player)
+    calculated_points = 0
     
-from wololo.models import Users
+    for village in players_villages: 
+        village_points = village.points   
+        calculated_points += village_points
+    player.points = calculated_points
+    player.save()
+    
 def getAllPlayersOrderedByPoints():
 
     users = Users.objects.all().filter(number_of_villages__gte = 0)

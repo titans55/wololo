@@ -14,7 +14,7 @@ print("a")
 print("a")
 import django
 django.setup()
-from wololo.helperFunctions import calculatePointsForVillage, getUserIdByVillageId, getResults
+from wololo.helperFunctions import calculate_points_for_village, getUserIdByVillageId, getResults
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from random import randint
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
@@ -83,7 +83,7 @@ def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level)
         str(user_id) , { "type" : "notify.user" , "json" : notifyData }
     )
 
-    # calculatePointsForVillage(village_id) #put this into another task later
+    calculate_points_for_village(village_id) # TODO put this into another task later
         
     return True
 

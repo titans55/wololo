@@ -4,7 +4,7 @@ import os
 import json
 import pytz, datetime
 from celery import current_app
-from wololo.helperFunctions import setSumAndLastInteractionDateOfResource, calculatePointsForPlayer, getUsernameByUserID, getVillagenameByVillageID
+from wololo.helperFunctions import setSumAndLastInteractionDateOfResource, calculate_points_for_player, getUsernameByUserID, getVillagenameByVillageID
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion
 from django.core.serializers.json import DjangoJSONEncoder
 from dateutil import parser
@@ -220,7 +220,7 @@ class firebaseUser():
                         }
                     }
                 )
-                calculatePointsForPlayer(self.id)
+                calculate_points_for_player(self.id)
             # print(village)
             village._data['index'] = numberOfVillages 
             village._data['id'] = village.reference.id
