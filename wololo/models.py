@@ -75,7 +75,6 @@ class Users(AbstractUser):
                 if village_building.is_resource_building:
                     rbd = village_building.resource_building_detail_id
                     ud = village_building.upgrading_details_id
-                    print(rbd, ud)
                     village_dict['buildings']['resources'][village_building.building_name] = {
                         'level' : village_building.level,
                         'sum' : rbd.sum,

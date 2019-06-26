@@ -61,26 +61,27 @@ def createAccount(request):
 
 def verifyLogin(request):
     if request.method == 'POST':
-        username=request.POST.get("username")
+        username = request.POST.get("username")
         password = request.POST.get("password")
-        try:
-            user = authenticate(username=username, password=password)
-            if False:
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                # Redirect to a success page.
+            else:
                 messages.error(request,'Email is not verified.')
                 # auth.send_email_verification(user['idToken'])
                 return redirect("landingPage")
-            print(user)
-
-            # request.user.id = user['localId']
-            request.session['userID'] = str(user.id)
-
-            if False :
-                return redirect("selectRegion")
-            
-        except:
+        else:
             messages.error(request,'Email or password is not correct.')
-            return redirect("landingPage")
-        
+            return redirect("landingPage")            
+            
+        # request.user.id = user['localId']
+        request.session['userID'] = str(user.id)
+
+        if False :
+            return redirect("selectRegion")
+            
         return redirect(settings.LOGIN_REDIRECT_URL)
     return HttpResponse("why y r here")
 

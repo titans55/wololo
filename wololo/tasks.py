@@ -5,6 +5,7 @@ from firebase_admin import firestore
 from firebase_admin import credentials
 import datetime
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 import os
 from .initFirestore import get_db
 import pytz
@@ -57,20 +58,30 @@ def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level)
     user = Users.objects.get(id=user_id)
     user.upgrade_building(village_id, building_path)
 
-   
 
-    # village = user.getVillageById(village_id)
-    # newBuildings = village['buildings']
-    # notifyData = {
-    #     'messageType': 'upgradeBuilding',
-    #     'target': building_path,
-    #     'newBuildings' : newBuildings,
-    #     'village_id' : village_id
-    # }    
+    my_villages = user.get_my_villages()
+    my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
 
-    # async_to_sync ( channel_layer. group_send ) (
-    #     user_id , { "type" : "notify.user" , "json" : notifyData }
-    # )
+    village = None
+    print("task village_id", village_id)
+    for vil in my_villages:
+        print("vil id", vil['village_id'])
+        if int(vil['village_id']) == int(village_id):
+            village = vil
+            print("adsada")
+            break
+    print(my_villages)
+    newBuildings = village['buildings']
+    notifyData = {
+        'messageType': 'upgradeBuilding',
+        'target': building_path,
+        'newBuildings' : newBuildings,
+        'village_id' : village_id
+    }    
+
+    async_to_sync ( channel_layer. group_send ) (
+        str(user_id) , { "type" : "notify.user" , "json" : notifyData }
+    )
 
     # calculatePointsForVillage(village_id) #put this into another task later
         
