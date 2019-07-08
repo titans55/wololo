@@ -2,6 +2,8 @@ DjangoPostgresProject/wololo/initFirestore.py
 
 # Byte-compiled / optimized / DLL files
 wololo/__pycache__/
+**/__pycache__
+
 *.py[cod]
 *.pyc
 
