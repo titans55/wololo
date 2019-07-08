@@ -37,6 +37,12 @@ def barracks(request, village_index=None):
 
     my_villages = user.get_my_villages()
     selected_village = user.get_my_villages()[selected_village_index] 
+
+    #
+    vil_obj = Villages.objects.get(id=selected_village['village_id'])
+    print(vil_obj.get_last_training_queue_by_unit_type('infantry'))
+    #   
+
     data = { 
         'selectedVillage': selected_village,
         'gameConfig' : gameConfig,
@@ -79,14 +85,15 @@ def trainUnits(request):
         set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', currentClay-reqiuredClay, now)
         # reqiured_time = 10
 
-        result = user.checkTrainingQueueReturnLastOneIfExists(village_id, unit_type)
-
-        #
+        # 
         vil_obj = Villages.objects.get(id=selected_village['village_id'])
         print(vil_obj.village_troops.in_village_troops_quantity_json)
         #   
 
-        if(result == False):
+        # tq_last_unit_type = user.checkTrainingQueueReturnLastOneIfExists(village_id, unit_type)
+        tq_last_unit_type = vil_obj.get_last_training_queue_by_unit_type('infantry')
+
+        if(tq_last_unit_type == False):
             subtasks = []
             for i in range(number_of_units_to_train):
                 subtasks.append(
@@ -94,21 +101,21 @@ def trainUnits(request):
                 )
                 
             workflow = chain(*subtasks)
-            generatedChain = workflow.apply_async()
-            chain_id = generatedChain.id
-            willEndAt = now + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
-            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, now, willEndAt)
+            generated_chain = workflow.apply_async()
+            chain_id = generated_chain.id
+            will_end_at = now + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, now, will_end_at)
         else:
-            willStartAt = result['willEndAt']
+            will_start_at = tq_last_unit_type.will_start_at
             print("i will wait in queue totally seconds = >")
-            firstTaskDelayedCountdown = math.ceil(((result['willEndAt'] + datetime.timedelta(0, reqiured_time)) - now).total_seconds())
-            print(firstTaskDelayedCountdown)
+            first_task_delayed_countdown = math.ceil(((tq_last_unit_type.will_end_at + datetime.timedelta(0, reqiured_time)) - now).total_seconds())
+            print(first_task_delayed_countdown)
 
             subtasks = []
             for i in range(number_of_units_to_train):
                 if i == 0 :
                     subtasks.append(
-                        train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=firstTaskDelayedCountdown)
+                        train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=first_task_delayed_countdown)
                     )
                 else:
                     subtasks.append(
@@ -116,20 +123,20 @@ def trainUnits(request):
                     )
                 
             workflow = chain(*subtasks)
-            generatedChain = workflow.apply_async()
-            chain_id = generatedChain.id
-            willEndAt = willStartAt + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
-            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, willStartAt, willEndAt)
+            generated_chain = workflow.apply_async()
+            chain_id = generated_chain.id
+            will_end_at = will_start_at + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, will_start_at, will_end_at)
         print(datetime.datetime.now(pytz.utc))
         user.update()
         print(datetime.datetime.now(pytz.utc))
-        newResources = user.myVillages[selected_village_index]['buildings']['resources']
+        new_resources = user.myVillages[selected_village_index]['buildings']['resources']
 
         data = {
             'result' : 'Success',
-            'newResources' : newResources,
+            'newResources' : new_resources,
             'newQueueElement' : {
-                'willEndAt' : willEndAt,
+                'willEndAt' : will_end_at,
                 'unitName' : unit_name,
                 'unitsLeft' : number_of_units_to_train
             }

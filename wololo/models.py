@@ -280,6 +280,11 @@ class Villages(models.Model):
         self.village_troops.in_village_troops_quantity_json['unit_type']['unit_name'] += 1
         self.save()
 
+    def get_last_training_queue_by_unit_type(self, unit_type):
+        tq = self.training_queues.filter(unit_type=unit_type)
+        return False if len(tq.all()) == 0 else tq.all()[0] #return last added element if exists
+
+
 class Regions(models.Model):
 
     # Fields
@@ -341,6 +346,17 @@ class VillageTroops(models.Model):
     def get_update_url(self):
         return reverse('wololo_villagetroops_update', args=(self.pk,))
 
+    def add_to_training_queue(self, chain_id, unit_type, unit_name, 
+        number_of_units_to_train, will_start_at, will_end_at):
+        TrainingQueue.objects.create(
+            chain_id=chain_id,
+            unit_type=unit_type,
+            unit_name=unit_name,
+            units_left=number_of_units_to_train,
+            started_at=will_start_at,
+            will_end_at=will_end_at
+        )
+        pass
 
 class TrainingQueue(models.Model):
 
@@ -355,9 +371,9 @@ class TrainingQueue(models.Model):
     # Relationship Fields
     village = models.ForeignKey(
         'wololo.Villages',
-        on_delete=models.CASCADE, related_name="trainingqueues", 
-    )
-
+        on_delete=models.CASCADE, related_name="training_queues", 
+    )        
+    
     class Meta:
         ordering = ('-pk',)
 
@@ -370,7 +386,7 @@ class TrainingQueue(models.Model):
 
     def get_update_url(self):
         return reverse('wololo_trainingqueue_update', args=(self.pk,))
-
+        
 
 class Reports(models.Model):
 
