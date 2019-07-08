@@ -18,7 +18,7 @@ from wololo.helperFunctions import calculate_points_for_village, getUserIdByVill
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from random import randint
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
-from wololo.models import Villages
+from wololo.models import Villages, Users
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -91,15 +91,15 @@ def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level)
 @app.task(bind=True, name='wololo.tasks.train_unit')
 def train_unit(self, user_id, village_id, unit_type, unit_name):
     
-    user = request.user
-    if user.getUnitsLeft(village_id, unit_type, unit_name) == 0: ##if unitsLeft is 0 
+    user = Users.objects.get(id=user_id)
+    vil = Villages.objects.get(id=village_id)
+    if vil.get_units_left(unit_type, unit_name) == 0: ##if unitsLeft is 0 
         print("cancelled unit")
         self.request.chain = None #For cancelling training units
     else :
         os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
         channel_layer = get_channel_layer()
         
-        vil = Villages.objects.get(id=village_id)
         vil.train_unit(unit_type, unit_name)
 
         notifyData = {
@@ -109,7 +109,7 @@ def train_unit(self, user_id, village_id, unit_type, unit_name):
         }    
 
         async_to_sync ( channel_layer. group_send ) (
-            user_id , { "type" : "notify.user" , "json" : notifyData }
+            str(user_id) , { "type" : "notify.user" , "json" : notifyData }
         )
 
 #battle occures in that function

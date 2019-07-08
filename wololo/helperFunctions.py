@@ -45,16 +45,6 @@ def getRequiredTimeForUpgrade(village, building_path, upgrade_levelTo):
     
     return reqiured_time
 
-
-def get_required_time_for_train_units(village, unitType, unitName):
-
-    reqiured_time = gameConfig['units'][unitType][unitName]['neededTrainingBaseTime']
-    speed_percantage_of_barracks = \
-        gameConfig['buildings']['barracks']['trainingSpeed'][str(village['buildings']['barracks']['level'])]
-    reqiured_time = int(reqiured_time - (reqiured_time * speed_percantage_of_barracks / 100 )) * 60 #seconds
-    
-    return reqiured_time
-
 def calculate_points_for_village(village_id):
 
     village_buildings = VillageBuildings.objects.filter(village_id=village_id)
@@ -270,9 +260,3 @@ def getVillagenameByVillageID(village_id):
     villages_ref = db.collection('villages')
     return villages_ref.document(village_id).get({'villageName'}).to_dict()['villageName']
 
-def get_required_resources_to_train_unit(self, unit_type, unit_name, number_of_units_to_train):
-    reqiured_wood = gameConfig['units'][unit_type][unit_name]['Cost']['Wood'] * number_of_units_to_train
-    reqiured_iron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * number_of_units_to_train
-    reqiured_clay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
-
-    return reqiured_wood, reqiured_iron, reqiured_clay

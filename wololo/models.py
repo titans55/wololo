@@ -22,7 +22,6 @@ from wololo.commonFunctions import default_fresh_troops_dict
 from dateutil import parser
 import pytz, datetime
 from wololo.commonFunctions import getGameConfig
-
 gameConfig = getGameConfig()
 
 class Users(AbstractUser):
@@ -158,6 +157,7 @@ class Users(AbstractUser):
         reports = []
         return reports
 
+    #TODO move this function to Villages
     def get_current_resources(self, village_id):
         currentResources = {}
         for resourceBuildingName, rb in gameConfig['buildings']['resources'].items():
@@ -227,11 +227,15 @@ class Users(AbstractUser):
     def has_resources_to_train_unit(self, village_id, unit_type, unit_name, number_of_units_to_train):
         
         current_resources = self.get_current_resources(village_id)
-        reqiured_wood, reqiured_iron, reqiured_clay = get_required_resources_to_train_unit()
+        reqiured_wood, reqiured_iron, reqiured_clay = get_required_resources_to_train_unit(
+                unit_type,
+                unit_name,
+                number_of_units_to_train
+            )
         
-        if(current_resources['wood'] >= reqiured_wood\
-        and current_resources['iron'] >= reqiured_iron\
-        and current_resources['clay'] >= reqiured_clay):
+        if(current_resources['woodCamp'] >= reqiured_wood\
+        and current_resources['ironMine'] >= reqiured_iron\
+        and current_resources['clayPit'] >= reqiured_clay):
 
             return True
         else:
@@ -277,12 +281,52 @@ class Villages(models.Model):
     def train_unit(self, unit_type, unit_name):
         #TODO check if population limit is not reached
         
-        self.village_troops.in_village_troops_quantity_json['unit_type']['unit_name'] += 1
-        self.save()
+        self.village_troops.in_village_troops_quantity_json[unit_type][unit_name] += 1
+        self.village_troops.save()
+
+        tq = self._get_training_queue_or_queues(unit_type, unit_name)
+        tq[0].units_left -= 1 if tq[0].units_left > 0 else 0
+        if(tq[0].units_left is 0):
+            tq[0].delete()
+        else:
+            tq[0].save()
 
     def get_last_training_queue_by_unit_type(self, unit_type):
         tq = self.training_queues.filter(unit_type=unit_type)
         return False if len(tq.all()) == 0 else tq.all()[0] #return last added element if exists
+
+    def add_to_training_queue(self, chain_id, unit_type, unit_name, 
+        number_of_units_to_train, will_start_at, will_end_at):
+        return TrainingQueue.objects.create(
+            village=self,
+            chain_id=chain_id,
+            unit_type=unit_type,
+            unit_name=unit_name,
+            units_left=number_of_units_to_train,
+            started_at=will_start_at,
+            will_end_at=will_end_at
+        )
+
+    def get_required_time_for_train_units(self, unit_type, unit_name):
+
+        reqiured_time = gameConfig['units'][unit_type][unit_name]['neededTrainingBaseTime']
+        #TODO get building_name dynamically from unit_type
+        building_level = self.village_buildings.get(building_name='barracks').level
+        speed_percantage_of_barracks = \
+            gameConfig['buildings']['barracks']['trainingSpeed'][str(building_level)]
+        reqiured_time = int(reqiured_time - (reqiured_time * speed_percantage_of_barracks / 100 )) * 60 #seconds
+    
+        return reqiured_time
+
+    def get_units_left(self, unit_type, unit_name):
+        tq = self._get_training_queue_or_queues(unit_type, unit_name)
+        print(tq)
+        units_left = tq[0].units_left
+        return units_left
+
+    def _get_training_queue_or_queues(self, unit_type, unit_name):
+        tq = self.training_queues.filter(unit_type=unit_type, unit_name=unit_name)
+        return tq
 
 
 class Regions(models.Model):
@@ -346,21 +390,11 @@ class VillageTroops(models.Model):
     def get_update_url(self):
         return reverse('wololo_villagetroops_update', args=(self.pk,))
 
-    def add_to_training_queue(self, chain_id, unit_type, unit_name, 
-        number_of_units_to_train, will_start_at, will_end_at):
-        TrainingQueue.objects.create(
-            chain_id=chain_id,
-            unit_type=unit_type,
-            unit_name=unit_name,
-            units_left=number_of_units_to_train,
-            started_at=will_start_at,
-            will_end_at=will_end_at
-        )
-        pass
 
 class TrainingQueue(models.Model):
 
     # Fields
+    id = models.AutoField(primary_key=True)
     chain_id = models.TextField(max_length=100)
     unit_name = models.CharField(max_length=30)
     unit_type = models.CharField(max_length=30)
@@ -520,15 +554,15 @@ class VillageBuildings(models.Model):
     # Relationship Fields
     village = models.ForeignKey(
         'wololo.Villages',
-        on_delete=models.CASCADE, related_name="villagebuildingss", 
+        on_delete=models.CASCADE, related_name="village_buildings", 
     )
     upgrading_details_id = models.OneToOneField(
         'wololo.UpgradingDetails',
-        on_delete=models.CASCADE, related_name="villagebuildingss", blank=True, null=True
+        on_delete=models.CASCADE, related_name="village_building", blank=True, null=True
     )
     resource_building_detail_id = models.OneToOneField(
         'wololo.ResourceBuildingDetails',
-        on_delete=models.CASCADE, related_name="villagebuildingss", blank=True, null=True
+        on_delete=models.CASCADE, related_name="village_building", blank=True, null=True
     )
 
     class Meta:
@@ -592,3 +626,10 @@ class ResourceBuildingDetails(models.Model):
     def get_update_url(self):
         return reverse('wololo_resourcebuildingdetails_update', args=(self.pk,))
 
+
+def get_required_resources_to_train_unit(unit_type, unit_name, number_of_units_to_train):
+    reqiured_wood = gameConfig['units'][unit_type][unit_name]['Cost']['Wood'] * number_of_units_to_train
+    reqiured_iron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * number_of_units_to_train
+    reqiured_clay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
+
+    return reqiured_wood, reqiured_iron, reqiured_clay

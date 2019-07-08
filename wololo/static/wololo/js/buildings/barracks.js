@@ -3,7 +3,7 @@ var village_id
 var gameConfigs = JSON.parse(($("#gameConfigData").attr("data")).replace(/'/g, '"'))
 var villageData = JSON.parse(($("#villageDataJSON").attr("data")).replace(/'/g, '"'))
 $(function(){
-    village_id = villageData.id
+    village_id = villageData.village_id
     displayNeededTimeForInfantryUnits()
     initTrainUnitsButton()
     initTrainingQueue()
