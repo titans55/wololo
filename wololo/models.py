@@ -224,6 +224,19 @@ class Users(AbstractUser):
         vb.upgrading_details_id = None
         vb.save()
 
+    def has_resources_to_train_unit(self, village_id, unit_type, unit_name, number_of_units_to_train):
+        
+        current_resources = self.get_current_resources(village_id)
+        reqiured_wood, reqiured_iron, reqiured_clay = get_required_resources_to_train_unit()
+        
+        if(current_resources['wood'] >= reqiured_wood\
+        and current_resources['iron'] >= reqiured_iron\
+        and current_resources['clay'] >= reqiured_clay):
+
+            return True
+        else:
+            return False
+
 class Villages(models.Model):
 
     # Fields
@@ -261,6 +274,11 @@ class Villages(models.Model):
     def get_update_url(self):
         return reverse('wololo_villages_update', args=(self.pk,))
 
+    def train_unit(self, unit_type, unit_name):
+        #TODO check if population limit is not reached
+        
+        self.village_troops.in_village_troops_quantity_json['unit_type']['unit_name'] += 1
+        self.save()
 
 class Regions(models.Model):
 
@@ -293,12 +311,21 @@ class VillageTroops(models.Model):
     # Fields
     in_village_troops_quantity_json = JSONField(default=default_fresh_troops_dict)
     on_move_troops_quantity_json = JSONField(default= default_fresh_troops_dict)
-    total_troops_quantity_json = JSONField(default=default_fresh_troops_dict)
 
+    @property
+    def total_troops_quantity_json(self):
+        total_troops_quantity_json = {}
+        for unit_type_name, unit_type in self.in_village_troops_quantity_json.items():
+            total_troops_quantity_json[unit_type_name] = {}
+            for unit_name, in_village_unit_amount in unit_type.items():
+                total_troops_quantity_json[unit_type_name][unit_name] = \
+                    in_village_unit_amount + \
+                    self.on_move_troops_quantity_json[unit_type_name][unit_name]
+        return total_troops_quantity_json
     # Relationship Fields
     village_id = models.OneToOneField(
         'wololo.Villages',
-        on_delete=models.CASCADE, related_name="villagetroopss", 
+        on_delete=models.CASCADE, related_name="village_troops", 
     )
 
     class Meta:

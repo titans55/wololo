@@ -18,6 +18,7 @@ from wololo.helperFunctions import calculate_points_for_village, getUserIdByVill
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from random import randint
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
+from wololo.models import Villages
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -98,7 +99,8 @@ def train_unit(self, user_id, village_id, unit_type, unit_name):
         os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
         channel_layer = get_channel_layer()
         
-        user.trainUnit(village_id, unit_type, unit_name)
+        vil = Villages.objects.get(id=village_id)
+        vil.train_unit(unit_type, unit_name)
 
         notifyData = {
             'messageType': 'trainUnit',

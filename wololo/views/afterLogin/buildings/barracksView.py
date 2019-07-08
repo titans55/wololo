@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from wololo.tasks import train_unit
-from wololo.helperFunctions import setSumAndLastInteractionDateOfResource, getRequiredTimeForTrainUnits
+from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, get_required_time_for_train_units
 from wololo.initFirestore import get_db, get_auth
 from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig, getVillageIndex
+from wololo.models import Villages
 import urllib.request
 import urllib.error
 
@@ -35,10 +36,9 @@ def barracks(request, village_index=None):
         return('barracks')
 
     my_villages = user.get_my_villages()
-
-    # print (user.myVillages)
+    selected_village = user.get_my_villages()[selected_village_index] 
     data = { 
-        'selectedVillage': my_villages[selected_village_index],
+        'selectedVillage': selected_village,
         'gameConfig' : gameConfig,
         'unviewedReportExists' : user.is_unviewed_reports_exists,
         'page' : 'barracks'
@@ -52,7 +52,7 @@ def barracks(request, village_index=None):
 @login_required
 def trainUnits(request):
     now = datetime.datetime.now(pytz.utc)
-    firing_time = request.POST.get("firingTime") #we should use this instead of now
+    firing_time = request.POST.get("firingTime") #TODO we should use this instead of now
     user_id = request.user.id
     user = request.user
     selected_village_index = getVillageIndex(request, user, None)  
@@ -60,35 +60,35 @@ def trainUnits(request):
     village_id = request.POST.get("village_id") 
     unit_type = request.POST.get("unitType") 
     unit_name = request.POST.get("unitName") 
-    numberOfUnitsToTrain = int(request.POST.get("value"))
+    number_of_units_to_train = int(request.POST.get("value"))
 
 
     #if we have resources
-    if(user.weHaveResourcesToTrainUnit(village_id, unit_type, unit_name, numberOfUnitsToTrain)):
+    if(user.has_resources_to_train_unit(village_id, unit_type, unit_name, number_of_units_to_train)):
 
-        village = db.collection('players').document(user_id).collection('villages').document(village_id).get().to_dict()
-        reqiured_time = getRequiredTimeForTrainUnits(village, unit_type, unit_name)
+        reqiured_time = get_required_time_for_train_units(village, unit_type, unit_name)
 
+        current_resources = user.get_current_resources(village_id)
 
+        reqiuredWood = gameConfig['units'][unit_type][unit_name]['Cost']['Wood'] * number_of_units_to_train
+        reqiuredIron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * number_of_units_to_train
+        reqiuredClay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
 
-        currentWood = user.getCurrentResource(village_id, 'woodCamp')
-        currentIron = user.getCurrentResource(village_id, 'ironMine')
-        currentClay = user.getCurrentResource(village_id, 'clayPit')
-
-        reqiuredWood = gameConfig['units'][unit_type][unit_name]['Cost']['Wood'] * numberOfUnitsToTrain
-        reqiuredIron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * numberOfUnitsToTrain
-        reqiuredClay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * numberOfUnitsToTrain
-
-        setSumAndLastInteractionDateOfResource(user_id, village_id, 'woodCamp', currentWood-reqiuredWood, now)
-        setSumAndLastInteractionDateOfResource(user_id, village_id, 'clayPit', currentIron-reqiuredIron, now)
-        setSumAndLastInteractionDateOfResource(user_id, village_id, 'ironMine', currentClay-reqiuredClay, now)
+        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', currentWood-reqiuredWood, now)
+        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', currentIron-reqiuredIron, now)
+        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', currentClay-reqiuredClay, now)
         # reqiured_time = 10
 
         result = user.checkTrainingQueueReturnLastOneIfExists(village_id, unit_type)
 
+        #
+        vil_obj = Villages.objects.get(id=selected_village['village_id'])
+        print(vil_obj.village_troops.in_village_troops_quantity_json)
+        #   
+
         if(result == False):
             subtasks = []
-            for i in range(numberOfUnitsToTrain):
+            for i in range(number_of_units_to_train):
                 subtasks.append(
                     train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=reqiured_time)
                 )
@@ -96,8 +96,8 @@ def trainUnits(request):
             workflow = chain(*subtasks)
             generatedChain = workflow.apply_async()
             chain_id = generatedChain.id
-            willEndAt = now + datetime.timedelta(0, reqiured_time*numberOfUnitsToTrain)
-            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, numberOfUnitsToTrain, now, willEndAt)
+            willEndAt = now + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, now, willEndAt)
         else:
             willStartAt = result['willEndAt']
             print("i will wait in queue totally seconds = >")
@@ -105,7 +105,7 @@ def trainUnits(request):
             print(firstTaskDelayedCountdown)
 
             subtasks = []
-            for i in range(numberOfUnitsToTrain):
+            for i in range(number_of_units_to_train):
                 if i == 0 :
                     subtasks.append(
                         train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=firstTaskDelayedCountdown)
@@ -118,8 +118,8 @@ def trainUnits(request):
             workflow = chain(*subtasks)
             generatedChain = workflow.apply_async()
             chain_id = generatedChain.id
-            willEndAt = willStartAt + datetime.timedelta(0, reqiured_time*numberOfUnitsToTrain)
-            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, numberOfUnitsToTrain, willStartAt, willEndAt)
+            willEndAt = willStartAt + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+            user.addToTrainingQueue(village_id, chain_id, unit_type, unit_name, number_of_units_to_train, willStartAt, willEndAt)
         print(datetime.datetime.now(pytz.utc))
         user.update()
         print(datetime.datetime.now(pytz.utc))
@@ -131,7 +131,7 @@ def trainUnits(request):
             'newQueueElement' : {
                 'willEndAt' : willEndAt,
                 'unitName' : unit_name,
-                'unitsLeft' : numberOfUnitsToTrain
+                'unitsLeft' : number_of_units_to_train
             }
         }
 

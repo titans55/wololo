@@ -4,7 +4,7 @@ import os
 import json
 import pytz, datetime
 from celery import current_app
-from wololo.helperFunctions import setSumAndLastInteractionDateOfResource, calculate_points_for_player, getUsernameByUserID, getVillagenameByVillageID
+from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, calculate_points_for_player, getUsernameByUserID, getVillagenameByVillageID
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion
 from django.core.serializers.json import DjangoJSONEncoder
 from dateutil import parser
@@ -337,9 +337,9 @@ class firebaseUser():
         #20% of cost
 
 
-        setSumAndLastInteractionDateOfResource(self.id, village_id, 'woodCamp', newWood, now)
-        setSumAndLastInteractionDateOfResource(self.id, village_id, 'ironMine', newIron, now)
-        setSumAndLastInteractionDateOfResource(self.id, village_id, 'clayPit', newClay, now)
+        set_sum_and_last_interaction_date_of_resource(self.id, village_id, 'woodCamp', newWood, now)
+        set_sum_and_last_interaction_date_of_resource(self.id, village_id, 'ironMine', newIron, now)
+        set_sum_and_last_interaction_date_of_resource(self.id, village_id, 'clayPit', newClay, now)
 
     
 

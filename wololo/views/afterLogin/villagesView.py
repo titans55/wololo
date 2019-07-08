@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from wololo.tasks import schedule_upgrade_building
-from wololo.helperFunctions import setSumAndLastInteractionDateOfResource, getRequiredTimeForUpgrade
+from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, getRequiredTimeForUpgrade
 from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 import urllib.request
@@ -106,9 +106,9 @@ def upgrade(request):
 
         if(wood_total >= required_wood and iron_total >= required_iron and clay_total >= required_clay):
             #update sum and lastInteractionDate of resources (-cost)
-            setSumAndLastInteractionDateOfResource(user_id, village_id, 'woodCamp', wood_total-required_wood, now)
-            setSumAndLastInteractionDateOfResource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
-            setSumAndLastInteractionDateOfResource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', wood_total-required_wood, now)
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
             
             task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
             task_id = task_id.id

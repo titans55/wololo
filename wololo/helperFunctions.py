@@ -9,8 +9,7 @@ from .commonFunctions import getGameConfig
 import datetime
 import math
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
-from wololo.models import Users, VillageBuildings, ResourceBuildingDetails, VillageBuildings, Villages, \
-Users    
+from wololo.models import Users, VillageBuildings, ResourceBuildingDetails, VillageBuildings, Villages
 db = get_db()
 
 gameConfig = getGameConfig()
@@ -19,7 +18,7 @@ gameConfig = getGameConfig()
 
 
 
-def setSumAndLastInteractionDateOfResource(user_id, village_id, resourceBuilding, newSum, now):
+def set_sum_and_last_interaction_date_of_resource(user_id, village_id, resourceBuilding, newSum, now):
 
     resource_building = VillageBuildings.objects.get(village_id = village_id, building_name = resourceBuilding)
     rbd = ResourceBuildingDetails.objects.get(id = str(resource_building.resource_building_detail_id))
@@ -47,11 +46,12 @@ def getRequiredTimeForUpgrade(village, building_path, upgrade_levelTo):
     return reqiured_time
 
 
-def getRequiredTimeForTrainUnits(village, unitType, unitName):
+def get_required_time_for_train_units(village, unitType, unitName):
 
     reqiured_time = gameConfig['units'][unitType][unitName]['neededTrainingBaseTime']
-    speedPercantageOfBarracks = gameConfig['buildings']['barracks']['trainingSpeed'][str(village['buildings']['barracks']['level'])]
-    reqiured_time = int(reqiured_time - (reqiured_time * speedPercantageOfBarracks / 100 )) * 60 #seconds
+    speed_percantage_of_barracks = \
+        gameConfig['buildings']['barracks']['trainingSpeed'][str(village['buildings']['barracks']['level'])]
+    reqiured_time = int(reqiured_time - (reqiured_time * speed_percantage_of_barracks / 100 )) * 60 #seconds
     
     return reqiured_time
 
@@ -269,3 +269,10 @@ def getUsernameByUserID(user_id):
 def getVillagenameByVillageID(village_id):
     villages_ref = db.collection('villages')
     return villages_ref.document(village_id).get({'villageName'}).to_dict()['villageName']
+
+def get_required_resources_to_train_unit(self, unit_type, unit_name, number_of_units_to_train):
+    reqiured_wood = gameConfig['units'][unit_type][unit_name]['Cost']['Wood'] * number_of_units_to_train
+    reqiured_iron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * number_of_units_to_train
+    reqiured_clay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
+
+    return reqiured_wood, reqiured_iron, reqiured_clay
