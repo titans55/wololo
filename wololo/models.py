@@ -285,11 +285,13 @@ class Villages(models.Model):
         self.village_troops.save()
 
         tq = self._get_training_queue_or_queues(unit_type, unit_name)
-        tq[0].units_left -= 1 if tq[0].units_left > 0 else 0
-        if(tq[0].units_left is 0):
-            tq[0].delete()
+        
+        if tq[0].units_left is 0 or tq[0].units_left is 1 :
+            TrainingQueue.objects.get(id=tq[0].id).delete()
         else:
-            tq[0].save()
+            tq = TrainingQueue.objects.get(id=tq[0].id)
+            tq.units_left -= 1
+            tq.save()
 
     def get_last_training_queue_by_unit_type(self, unit_type):
         tq = self.training_queues.filter(unit_type=unit_type)
