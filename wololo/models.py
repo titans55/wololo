@@ -146,16 +146,12 @@ class Users(AbstractUser):
                 'other' : []
             }
 
-            #get trainingQueue and fill dict above 
-            pass
+            #TODO get trainingQueue and fill dict above 
 
             my_villages.append(village_dict)
         
         return my_villages
 
-    def get_reports(self):
-        reports = []
-        return reports
 
     #TODO move this function to Villages
     def get_current_resources(self, village_id):
@@ -240,6 +236,21 @@ class Users(AbstractUser):
             return True
         else:
             return False
+
+    def get_reports(self):
+
+        reports = Reports.objects.filter(sended_to_user=self)
+        reports_arr = []
+        for report in reports:
+            report_dict = {
+                'type': report.type,
+                'date': report.created_at,
+                'viewed': report.is_viewed,
+                'content' : report.content
+            }
+            reports_arr.append(report_dict)
+        return reports_arr
+
 
 class Villages(models.Model):
 
@@ -428,14 +439,46 @@ class Reports(models.Model):
 
     # Fields
     id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=15)
+    type = models.CharField(
+        max_length=15,
+        choices=[
+            ('battle', 'Battle')
+        ]
+    )
     is_viewed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     # Relationship Fields
     sended_to_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="reportss", 
+        on_delete=models.CASCADE, related_name="reports", 
     )
+
+    @property
+    def content(self):
+        if self.type == 'battle':
+            br = BattleReports.objects.get(report=self)
+            br_dict = {
+                'attacker': {
+                    'user_id': br.attacker.id,
+                    'username': br.attacker.username,
+                    'villageName': br.attacker_village.village_name,
+                    'village_id': br.attacker_village.id,
+                    'result': br.attacker_battle_result.result,
+                    'units_result': br.attacker_battle_result.\
+                        quantity_and_losses_troops_json
+                },
+                'defender': {
+                    'user_id': br.defender.id,
+                    'username': br.defender.username,
+                    'villageName': br.defender_village.village_name,
+                    'village_id': br.defender_village.id,
+                    'result': br.defender_battle_result.result,
+                    'units_result': br.defender_battle_result.\
+                        quantity_and_losses_troops_json            
+                }
+            }
+            return br_dict
 
     class Meta:
         ordering = ('-pk',)
@@ -456,6 +499,14 @@ class BattleResults(models.Model):
     # Fields
     id = models.AutoField(primary_key=True)
     quantity_and_losses_troops_json = JSONField(default=dict)
+    result = models.CharField(
+        max_length=5,
+        choices=[
+            ('won', 'Won'),
+            ('draw', 'Draw'),
+            ('lost', 'Lost')
+        ]
+    )
 
     class Meta:
         ordering = ('-pk',)
@@ -477,15 +528,19 @@ class BattleReports(models.Model):
     is_details_hidden = models.BooleanField(default=False)
 
     # Relationship Fields
-    report_id = models.OneToOneField(
+    report = models.OneToOneField(
         'wololo.Reports',
-        on_delete=models.CASCADE, related_name="battlereportss", 
+        on_delete=models.CASCADE
     )
     attacker = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="battlereportss", 
+        on_delete=models.CASCADE, related_name="battlereport", 
     )
-    attacker_battle_result_id = models.OneToOneField(
+    attacker_village = models.ForeignKey(
+        'wololo.Villages',
+        on_delete=models.CASCADE, related_name="attack_br", 
+    )
+    attacker_battle_result = models.OneToOneField(
         'wololo.BattleResults',
         on_delete=models.CASCADE, related_name="battlereportss", 
     )
@@ -493,7 +548,11 @@ class BattleReports(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="battlereportss_2", 
     )
-    defender_battle_result_id = models.OneToOneField(
+    defender_village = models.ForeignKey(
+        'wololo.Villages',
+        on_delete=models.CASCADE, related_name="defend_br", 
+    )
+    defender_battle_result = models.OneToOneField(
         'wololo.BattleResults',
         on_delete=models.CASCADE, related_name="battlereportss_2", 
     )

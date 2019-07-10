@@ -144,7 +144,7 @@ class ReportsAdminForm(forms.ModelForm):
 
 class ReportsAdmin(admin.ModelAdmin):
     form = ReportsAdminForm
-    list_display = ['id', 'type', 'is_viewed']
+    list_display = ['id', 'type', 'is_viewed', 'created_at', 'sended_to_user', 'content']
     readonly_fields = ['id']
 
 admin.site.register(Reports, ReportsAdmin)
@@ -174,8 +174,9 @@ class BattleReportsAdminForm(forms.ModelForm):
 
 class BattleReportsAdmin(admin.ModelAdmin):
     form = BattleReportsAdminForm
-    list_display = ['is_details_hidden']
-    # readonly_fields = ['is_details_hidden']
+    list_display = ['report', 'attacker', 'attacker_battle_result',
+        'defender', 'defender_battle_result']
+
 
 admin.site.register(BattleReports, BattleReportsAdmin)
 
