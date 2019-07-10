@@ -338,9 +338,22 @@ class Villages(models.Model):
         return units_left
 
     def _get_training_queue_or_queues(self, unit_type, unit_name):
-        tq = self.training_queues.filter(unit_type=unit_type, unit_name=unit_name)
-        return tq
+        return self.training_queues.filter(unit_type=unit_type, unit_name=unit_name)
 
+    def get_village_profile_dict(self):
+        return {
+            'village_id': self.id,
+            'villageName': self.village_name,
+            'points': self.points,
+            'user_id': self.user.id,
+            'playerName': self.user.username,
+            'clan': self.user.clan_id,
+            'region': self.region.name,
+            'coords': {
+                'x': self.coords_x,
+                'y': self.coords_y
+            }
+        }
 
 class Regions(models.Model):
 
