@@ -65,12 +65,12 @@ def report(request, report_index, village_index=None):
     reports[report_index]['viewed'] = True
 
     if user.is_unviewed_reports_exists:
-        viewedAllReports = True
+        viewed_all_reports = True
         for reportElement in reports:
             if reportElement['viewed'] == False:
-                viewedAllReports = False
+                viewed_all_reports = False
                 break
-        if viewedAllReports:
+        if viewed_all_reports:
             user.is_unviewed_reports_exists = False
             user.setUnviewedReportExists(False)
         user.setReports(reports)
