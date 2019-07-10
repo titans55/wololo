@@ -4,7 +4,6 @@ import urllib.request
 import urllib.error
 from django.contrib.auth.decorators import login_required
 from wololo.commonFunctions import getGameConfig, getVillageIndex
-from wololo.helperFunctions import getVillageInfo
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from wololo.models import Villages

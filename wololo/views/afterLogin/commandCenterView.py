@@ -4,42 +4,57 @@ import urllib.request
 import urllib.error
 from django.contrib.auth.decorators import login_required
 from wololo.commonFunctions import getGameConfig, getVillageIndex
-from wololo.helperFunctions import getVillageInfo, getPublicVillages, getUserIdByVillageId
+from wololo.helperFunctions import getVillageInfo, getUserIdByVillageId
+from wololo.models import Villages, get_public_villages
 import json
 import datetime
 import pytz
 from wololo.tasks import attack
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 gameConfig = getGameConfig()
 
 @login_required    
 def commandCenter(request, village_index=None):
-    user_id = request.user.id
     user = request.user
-    if user.regionSelected is False :
+    if user.is_region_selected is False :
         return redirect("selectRegion")
 
     selected_village_index = getVillageIndex(request, user, village_index)
     if(selected_village_index == 'outOfList'):
         return redirect('commandCenter')
 
-    commandTargetVillageID = request.POST.get("commandTargetVillageID")
-    targetVillage = getVillageInfo(commandTargetVillageID)
-    print(targetVillage)
+    target_village_id = request.POST.get("commandTargetVillageID")
 
-    publicVillages = getPublicVillages(user)
+    target_village = Villages.objects.get(id=target_village_id)
+    target_village_info = target_village.get_village_profile_dict()
+
+    public_villages = get_public_villages(user)
+    my_villages = user.get_my_villages()
 
     data = { 
-        'selectedVillage': user.myVillages[selected_village_index],
+        'selectedVillage': my_villages[selected_village_index],
         'gameConfig' : gameConfig,
-        'targetVillage' : targetVillage,
-        'unviewedReportExists' : user.unviewedReportExists,
+        'targetVillage' : target_village_info,
+        'unviewedReportExists' : user.is_unviewed_reports_exists,
         'page' : 'commandCenter'
     }
-    currentUser = {}
-    currentUser['id'] = user_id
-
-    return render(request, 'commandCenter.html', {'currentUser':currentUser, 'publicVillages':json.dumps(publicVillages), 'myVillages':user.myVillages, 'data' : data})
+    current_user = {
+        'id' : user.id
+    }
+    data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
+    my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
+    return render(
+        request,
+        'commandCenter.html',
+        {
+            'currentUser': current_user,
+            'publicVillages': json.dumps(public_villages),
+            'myVillages': my_villages,
+            'data': data
+        }
+    )
 
 def sendAttack(request):
     user_id = request.user.id

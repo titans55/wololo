@@ -707,3 +707,26 @@ def get_required_resources_to_train_unit(unit_type, unit_name, number_of_units_t
     reqiured_clay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
 
     return reqiured_wood, reqiured_iron, reqiured_clay
+
+def get_public_villages(current_user_id=None):
+
+    public_villages = Villages.objects.exclude(user_id=None)
+    public_villages_info = []
+
+    for village in public_villages:
+        village_dict = {}
+        village_dict['user_id'] = village.user_id
+        village_dict['village_id'] = village.id
+        if(village_dict['user_id'] == current_user_id):
+            village_dict['owner'] = True
+        village_dict['coords'] = {
+            'x' : village.coords_x,
+            'y' : village.coords_y
+        }
+        village_dict['villageName'] = village.village_name
+        village_dict['playerName'] = str(village.user)
+        village_dict['points'] = village.points
+
+        public_villages_info.append(village_dict)
+
+    return public_villages_info

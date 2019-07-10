@@ -117,26 +117,6 @@ def getVillageInfo(village_id):
     villageInfo['clan'] = playerClan
     return villageInfo
 
-def getPublicVillages(firebaseUser):
-    
-    public_villages_ref = db.collection('villages')
-    publicVillages = public_villages_ref.get()
-    publicVillagesInfo = []
-    for village in publicVillages:
-        if(village._data['user_id']!=''):
-            village._data['village_id'] = village.reference.id
-            if(village._data['user_id'] == firebaseUser.id):
-                village._data['owner'] = True
-                for myVillage in firebaseUser.myVillages:
-                    if (village._data['village_id'] == myVillage['id']):
-                        myVillage['coords'] = {
-                            'x' : village._data['coords']['x'],
-                            'y' : village._data['coords']['y']
-                        }
-            publicVillagesInfo.append(village._data)
-
-    return publicVillagesInfo
-
 def getUserIdByVillageId(village_id):
     public_villages_ref = db.collection('villages')
     return public_villages_ref.document(village_id).get({'user_id'}).to_dict()['user_id']

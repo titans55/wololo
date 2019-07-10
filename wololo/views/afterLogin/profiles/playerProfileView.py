@@ -30,7 +30,8 @@ def playerProfile(request, player_id, village_index=None):
         'unviewedReportExists' : user.unviewedReportExists,
         'page' : 'playerProfile'
     }
-    currentUser = {}
-    currentUser['id'] = user_id
+    current_user = {
+        'id' : user_id
+    }
 
-    return render(request, 'profiles/playerProfile.html', {'currentUser':currentUser, 'myVillages':user.myVillages, 'data' : data})
+    return render(request, 'profiles/playerProfile.html', {'currentUser':current_user, 'myVillages':user.myVillages, 'data' : data})
