@@ -36,7 +36,11 @@ class VillagesAdminForm(forms.ModelForm):
 
 class VillagesAdmin(admin.ModelAdmin):
     form = VillagesAdminForm
-    list_display = ['id', 'village_name', 'user_id', 'has_all_buildings', 'has_village_troops', 'coords_x', 'coords_y', 'points']
+    list_display = ['id', 'village_name',
+        'user', 'has_all_buildings',
+        'has_village_troops', 'coords_x',
+        'coords_y', 'points', 'region'
+    ]
     readonly_fields = ['id']
 
     actions = ['create_village_buildings_and_troops']
@@ -98,7 +102,7 @@ class RegionsAdminForm(forms.ModelForm):
 
 class RegionsAdmin(admin.ModelAdmin):
     form = RegionsAdminForm
-    list_display = ['id', 'region_name']
+    list_display = ['id', 'name']
     readonly_fields = ['id']
 
 admin.site.register(Regions, RegionsAdmin)

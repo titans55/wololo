@@ -346,14 +346,14 @@ class Regions(models.Model):
 
     # Fields
     id = models.AutoField(primary_key=True)
-    region_name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30)
 
 
     class Meta:
         ordering = ('-pk',)
 
     def __str__(self):
-        return self.region_name
+        return self.name
 
     def __unicode__(self):
         return u'%s' % self.pk
