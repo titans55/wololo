@@ -108,15 +108,6 @@ def getPlayerInfo(player_id):
     playerInfo['id'] = player_id
     return playerInfo            
 
-def getVillageInfo(village_id):
-    players_ref = db.collection('players')
-    villages_ref = db.collection('villages')
-    villageInfo = villages_ref.document(village_id).get().to_dict()
-    villageInfo['village_id'] = village_id
-    playerClan = players_ref.document(villageInfo['user_id']).get({'clan'}).to_dict()['clan']
-    villageInfo['clan'] = playerClan
-    return villageInfo
-
 def getUserIdByVillageId(village_id):
     public_villages_ref = db.collection('villages')
     return public_villages_ref.document(village_id).get({'user_id'}).to_dict()['user_id']

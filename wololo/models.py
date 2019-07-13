@@ -152,6 +152,16 @@ class Users(AbstractUser):
         
         return my_villages
 
+    def get_player_profile_dict(self):
+        players_villages = [vil.get_village_profile_dict() for vil in self.villages.all()]
+        return {
+            'clan': self.clan_id,
+            'points': self.points,
+            'regionSelected': self.is_region_selected,
+            'user_id': self.id,
+            'playersVillages': players_villages,
+            'username': self.username,
+        }
 
     #TODO move this function to Villages
     def get_current_resources(self, village_id):
@@ -270,7 +280,7 @@ class Villages(models.Model):
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE, related_name="villagess", blank=True, null=True
+        on_delete=models.CASCADE, related_name="villages", blank=True, null=True
     )
 
     class Meta:
