@@ -92,22 +92,6 @@ def getAllPlayersOrderedByPoints():
 
     return players
 
-def getPlayerInfo(player_id):
-    players_ref = db.collection('players')
-    villages_ref = db.collection('villages')
-    playerInfo = players_ref.document(player_id).get().to_dict()
-    playersVillages = []
-    for village in villages_ref.get(): 
-        print(village.reference.id)
-        villageDict = village.to_dict()
-        if(villageDict['user_id'] == player_id):
-            villageDict['village_id'] = village.reference.id
-            playersVillages.append(villageDict)
-            
-    playerInfo['playersVillages'] = playersVillages
-    playerInfo['id'] = player_id
-    return playerInfo            
-
 def getUserIdByVillageId(village_id):
     public_villages_ref = db.collection('villages')
     return public_villages_ref.document(village_id).get({'user_id'}).to_dict()['user_id']
