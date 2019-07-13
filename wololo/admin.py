@@ -69,7 +69,7 @@ class VillagesAdmin(admin.ModelAdmin):
                                     building_name = resourceBuildingName, 
                                     is_resource_building = True,
                                     resource_building_detail_id = rbd,
-                                    village_id = village,
+                                    village = village,
                                     level = getFreshBuildingLevel(resourceBuildingName)
                                 )
                     else:
@@ -77,7 +77,7 @@ class VillagesAdmin(admin.ModelAdmin):
                         if not vbExists:
                             VillageBuildings.objects.create(
                                 building_name = buildingName, 
-                                village_id = village,
+                                village = village,
                                 level = getFreshBuildingLevel(buildingName)
                             )
                         else:

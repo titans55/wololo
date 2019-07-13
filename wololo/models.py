@@ -62,12 +62,16 @@ class Users(AbstractUser):
         my_villages = []
         for village in villages_querysets:
             village_dict = {
-                'buildings' : {
-                    'resources' : {}
+                'buildings': {
+                    'resources': {}
                 },
-                'villageName' : village.village_name,
-                'troops' : {},
-                'village_id' : village.id
+                'villageName': village.village_name,
+                'troops': {},
+                'village_id': village.id,
+                'coords':{
+                    'x': village.coords_x,
+                    'y': village.coords_y
+                }
             }
             village_building_querysets = VillageBuildings.objects.filter(village_id = village)
             for village_building in village_building_querysets:
