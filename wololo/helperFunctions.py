@@ -5,11 +5,13 @@ import dateutil.parser
 import pytz
 import pyrebase
 from .initFirestore import get_db
-from .commonFunctions import getGameConfig
+from .commonFunctions import getGameConfig, get_map_data
 import datetime
 import math
 from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
 from wololo.models import Users, VillageBuildings, ResourceBuildingDetails, VillageBuildings, Villages
+import numpy as np
+
 db = get_db()
 
 gameConfig = getGameConfig()
@@ -215,3 +217,51 @@ def getVillagenameByVillageID(village_id):
     villages_ref = db.collection('villages')
     return villages_ref.document(village_id).get({'villageName'}).to_dict()['villageName']
 
+
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.breadth_first import BreadthFirstFinder
+
+def find_path(data, A, B):
+    grid = Grid(matrix=data)
+    finder = BreadthFirstFinder(diagonal_movement=DiagonalMovement.only_when_no_obstacle)
+    A['x'] = int(A['x']/16)
+    A['y'] = int(A['y']/16)
+    B['x'] = int(B['x']/16)
+    B['y'] = int(B['y']/16)
+
+    if A['x'] < B['x']:
+        start = grid.node(A['x'], A['y'])
+        end = grid.node(B['x'], B['y'])
+    elif A['x'] > B['x']:
+        end = grid.node(A['x'], A['y'])
+        start = grid.node(B['x'], B['y'])
+    else: 
+        if A['y'] < B['y']:
+            start = grid.node(A['x'], A['y'])
+            end = grid.node(B['x'], B['y'])
+        elif A['y'] > B['y']:
+            print(A, B)
+            end = grid.node(A['x'], A['y'])
+            start = grid.node(B['x'], B['y'])
+        else:
+            return ValueError("Can't calculate path from A to B when A==B")
+
+
+    path, runs = finder.find_path(start, end, grid)
+    # print('operations:', runs, 'path length:', len(path))
+    # print(grid.grid_str(path=path, start=start, end=end))
+    new_path = [(point[0]*16, point[1]*16) for point in path]
+    return new_path
+
+def convert_1d_to_2d_arr(data, height, width):
+    data = np.array(data)
+    data = data.reshape(height, width)
+    return list(data)
+
+def calculate_map_pathfinding(source, target, layer='land'):
+    map_data = get_map_data()
+    map_data = convert_1d_to_2d_arr(map_data[layer], 64, 128)
+    path = find_path(map_data, source, target)
+    
+    return path

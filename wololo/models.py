@@ -159,7 +159,7 @@ class Users(AbstractUser):
     def get_player_profile_dict(self):
         players_villages = [vil.get_village_profile_dict() for vil in self.villages.all()]
         return {
-            'clan': self.clan_id,
+            'clan': '',
             'points': self.points,
             'regionSelected': self.is_region_selected,
             'user_id': self.id,
@@ -361,7 +361,7 @@ class Villages(models.Model):
             'points': self.points,
             'user_id': self.user.id,
             'playerName': self.user.username,
-            'clan': self.user.clan_id,
+            'clan': '',
             'region': self.region.name,
             'coords': {
                 'x': self.coords_x,

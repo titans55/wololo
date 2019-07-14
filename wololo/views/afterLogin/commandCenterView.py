@@ -4,7 +4,7 @@ import urllib.request
 import urllib.error
 from django.contrib.auth.decorators import login_required
 from wololo.commonFunctions import getGameConfig, getVillageIndex
-from wololo.helperFunctions import getUserIdByVillageId
+from wololo.helperFunctions import getUserIdByVillageId, calculate_map_pathfinding
 from wololo.models import Villages, get_public_villages
 import json
 import datetime
@@ -33,12 +33,18 @@ def commandCenter(request, village_index=None):
     public_villages = get_public_villages(user)
     my_villages = user.get_my_villages()
 
+    source = my_villages[selected_village_index]
+    target = target_village_info
+
+    path = calculate_map_pathfinding(source['coords'], target['coords'])
+
     data = { 
         'selectedVillage': my_villages[selected_village_index],
-        'gameConfig' : gameConfig,
-        'targetVillage' : target_village_info,
-        'unviewedReportExists' : user.is_unviewed_reports_exists,
-        'page' : 'commandCenter'
+        'gameConfig': gameConfig,
+        'targetVillage': target_village_info,
+        'unviewedReportExists': user.is_unviewed_reports_exists,
+        'distance': len(path),
+        'page': 'commandCenter'
     }
     current_user = {
         'id' : user.id

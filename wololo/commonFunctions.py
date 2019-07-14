@@ -9,6 +9,17 @@ def getGameConfig():
         gameConfig = json.load(f)
     return gameConfig
 
+def get_map_data():
+    script_dir = os.path.dirname(__file__)
+    file_path = os.path.join(script_dir, 'static/wololo/mapAssets/tilemaps/mapv3.json')
+    with open(file_path, 'r') as f:
+        raw_map_data = json.load(f)
+    map_data = {
+        'land': raw_map_data['layers'][0]['data'],
+        'sea': raw_map_data['layers'][1]['data']
+    }
+    return map_data
+
 def getVillageIndex(request, user, village_index):
     if village_index is not None and user.number_of_villages>=village_index:
         selected_village_index = int(village_index)

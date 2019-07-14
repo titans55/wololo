@@ -1,2 +1,4 @@
 django-extensions
 psycopg2
+numpy
+pathfinding

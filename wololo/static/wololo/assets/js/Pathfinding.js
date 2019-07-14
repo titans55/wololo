@@ -67,7 +67,7 @@ PathfindingExample.Pathfinding.prototype.call_callback_function = function (call
         pathLength = pathSprites.length
         console.log(pathLength, "=> global variable, pathLength")
         if(page=='commandCenter'){
-            makeChangesForCommandCenterInPathfindingJS()
+            // makeChangesForCommandCenterInPathfindingJS()
         }
     }else{
         console.log("you cant travel through sea, you are not jesus!")
