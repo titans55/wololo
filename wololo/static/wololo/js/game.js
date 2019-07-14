@@ -26,19 +26,6 @@ function create() {
     createMap();
     loadVillages(infos);
     initSwitchVillage()
-    
-    console.log(infos)
-    // initialize pathfinding
-
-    // let targetX = 112
-    // let targetY = 384
-    // let fromX = 0
-    // let fromY = 0
-    // let target_position = new Phaser.Point(targetX, targetY)
-    // let from = new Phaser.Point(fromX, fromY)
-    
-    // this.pathfinding.find_path(from, target_position, this.move_through_path, this)
-  
 }
 
 function update(time, delta) {
@@ -69,7 +56,6 @@ function createMap() {
 function loadVillages(infos) {
     var sprite
     tile_dimensions = new Phaser.Point(map.tileWidth, map.tileHeight);
-    pathfinding = this.game.plugins.add(PathfindingExample.Pathfinding, map.layers[1].data, [-1], tile_dimensions);
     infos.forEach(function(element) {
         if(element.playerName != ''){
             sprite = game.add.sprite(element.coords.x, element.coords.y, 'castle');
@@ -93,6 +79,11 @@ function loadVillages(infos) {
 
 function onClickListener(sprite) {
     console.log(selectedVillage)
+    targetVilCoords = {
+        'x' : sprite.x,
+        'y' : sprite.y
+    }
+    
     if (isVillageSelected) {
         console.log(selectedIndicator)
         selectedIndicator.kill();
@@ -100,25 +91,20 @@ function onClickListener(sprite) {
         selectedIndicator = game.add.sprite(sprite.x - 10, sprite.y - 8, 'selected');
         isVillageSelected = true;
         initSideBar(sprite)
-
         removePathSprites()
         if(!sprite.owner){
-            let target_position = new Phaser.Point(sprite.x, sprite.y)
-            let from = new Phaser.Point(selectedVillage.coords.x, selectedVillage.coords.y)
-            pathfinding.find_path(from, target_position, this.move_through_path, this)
+            findPath(selectedVillage.coords, targetVilCoords)
         }
+
     }else{
         selectedIndicator = game.add.sprite(sprite.x - 10, sprite.y - 8, 'selected');
         isVillageSelected = true;
         initSideBar(sprite)
 
         if(!sprite.owner){
-            let target_position = new Phaser.Point(sprite.x, sprite.y)
-            let from = new Phaser.Point(selectedVillage.coords.x, selectedVillage.coords.y)
-            pathfinding.find_path(from, target_position, this.move_through_path, this)
+            findPath(selectedVillage.coords, targetVilCoords)
         }
     }
-    
 }
 
 function onHoverListener(sprite, event) {
@@ -195,3 +181,49 @@ function removePathSprites(){
     }
 }
 
+function findPath(sourceVillageCoords, targetVillageCoords){
+    sourceVillageCoords = JSON.stringify(sourceVillageCoords)
+    targetVillageCoords = JSON.stringify(targetVillageCoords)
+
+    let csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: 'POST',
+        url: '/game/map/findPath',
+        data: {
+            sourceVillageCoords: sourceVillageCoords,
+            targetVillageCoords: targetVillageCoords,
+            csrfmiddlewaretoken: csrftoken 
+        },
+        success:function(data){
+            console.log(data, "wololo")
+            drawPath(data.path)
+        }
+    })
+}
+
+function drawPath(path){
+    var path_positions;
+    path_positions = [];
+    pathSprites = [];
+    console.log(path, typeof(path), "asdadsads")
+    if (path !== null) {
+        path.forEach(function(path_coord){
+            console.log(path_coord)
+            let path_position = {
+                'x' : path_coord[0],
+                'y' : path_coord[1]
+            }
+            path_positions.push(path_position);
+            const pathSprite = game.add.sprite(path_position.x+12, path_position.y+12, 'pathDot');
+            pathSprite.alpha = 0.65
+            pathSprites.push(pathSprite)
+        
+        })
+        console.log(path, "path")
+        console.log(path_positions, "path positions")
+        const pathLength = pathSprites.length
+        console.log(pathLength, "path length")
+    }else{
+        console.log("you cant travel through sea, you are not jesus!")
+    }
+}

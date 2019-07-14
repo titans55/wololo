@@ -18,6 +18,7 @@ urlpatterns = [
 
     path('game/map', mapView.map, name='map'),
     path('game/<int:village_index>/map', mapView.map),
+    path('game/map/findPath', mapView.find_path), #AJAX CALL
 
     path('game/barracks', barracksView.barracks, name='barracks'),
     path('game/<int:village_index>/barracks', barracksView.barracks, name='barracks'),

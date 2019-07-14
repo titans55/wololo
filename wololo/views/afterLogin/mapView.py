@@ -11,6 +11,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from django.contrib.auth.decorators import login_required
 from wololo.models import Villages, get_public_villages
+from wololo.helperFunctions import calculate_map_pathfinding
 
 db = get_db()
 auth = get_auth()
@@ -53,3 +54,14 @@ def map(request, village_index=None):
     my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
 
     return render(request, 'map.html', {'publicVillages' : json.dumps(public_villages_info), 'myVillages':my_villages, 'data' : data })
+
+@login_required
+def find_path(request):
+    if request.method == "POST":
+        source_vil_coords = json.loads(request.POST.get("sourceVillageCoords"))
+        target_vil_coords = json.loads(request.POST.get("targetVillageCoords"))
+        path = calculate_map_pathfinding(source_vil_coords, target_vil_coords)
+        data = {
+            'path': path
+        }
+        return JsonResponse(data)
