@@ -108,7 +108,9 @@ class Users(AbstractUser):
             village_dict['troops']['inVillage'] = vt.in_village_troops_quantity_json
             village_dict['troops']['total'] = vt.total_troops_quantity_json
             
-            incoming_stranger_troops = TroopMovements.objects.filter(target_village_id = village)
+            incoming_stranger_troops = TroopMovements.objects.filter(target_village = village)
+
+            village_dict['troops']['incomingStrangerTroops'] = {}
             if incoming_stranger_troops:
                 for ist in incoming_stranger_troops:
                     village_dict['troops']['incomingStrangerTroops'][ist.task_id] = {
@@ -119,12 +121,14 @@ class Users(AbstractUser):
                     }
                     
             else:
-                village_dict['troops']['incomingStrangerTroops'] = {}
+                pass
 
-            village_troops_movements = TroopMovements.objects.filter(home_village_id = village)
+            village_troops_movements = TroopMovements.objects.filter(home_village = village)
+
+            village_dict['troops']['onMove']  = {} 
             if village_troops_movements:
                 for vtm in village_troops_movements:
-                    village_dict['troops']['incomingStrangerTroops'][vtm.task_id] = {
+                    village_dict['troops']['onMove'][vtm.task_id] = {
                         "from" : vtm.home_village_id,
                         "to" : vtm.target_village_id,
                         "movementType" : vtm.movement_type,
@@ -134,7 +138,7 @@ class Users(AbstractUser):
                     }
                     
             else:
-                village_dict['troops']['onMove']  = {}       
+                pass   
 
             for buildingName, building in village_dict['buildings'].items():
                 if buildingName == 'resources': 
@@ -602,7 +606,8 @@ class TroopMovements(models.Model):
 
     # Fields
     task_id = models.TextField(max_length=100)
-    arrival_time = models.DateTimeField()
+    arrival_time = models.DateTimeField() #TODO calculate this on save() method
+    movement_duration_seconds = models.PositiveIntegerField()
     moving_troops_json = JSONField(default=dict)
     movement_type = models.CharField(max_length=9) #attack/support
     state = models.CharField(max_length=9) #going/returning

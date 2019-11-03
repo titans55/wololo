@@ -75,3 +75,11 @@ def default_fresh_troops_dict():
             "Catapult": 0
         }
     }
+
+def get_lowest_speed_of_troops(troops):
+    units_config = getGameConfig()['units']
+    speed_list = []
+    for unit_type_name, unit_type in troops.items():
+        for unit_name, unit_quantity in unit_type.items():
+            speed_list.append(units_config[unit_type_name][unit_name]['speed'])
+    return min(speed_list)

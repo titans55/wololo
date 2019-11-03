@@ -108,26 +108,23 @@
                                 {% if currentUser.id != data.targetVillage.village_id %}
                                 <form class="mr-5" action="/game/commandCenter/attack" method="post">
                                     {% csrf_token %}
-                                    <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
                                     <input class="troops-form-input" type="hidden" name="troops" value=""/>
-                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.village_id}}"/>
                                     <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
                                     <button type="submit" class="btn btn-danger">Attack</button>
                                 </form>
                                 <form action="/game/commandCenter/support" method="post">
                                     {% csrf_token %}
-                                    <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
                                     <input class="troops-form-input" type="hidden" name="troops" value=""/>
-                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                    <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.village_id}}"/>
                                     <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
                                     <button type="submit" class="btn btn-success">Support</button>
                                 </form>
                                 {% else %}
                                     <form action="/game/commandCenter/relocateTroops" method="post">
                                         {% csrf_token %}
-                                        <input class="estimatedMinutes-form-input" type="hidden" name="estimatedMinutes" value=""/>
                                         <input class="troops-form-input" type="hidden" name="troops" value=""/>
-                                        <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.id}}"/>
+                                        <input type="hidden" name="fromVillageID" value="{{data.selectedVillage.village_id}}"/>
                                         <input type="hidden" name="targetVillageID" value="{{data.targetVillage.village_id}}"/>
                                         <button type="submit" class="btn btn-success">Relocate Troops</button>
                                     </form>
@@ -150,9 +147,6 @@
 
 
 {% block footerjs %}
-    <script type="text/javascript" src="{% static 'wololo/assets/js/phaser/build/phaser.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'wololo/assets/js/easystar-0.2.3.js' %}"></script>
-    <script type="text/javascript" src="{% static 'wololo/assets/js/Pathfinding.js' %}"></script>
     <script type="text/javascript" src="{% static 'wololo/js/commandCenter.js' %}"></script>
     <script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'wololo/js/profiles/playerProfile.js' %}"></script> -->
