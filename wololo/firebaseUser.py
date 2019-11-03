@@ -5,7 +5,7 @@ import json
 import pytz, datetime
 from celery import current_app
 from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, calculate_points_for_player, getUsernameByUserID, getVillagenameByVillageID
-from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion
+#from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion
 from django.core.serializers.json import DjangoJSONEncoder
 from dateutil import parser
 
@@ -410,7 +410,7 @@ class firebaseUser():
         villageDict = self.getVillageById(village_id)
         return villageDict['troops']['inVillage'][unitType][unitName]
 
-    def trainUnit(self, village_id, unitType, unitName):
+    '''def trainUnit(self, village_id, unitType, unitName):
         village_ref = db.collection('players').document(self.id).collection('villages').document(village_id)
         unitsLeft = self.getUnitsLeft(village_id, unitType, unitName)
         totalUnitsQuantity = self.getTotalUnitsQuantity(village_id, unitType, unitName)
@@ -440,8 +440,9 @@ class firebaseUser():
             village_ref.update({ 
                 'troops.trainingQueue.'+unitType : allQueue
             })
+        '''
             
-    def addToTrainingQueue(self, village_id, chain_id, unitType, unitName, unitsLeft, startedAt, willEndAt):
+    '''def addToTrainingQueue(self, village_id, chain_id, unitType, unitName, unitsLeft, startedAt, willEndAt):
 
         village_ref = db.collection('players').document(self.id).collection('villages').document(village_id)
         village_ref.update({
@@ -453,6 +454,7 @@ class firebaseUser():
                 'willEndAt' : willEndAt
             }])
         })
+    '''
 
 
     def checkTrainingQueueReturnLastOneIfExists(self, village_id, unitType):
