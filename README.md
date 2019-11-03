@@ -9,8 +9,11 @@ Pull the develop (will be created) branch, install prerequisites and requierment
 ### Prerequisites
 
 Install virtualenv: (pip3 install virtualenv) and create your env. (virtualenv yourenvname)
+
 Install rabbitMQ: [Docs](http://www.dropwizard.io/1.0.2/docs/)
+
 Install docker: [Docs](https://docs.docker.com/install/)
+
 Install postgresql: [Docs](https://www.postgresql.org/download/)
 
 ### Installing
