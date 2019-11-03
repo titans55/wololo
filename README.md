@@ -45,10 +45,10 @@ After this, your db is ready for running migrations. so do it.
 python3 manage.py migrate
 ```
 
-You will find wololopostgres.sh file on the project. change the paths according to your file system. then run it.
+You will find exampleInitFile.sh file on the project. change the paths according to your file system. then run it.
 
 ```
-sudo ./wololopostgres.sh
+sudo ./exampleInitFile.sh
 ```
 
 Check opened terminals and give permission to the rabbitMQ and Docker if neccessary. 
