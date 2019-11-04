@@ -1,8 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 from celery import Celery
-import firebase_admin
-from firebase_admin import firestore
-from firebase_admin import credentials
 import datetime
 import json
 from django.core.serializers.json import DjangoJSONEncoder
@@ -10,14 +7,12 @@ import os
 from .initFirestore import get_db
 import pytz
 from DjangoPostgresProject import settings
-print("a")
-print("a")
 import django
 django.setup()
 from wololo.helperFunctions import calculate_points_for_village, getUserIdByVillageId, getResults
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from random import randint
-from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
+#from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
 from wololo.models import Villages, Users
 
 from asgiref.sync import async_to_sync
@@ -111,7 +106,7 @@ def train_unit(self, user_id, village_id, unit_type, unit_name):
         async_to_sync ( channel_layer. group_send ) (
             str(user_id) , { "type" : "notify.user" , "json" : notifyData }
         )
-
+'''
 #battle occures in that function
 @app.task(bind=True, name='wololo.tasks.attack')
 def attack(self, attacker_village_id, defender_village_id, attacker_troops):
@@ -297,8 +292,9 @@ def attack(self, attacker_village_id, defender_village_id, attacker_troops):
     defender_user.insertReport('battle', now, report_content)
     ##send message to both attacker and defender clients
 
+'''
 
-        
+'''   
 @app.task(bind=True, name='wololo.tasks.return_from_attack')
 def return_from_attack(self, target_village_id, home_village_id, returning_troops):
     user_id = getUserIdByVillageId(home_village_id)
@@ -318,3 +314,4 @@ def return_from_attack(self, target_village_id, home_village_id, returning_troop
     print("removed onMove from attacker")
 
     print("TROOPS RETURNED HOME")
+'''

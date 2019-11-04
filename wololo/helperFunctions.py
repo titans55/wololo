@@ -3,12 +3,10 @@ import json
 import os
 import dateutil.parser
 import pytz
-import pyrebase
 from .initFirestore import get_db
 from .commonFunctions import getGameConfig, get_map_data
 import datetime
 import math
-from google.cloud.firestore_v1beta1 import ArrayRemove, ArrayUnion, DELETE_FIELD
 from wololo.models import Users, VillageBuildings, ResourceBuildingDetails, VillageBuildings, Villages
 import numpy as np
 

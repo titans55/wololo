@@ -9,7 +9,7 @@ from wololo.models import Villages, get_public_villages
 import json
 import datetime
 import pytz
-from wololo.tasks import attack
+#from wololo.tasks import attack
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
@@ -62,7 +62,7 @@ def commandCenter(request, village_index=None):
         }
     )
 
-def sendAttack(request):
+'''def sendAttack(request):
     user_id = request.user.id
     user = request.user
     
@@ -93,3 +93,4 @@ def sendAttack(request):
     defenderUser.addIncomingStrangerTroops(task_id, movementDetails)
 
     return redirect('myVillage')
+'''
