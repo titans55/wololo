@@ -12,7 +12,7 @@
     {% include "partials/villageResources.html" %}
 
     <div class = "trainingQueueHolder">
-        {% if data.selectedVillage.troops.trainingQueue.infantry|length > 0 %}
+        {% if infantry_training_queue|length > 0 %}
         <table class="table text-center" id="trainingQueue">
             <thead>
                 <tr>
@@ -22,10 +22,10 @@
                 </tr>
             </thead>
             <tbody class="queueElements">
-                {% for infantryUnit in data.selectedVillage.troops.trainingQueue.infantry %}
+                {% for infantryUnit in infantry_training_queue %}
                     <tr class="queueElement">
-                        <td class="unitsLeft">{{infantryUnit.unitsLeft}} {{infantryUnit.unitName}}</td>
-                        <td class="willEndAt">{{infantryUnit.willEndAt}}</td>
+                        <td class="unitsLeft">{{infantryUnit.units_left}} {{infantryUnit.unit_name}}</td>
+                        <td class="willEndAt">{{infantryUnit.will_end_at}}</td>
                         <td class="timeLeft">X</td>
                     </tr>
                 {%endfor%}

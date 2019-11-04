@@ -45,14 +45,22 @@ def barracks(request, village_index=None):
 
     data = { 
         'selectedVillage': selected_village,
-        'gameConfig' : gameConfig,
-        'unviewedReportExists' : user.is_unviewed_reports_exists,
-        'page' : 'barracks'
+        'gameConfig': gameConfig,
+        'unviewedReportExists': user.is_unviewed_reports_exists,
+        'page': 'barracks',
     }
     data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
     my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
 
-    return render(request, 'buildingPages/barracks.html', {'myVillages':my_villages, 'data' : data })
+    return render(
+        request,
+        'buildingPages/barracks.html',
+        {
+            'myVillages':my_villages,
+            'data' : data,
+            'infantry_training_queue': vil_obj.training_queues.filter(unit_type="infantry").all()
+        }
+    )
 
 
 @login_required
@@ -81,10 +89,12 @@ def trainUnits(request):
         reqiuredIron = gameConfig['units'][unit_type][unit_name]['Cost']['Iron'] * number_of_units_to_train
         reqiuredClay = gameConfig['units'][unit_type][unit_name]['Cost']['Clay'] * number_of_units_to_train
 
+        reqiuredWood, reqiuredIron, reqiuredClay = 0, 0, 0 #FOR DEBUGGING
+        reqiured_time = 10 #FOR DEBUGGING
+
         set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', current_resources['woodCamp']-reqiuredWood, now)
         set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', current_resources['ironMine']-reqiuredIron, now)
         set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', current_resources['clayPit']-reqiuredClay, now)
-        reqiured_time = 10
 
         # 
         # print(vil_obj.village_troops.in_village_troops_quantity_json)

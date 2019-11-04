@@ -175,8 +175,6 @@ class Users(AbstractUser):
     def get_current_resources(self, village_id):
         currentResources = {}
         for resourceBuildingName, rb in gameConfig['buildings']['resources'].items():
-            print(resourceBuildingName, "wololo")
-            print(village_id, "tata")
             resource_building = VillageBuildings.objects.get(village_id = int(village_id), building_name = resourceBuildingName)
             rbd = ResourceBuildingDetails.objects.get(id = str(resource_building.resource_building_detail_id))
             now = datetime.datetime.now(pytz.utc)
