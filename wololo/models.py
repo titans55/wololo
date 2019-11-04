@@ -571,7 +571,7 @@ class BattleReports(models.Model):
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="attack_br", 
     )
-    attacker_battle_result = models.OneToOneField(
+    attacker_battle_result = models.ForeignKey(
         'wololo.BattleResults',
         on_delete=models.CASCADE, related_name="battlereportss", 
     )
@@ -583,7 +583,7 @@ class BattleReports(models.Model):
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="defend_br", 
     )
-    defender_battle_result = models.OneToOneField(
+    defender_battle_result = models.ForeignKey(
         'wololo.BattleResults',
         on_delete=models.CASCADE, related_name="battlereportss_2", 
     )

@@ -302,11 +302,11 @@ def attack(self, attacker_village_id, defender_village_id, attacker_troops):
         defender_village_troops.save()
         ### INSERT REPORTS ###
         attacker_battle_result = BattleResults.objects.create(
-            quantity_and_losses_troops_json = report_content['attacker'],
+            quantity_and_losses_troops_json = report_content['attacker']['units_result'],
             result = report_content['attacker']['result']
         )
         defender_battle_result = BattleResults.objects.create(
-            quantity_and_losses_troops_json = report_content['defender'],
+            quantity_and_losses_troops_json = report_content['defender']['units_result'],
             result = report_content['defender']['result']
         )
         attacker_report = Reports.objects.create(

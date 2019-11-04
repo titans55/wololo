@@ -108,6 +108,7 @@ def sendAttack(request):
         home_village=Villages.objects.get(id=fromVillageID),
         target_village=Villages.objects.get(id=targetVillageID)
     )
+    #TODO remove inVIllage troops add to onMove troops
     # user.addOnMoveTroops(task_id, movementDetails, attackerTroops)
 
     # defenderUser = firebaseUser(getUserIdByVillageId(targetVillageID))
