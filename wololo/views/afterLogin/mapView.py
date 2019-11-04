@@ -31,6 +31,7 @@ def map(request, village_index=None):
     if(selected_village_index is 'outOfList'):
         return redirect('map')
 
+    totalOnMove, totalIncomingStrangerTroops = [], []
     my_villages = user.get_my_villages()
     for village in my_villages:
         for task_id, onMoveElement in village['troops']['onMove'].items():

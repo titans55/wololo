@@ -43,7 +43,7 @@ urlpatterns = [
 
     path('game/commandCenter', commandCenterView.commandCenter, name='commandCenter'), #FORM CALL AND NORMAL VIEW
     path('game/<int:village_index>/commandCenter', commandCenterView.commandCenter),
-    #path('game/commandCenter/attack', commandCenterView.sendAttack), #FORM CALL
+    path('game/commandCenter/attack', commandCenterView.sendAttack), #FORM CALL
 
     #AJAX CALL
     path('game/upgrade', villagesView.upgrade, name='upgrade'),

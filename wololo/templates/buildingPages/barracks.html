@@ -67,7 +67,7 @@
                 <td style="width: 15%">  
                     <input type="number" class="form-control unitsToTrainValue" min="0" unitName="{{infantryUnitName}}">
                     {% if data.selectedVillage.barracks.level < infantryUnit.neededBuildings.barracks.level %}
-                        <a class="dropdown-item" href="/game/{{village.index}}">{{village.villageName}}</a>
+                        <a class="dropdown-item" href="/game/{{village.village_id}}">{{village.villageName}}</a>
                     {% endif %} 
                 </td>
             </tr>

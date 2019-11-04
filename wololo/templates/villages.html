@@ -171,10 +171,10 @@
                                     {% if onMove.movementType == 'attack' %}
                                         
                                         {% if onMove.state == 'going' %}
-                                            Our troops are attacking to {{onMove.target_village_id}}
+                                            Our troops are attacking to {{onMove.to}}
 
                                         {% elif onMove.state == 'returning' %}
-                                            Our troops returning from {{onMove.target_village_id}}
+                                            Our troops returning from {{onMove.to}}
 
                                         {% endif %}
 
