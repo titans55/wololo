@@ -1,20 +1,20 @@
 {
-    "buildings" : {
-        "townCenter" : {
-            "buildingSpeed" : {
-                "0" : 0,
-                "1" : 10,
-                "2" : 13,
-                "3" : 16,
-                "4" : 19,
-                "5" : 22,
-                "6" : 25,
-                "7" : 29,
-                "8" : 32,
-                "9" : 35,
-                "10" : 38
+    "buildings": {
+        "townCenter": {
+            "buildingSpeed": {
+                "0": 0,
+                "1": 10,
+                "2": 13,
+                "3": 16,
+                "4": 19,
+                "5": 22,
+                "6": 25,
+                "7": 29,
+                "8": 32,
+                "9": 35,
+                "10": 38
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -26,7 +26,7 @@
                 "9": 195,
                 "10": 240 
             },
-            "neededPopulation" : {
+            "neededPopulation": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -51,7 +51,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -67,7 +67,7 @@
         },
         "resources":{ 
             "woodCamp": {
-                "upgradeTime" : {
+                "upgradeTime": {
                     "1": 10, 
                     "2": 15, 
                     "3": 25, 
@@ -79,7 +79,7 @@
                     "9": 195,
                     "10": 240  
                 },
-                "neededPopulation" : {
+                "neededPopulation": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -92,7 +92,7 @@
                     "9": 195,
                     "10": 240 
                 },
-                "hourlyProductionByLevel" : {
+                "hourlyProductionByLevel": {
                     "0": 5,
                     "1": 10, 
                     "2": 15, 
@@ -117,7 +117,7 @@
                     "9": {"wood": 2500, "iron":1600, "clay":2500},
                     "10": {"wood": 3000, "iron":1900, "clay":3000} 
                 },
-                "pointByLevel" : {
+                "pointByLevel": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -132,7 +132,7 @@
                 }
             },
             "ironMine": {
-                "upgradeTime" : {
+                "upgradeTime": {
                     "1": 10, 
                     "2": 15, 
                     "3": 25, 
@@ -144,7 +144,7 @@
                     "9": 195,
                     "10": 240  
                 },
-                "neededPopulation" : {
+                "neededPopulation": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -157,7 +157,7 @@
                     "9": 195,
                     "10": 240 
                 },                
-                "hourlyProductionByLevel" : {
+                "hourlyProductionByLevel": {
                     "0": 5,
                     "1": 10, 
                     "2": 15, 
@@ -182,7 +182,7 @@
                     "9": {"wood": 2500, "iron":1600, "clay":2500},
                     "10": {"wood": 3000, "iron":1900, "clay":3000} 
                 },
-                "pointByLevel" : {
+                "pointByLevel": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -196,8 +196,8 @@
                     "10": 240 
                 }
             },
-            "clayPit" : {
-                "upgradeTime" : {
+            "clayPit": {
+                "upgradeTime": {
                     "1": 10, 
                     "2": 15, 
                     "3": 25, 
@@ -209,7 +209,7 @@
                     "9": 195,
                     "10": 240  
                 },
-                "neededPopulation" : {
+                "neededPopulation": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -222,7 +222,7 @@
                     "9": 195,
                     "10": 240 
                 },
-                "hourlyProductionByLevel" : {
+                "hourlyProductionByLevel": {
                     "0": 5,
                     "1": 10, 
                     "2": 15, 
@@ -247,7 +247,7 @@
                     "9": {"wood": 2500, "iron":1600, "clay":2500},
                     "10": {"wood": 3000, "iron":1900, "clay":3000} 
                 },
-                "pointByLevel" : {
+                "pointByLevel": {
                     "0": 0,
                     "1": 10, 
                     "2": 15, 
@@ -263,7 +263,7 @@
             }            
         },
         "storage":{
-            "capacity" : {
+            "capacity": {
                 "1": 500, 
                 "2": 1500, 
                 "3": 2500, 
@@ -275,7 +275,7 @@
                 "9": 19500,
                 "10": 24000 
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -287,7 +287,7 @@
                 "9": 195,
                 "10": 240  
             },
-            "neededPopulation" : {
+            "neededPopulation": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -312,7 +312,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -327,7 +327,7 @@
             }
         },
         "farm":{
-            "populationLimit" : {
+            "populationLimit": {
                 "1": 500, 
                 "2": 1500, 
                 "3": 2500, 
@@ -339,7 +339,7 @@
                 "9": 19500,
                 "10": 24000 
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -363,7 +363,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -378,20 +378,20 @@
             }
         },
         "barracks":{
-            "trainingSpeed" : {
-                "0" : 0,
-                "1" : 10,
-                "2" : 13,
-                "3" : 16,
-                "4" : 19,
-                "5" : 22,
-                "6" : 25,
-                "7" : 29,
-                "8" : 32,
-                "9" : 35,
-                "10" : 38
+            "trainingSpeed": {
+                "0": 0,
+                "1": 10,
+                "2": 13,
+                "3": 16,
+                "4": 19,
+                "5": 22,
+                "6": 25,
+                "7": 29,
+                "8": 32,
+                "9": 35,
+                "10": 38
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -403,7 +403,7 @@
                 "9": 195,
                 "10": 240  
             },
-            "neededPopulation" : {
+            "neededPopulation": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -428,7 +428,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -443,20 +443,20 @@
             }
         },
         "stable":{
-            "trainingSpeed" : {
-                "0" : 0,
-                "1" : 10,
-                "2" : 13,
-                "3" : 16,
-                "4" : 19,
-                "5" : 22,
-                "6" : 25,
-                "7" : 29,
-                "8" : 32,
-                "9" : 35,
-                "10" : 38
+            "trainingSpeed": {
+                "0": 0,
+                "1": 10,
+                "2": 13,
+                "3": 16,
+                "4": 19,
+                "5": 22,
+                "6": 25,
+                "7": 29,
+                "8": 32,
+                "9": 35,
+                "10": 38
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -468,7 +468,7 @@
                 "9": 195,
                 "10": 240  
             },
-            "neededPopulation" : {
+            "neededPopulation": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -493,7 +493,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -508,20 +508,20 @@
             }
         },
         "workshop":{
-            "trainingSpeed" : {
-                "0" : 0,
-                "1" : 10,
-                "2" : 13,
-                "3" : 16,
-                "4" : 19,
-                "5" : 22,
-                "6" : 25,
-                "7" : 29,
-                "8" : 32,
-                "9" : 35,
-                "10" : 38
+            "trainingSpeed": {
+                "0": 0,
+                "1": 10,
+                "2": 13,
+                "3": 16,
+                "4": 19,
+                "5": 22,
+                "6": 25,
+                "7": 29,
+                "8": 32,
+                "9": 35,
+                "10": 38
             },
-            "upgradeTime" : {
+            "upgradeTime": {
                 "1": 10, 
                 "2": 15, 
                 "3": 25, 
@@ -533,7 +533,7 @@
                 "9": 195,
                 "10": 240  
             },
-            "neededPopulation" : {
+            "neededPopulation": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -558,7 +558,7 @@
                 "9": {"wood": 2500, "iron":1600, "clay":2500},
                 "10": {"wood": 3000, "iron":1900, "clay":3000} 
             },
-            "pointByLevel" : {
+            "pointByLevel": {
                 "0": 0,
                 "1": 10, 
                 "2": 15, 
@@ -573,174 +573,174 @@
             }
         }
     },
-    "units" : {
+    "units": {
         "infantry": {
-            "Spearman" : {
-                "Cost" : {
-                    "Wood" : 25,
-                    "Iron" : 10,
-                    "Clay" : 20
+            "Spearman": {
+                "Cost": {
+                    "Wood": 25,
+                    "Iron": 10,
+                    "Clay": 20
                 },
-                "Skills" : {
-                    "Attack" : 1,
-                    "Defence" : 3,
-                    "Cavalry Defence" : 7
+                "Skills": {
+                    "Attack": 1,
+                    "Defence": 3,
+                    "Cavalry Defence": 7
                 },
-                "neededPopulation" : 1,
+                "neededPopulation": 1,
                 "neededBuildings": {
-                    "barracks" : {
-                        "level" : 1
+                    "barracks": {
+                        "level": 1
                     }
                 },
-                "neededTrainingBaseTime" : 5,
-                "speed" : 0.1
+                "neededTrainingBaseTime": 5,
+                "speed": 0.1
             },
-            "Swordsman" : {
-                "Cost" : {
-                    "Wood" : 20,
-                    "Iron" : 30,
-                    "Clay" : 15
+            "Swordsman": {
+                "Cost": {
+                    "Wood": 20,
+                    "Iron": 30,
+                    "Clay": 15
                 },
-                "Skills" : {
-                    "Attack" : 2,
-                    "Defence" : 8,
-                    "Cavalry Defence" : 3
+                "Skills": {
+                    "Attack": 2,
+                    "Defence": 8,
+                    "Cavalry Defence": 3
                 },
-                "neededPopulation" : 1,
+                "neededPopulation": 1,
                 "neededBuildings": {
-                    "barracks" : {
-                        "level" : 3
+                    "barracks": {
+                        "level": 3
                     }
                 },
-                "neededTrainingBaseTime" : 5,
-                "speed" : 0.08
+                "neededTrainingBaseTime": 5,
+                "speed": 0.08
             },
-            "Axeman" : {
-                "Cost" : {
-                    "Wood" : 35,
-                    "Iron" : 10,
-                    "Clay" : 20
+            "Axeman": {
+                "Cost": {
+                    "Wood": 35,
+                    "Iron": 10,
+                    "Clay": 20
                 },
-                "Skills" : {
-                    "Attack" : 11,
-                    "Defence" : 1,
-                    "Cavalry Defence" : 1
+                "Skills": {
+                    "Attack": 11,
+                    "Defence": 1,
+                    "Cavalry Defence": 1
                 },
-                "neededPopulation" : 1,
+                "neededPopulation": 1,
                 "neededBuildings": {
-                    "barracks" : {
-                        "level" : 5
+                    "barracks": {
+                        "level": 5
                     }
                 },
-                "neededTrainingBaseTime" : 6,
-                "speed" : 0.125
+                "neededTrainingBaseTime": 6,
+                "speed": 0.125
             },
-            "Archer" : {
-                "Cost" : {
-                    "Wood" : 35,
-                    "Iron" : 15,
-                    "Clay" : 20
+            "Archer": {
+                "Cost": {
+                    "Wood": 35,
+                    "Iron": 15,
+                    "Clay": 20
                 },
-                "Skills" : {
-                    "Attack" : 4,
-                    "Defence" : 8,
-                    "Cavalry Defence" : 2
+                "Skills": {
+                    "Attack": 4,
+                    "Defence": 8,
+                    "Cavalry Defence": 2
                 },
-                "neededPopulation" : 1,
+                "neededPopulation": 1,
                 "neededBuildings": {
-                    "barracks" : {
-                        "level" : 7
+                    "barracks": {
+                        "level": 7
                     }
                 },
-                "neededTrainingBaseTime" : 7,
-                "speed" : 0.08
+                "neededTrainingBaseTime": 7,
+                "speed": 0.08
             }
         },
         "cavalry":{
-            "Scout" : {
-                "Cost" : {
-                    "Wood" : 25,
-                    "Iron" : 15,
-                    "Clay" : 20
+            "Scout": {
+                "Cost": {
+                    "Wood": 25,
+                    "Iron": 15,
+                    "Clay": 20
                 },
-                "Skills" : {
-                    "Scouting Attack" : 4,
-                    "Scouting Defence" : 8,
-                    "Attack" : 0,
-                    "Defence" : 0,
-                    "Cavalry Defence" : 0
+                "Skills": {
+                    "Scouting Attack": 4,
+                    "Scouting Defence": 8,
+                    "Attack": 0,
+                    "Defence": 0,
+                    "Cavalry Defence": 0
                 },
-                "neededPopulation" : 2,
-                "neededTrainingBaseTime" : 6,
-                "speed" : 0.2
+                "neededPopulation": 2,
+                "neededTrainingBaseTime": 6,
+                "speed": 0.2
             },
-            "Light Cavalry" : {
-                "Cost" : {
-                    "Wood" : 125,
-                    "Iron" : 50,
-                    "Clay" : 75
+            "Light Cavalry": {
+                "Cost": {
+                    "Wood": 125,
+                    "Iron": 50,
+                    "Clay": 75
                 },
-                "Skills" : {
-                    "Attack" : 40,
-                    "Defence" : 5,
-                    "Cavalry Defence" : 5
+                "Skills": {
+                    "Attack": 40,
+                    "Defence": 5,
+                    "Cavalry Defence": 5
                 },
-                "neededPopulation" : 5,
-                "neededTrainingBaseTime" : 25,
-                "speed" : 0.16
+                "neededPopulation": 5,
+                "neededTrainingBaseTime": 25,
+                "speed": 0.16
             },
-            "Heavy Cavalry" : {
-                "Cost" : {
-                    "Wood" : 250,
-                    "Iron" : 375,
-                    "Clay" : 125
+            "Heavy Cavalry": {
+                "Cost": {
+                    "Wood": 250,
+                    "Iron": 375,
+                    "Clay": 125
                 },
-                "Skills" : {
-                    "Attack" : 50,
-                    "Defence" : 40,
-                    "Cavalry Defence" : 60
+                "Skills": {
+                    "Attack": 50,
+                    "Defence": 40,
+                    "Cavalry Defence": 60
                 },
-                "neededPopulation" : 10,
-                "neededTrainingBaseTime" : 50,
-                "speed" : 0.14
+                "neededPopulation": 10,
+                "neededTrainingBaseTime": 50,
+                "speed": 0.14
             }
         },
         "siegeWeapons":{
-            "Ram" : {
-                "Cost" : {
-                    "Wood" : 250,
-                    "Iron" : 50,
-                    "Clay" : 200
+            "Ram": {
+                "Cost": {
+                    "Wood": 250,
+                    "Iron": 50,
+                    "Clay": 200
                 },
-                "Skills" : {
-                    "Wall Attack" : 100,
-                    "Attack" : 2,
-                    "Defence" : 2,
-                    "Cavalry Defence" : 1
+                "Skills": {
+                    "Wall Attack": 100,
+                    "Attack": 2,
+                    "Defence": 2,
+                    "Cavalry Defence": 1
                 },
-                "neededPopulation" : 8,
-                "neededTrainingBaseTime" : 20,
-                "speed" : 0.06
+                "neededPopulation": 8,
+                "neededTrainingBaseTime": 20,
+                "speed": 0.06
             },
-            "Catapult" : {
-                "Cost" : {
-                    "Wood" : 250,
-                    "Iron" : 375,
-                    "Clay" : 500
+            "Catapult": {
+                "Cost": {
+                    "Wood": 250,
+                    "Iron": 375,
+                    "Clay": 500
                 },
-                "Skills" : {
-                    "Wall Attack" : 50,
-                    "Building Attack" : 100,
-                    "Attack" : 50,
-                    "Defence" : 50,
-                    "Cavalry Defence" : 5
+                "Skills": {
+                    "Wall Attack": 50,
+                    "Building Attack": 100,
+                    "Attack": 50,
+                    "Defence": 50,
+                    "Cavalry Defence": 5
                 },
-                "neededPopulation" : 10,
-                "neededTrainingBaseTime" : 60,
-                "speed" : 0.06
+                "neededPopulation": 10,
+                "neededTrainingBaseTime": 60,
+                "speed": 0.06
             }
         },
-        "folkHero" : {
+        "folkHero": {
 
         }
     }
