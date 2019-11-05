@@ -209,7 +209,7 @@ class Users(AbstractUser):
             vb.upgrading_details_id = ud
         else :
             vb = VillageBuildings.objects.get(building_name = building_path, village_id = village_id)
-            ud = UpgradingDetails.objects.update_or_create(
+            ud = UpgradingDetails.objects.create(
                 task_id = task_id,
                 started_upgrading_at = now,
                 will_be_upgraded_at = willEnd,

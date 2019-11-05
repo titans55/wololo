@@ -127,7 +127,7 @@ def upgrade(request):
                 'newResources' : newResources
             }
             if( '.' not in building_path):
-                data['newBuilding'] = user.myVillages[selected_village_index]['buildings'][building_path]
+                data['newBuilding'] = user.get_my_villages()[selected_village_index]['buildings'][building_path]
             
 
             print("upgrading")
