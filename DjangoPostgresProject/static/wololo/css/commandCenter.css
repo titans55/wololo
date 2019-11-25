@@ -1,0 +1,22 @@
+.inVillageTroopMarker{
+    font-weight: bold;
+}
+.inVillageTroopMarker:hover { 
+    color: red;
+    cursor: pointer;
+}
+.inVillageTroopMarker.disabled { 
+    color: gray;
+}
+.inVillageTroopMarker.disabled:hover { 
+    color: gray;
+    cursor: default;
+}
+
+span.input-group-text {
+    width: 6.5rem;
+}
+
+input.troopsToSend {
+    width: 4rem;
+}

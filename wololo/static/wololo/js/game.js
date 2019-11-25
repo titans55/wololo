@@ -17,9 +17,13 @@ function preload() {
     // game.load.spritesheet('selected', '../static/wololo/mapAssets/sprites/selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
     game.load.image("tiles", " http://localhost:8000/static/wololo/mapAssets/tilesets/overworld_tileset_grass.png");
     game.load.tilemap('map', ' http://localhost:8000/static/wololo/mapAssets/tilemaps/mapv3.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('castle', ' http://localhost:8000/static/wololo/mapAssets/sprites/castle.png', { frameWidth: 48, frameHeight: 48 });
-    game.load.spritesheet('pathDot', ' http://localhost:8000/static/wololo/mapAssets/sprites/pathDot.png', { frameWidth: 16, frameHeight: 16 });
-    game.load.spritesheet('selected', ' http://localhost:8000/static/wololo/mapAssets/sprites/selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
+    const spriteRoot = 'http://localhost:8000/static/wololo/mapAssets/sprites/'
+    
+    game.load.spritesheet('tr1', spriteRoot + 'cultures/turkish/1-48.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('tr2', spriteRoot + 'cultures/turkish/2-48.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('castle', spriteRoot + 'castle.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('pathDot', spriteRoot + 'pathDot.png', { frameWidth: 16, frameHeight: 16 });
+    game.load.spritesheet('selected', spriteRoot + 'selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
 }
 
 function create() {
@@ -58,7 +62,14 @@ function loadVillages(infos) {
     tile_dimensions = new Phaser.Point(map.tileWidth, map.tileHeight);
     infos.forEach(function(element) {
         if(element.playerName != ''){
-            sprite = game.add.sprite(element.coords.x, element.coords.y, 'castle');
+            let villageImage;
+            if(element.points>200){
+                villageImage = 'tr2'
+            }else{
+                villageImage = 'tr1'
+            }
+
+            sprite = game.add.sprite(element.coords.x, element.coords.y, villageImage);
             sprite.village_id = element.village_id;
             sprite.user_id = element.user_id;
             sprite.owner = element.owner ? 'yours' : ''

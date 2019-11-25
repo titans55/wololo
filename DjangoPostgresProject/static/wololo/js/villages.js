@@ -1,87 +1,137 @@
 "use strict";
-var village_id
 var gameConfigs = JSON.parse(($("#gameConfigData").attr("data")).replace(/'/g, '"'))
 var villageData = JSON.parse(($("#villageDataJSON").attr("data")).replace(/'/g, '"'))
 $(function(){
     // data = JSON.parse(data.replace(/'/g, '"'))
-    village_id = villageData.id
     initToggleVisualVillageSwitch()
     initVillage()
-    console.log(villageData)
 })
 
 function initVillage(){
     initUpgradeButtons()
+    initCancelButtons()
     displayNeededResourcesAndTimeForUpgrading()
-    
 }
 
 
 
 function initUpgradeButtons(){
 
+    let csrftoken = getCookie('csrftoken');
 
+    $(".upgrade").each(function(){
+        if(!$(this).data('click-init')){
+            $(this).data('click-init', true)
+            $(this).on('click', function(){
+                let firingTime = new Date() //now
+                let building_path = $(this).attr('id')
+                $.ajax({
+                    type: 'POST',
+                    url: '/game/upgrade',
+                    data: {
+                        building_path: building_path,
+                        village_id: villageData.village_id,
+                        firingTime: firingTime,
+                        csrfmiddlewaretoken: csrftoken 
+                    },
+                    success:function(data){
+                        if(data['result'] == 'Success'){
+                            console.log(data['newResources'])
+
+                            if(!building_path.includes('.')){
+                                villageData.buildings[building_path] = data['newBuilding']
+                            }
+                            console.log(data['newResources'])
+                            villageData.buildings.resources = data['newResources']
+
+                            let targetRow = getTargetBuildingRow(building_path)
+                            targetRow.find(".buildingDetailsSection").html(getProgressBarHtml(building_path))
+                            targetRow.find(".upgradeOrCancelBtn").html(getCnclBtnHtml(building_path))
+                            initProgressBar(building_path)
+                            initCancelButtons()
+
+                        }else if(data['result'] == 'Fail'){
+                            // alert("Fail")
+                            console.log("WOLOLO")
+                            $('#insufficentResources').modal('show')
+                        }
+            
+                    }
+                })
+            })
+        }
+    });
+}
+
+function initCancelButtons(){
 
     let csrftoken = getCookie('csrftoken');
-    
-    $(".upgrade").on('click', function(){
-        let now = new Date()
-        let building_path = $(this).attr('id')
-        $.ajax({
-            type: 'POST',
-            url: '/game/upgrade',
-            data: {
-                building_path: building_path,
-                village_id: village_id,
-                firingTime: now,
-                csrfmiddlewaretoken: csrftoken 
-            },
-            success:function(data){
 
-                if(data == 'Success'){
-                    
-                }else if(data == 'Fail'){
-                    // alert("Fail")
-                    console.log("WOLOLO")
-                    $('#insufficentResources').modal('show')
-                }
-    
-            }
-        })
+    $(".cancelUpgrade").each(function(){
+        if(!$(this).data('click-init')){
+            $(this).data('click-init', true)
+            $(this).on('click', function(){
+                let firingTime = new Date() //now
+                let building_path = $(this).attr('id')
+                $.ajax({
+                    type: 'POST',
+                    url: '/game/cancelUpgrade',
+                    data: {
+                        building_path: building_path,
+                        village_id: villageData.village_id,
+                        firingTime: firingTime,
+                        csrfmiddlewaretoken: csrftoken 
+                    },
+                    success:function(data){
+                        if(data['result'] == 'Success'){
+                            console.log(data['newResources'])
+
+                            // if(!building_path.includes('.')){
+                            //     villageData.buildings[building_path] = data['newBuilding']
+                            // }
+                            villageData.buildings.resources = data['newResources']
+
+                            let targetRow = getTargetBuildingRow(building_path)
+                            targetRow.find(".buildingDetailsSection").html(getUpgReqHtml())
+                            fillUpgReq(building_path)
+                            targetRow.find(".upgradeOrCancelBtn").html(getUpgBtnHtml())
+                            initUpgradeButtons()
+
+
+                        }else if(data['result'] == 'Fail'){
+                            // alert("Fail")
+                            // console.log("WOLOLO")
+                            // $('#insufficentResources').modal('show')
+                        }
+            
+                    }
+                })
+            })
+        }
     });
 }
 
 function displayNeededResourcesAndTimeForUpgrading(){
-    let speedPercantageOfTownCenter = gameConfigs.buildings.townCenter.buildingSpeed[villageData.townCenter.level]
+    let speedPercantageOfTownCenter = gameConfigs.buildings.townCenter.buildingSpeed[villageData.buildings.townCenter.level]
     //upgrading costs
     $('.upgradeBuildings').each(function(){
         let buildingName = $(this).attr('buildingName')
-        let buildingLevel = String(parseInt(villageData[String(buildingName)].level) + 1)
-        let neededResources = gameConfigs.buildings[String(buildingName)].upgradingCosts[buildingLevel]
-        let mins = gameConfigs.buildings[String(buildingName)].upgradeTime[buildingLevel]
-        if(buildingName!='townCenter') mins = lowerByPercantage(mins, speedPercantageOfTownCenter)
-        let neededTime = calculateTimeFromMinutes(mins)
-        $(this).find(".neededWood").html(neededResources.wood)
-        $(this).find(".neededIron").html(neededResources.iron)
-        $(this).find(".neededClay").html(neededResources.clay)
-        $(this).find(".neededTime").html(neededTime)
+
+        if(villageData.buildings[String(buildingName)].upgrading.state == 'true'){
+            initProgressBar(buildingName)
+        }else{
+            fillUpgReq(buildingName)
+        }
     })
     $('.upgradeResources').each(function(){
-        let resourceBuilding = $(this).attr('buildingName')
+        let resourceBuildingName = $(this).attr('buildingName')
         // let resourceType = $(this).attr('resourceType')
-        let buildingLevel = String(parseInt(villageData.resources[String(resourceBuilding)].level) + 1)
-        let neededResources = gameConfigs.buildings.resources[String(resourceBuilding)].upgradingCosts[buildingLevel]
-        let mins = gameConfigs.buildings.resources[String(resourceBuilding)].upgradeTime[buildingLevel]
-        mins = lowerByPercantage(mins, speedPercantageOfTownCenter)
-        let neededTime = calculateTimeFromMinutes(mins)
-        $(this).find(".neededWood").html(neededResources.wood)
-        $(this).find(".neededIron").html(neededResources.iron)
-        $(this).find(".neededClay").html(neededResources.clay)
-        $(this).find(".neededTime").html(neededTime)
+        if(villageData.buildings.resources[String(resourceBuildingName)].upgrading.state == 'true'){
+            initProgressBar('resources.'+resourceBuildingName)
+        }else{
+            fillUpgReq("resources."+resourceBuildingName)
+        }
     })
-
-    //upgrading times
-
 }
 
 
@@ -90,10 +140,10 @@ function initSwitchVillageDropdownButton(){
 }
 
 function initToggleVisualVillageSwitch(){
-    let textBasedVillageContent = $(".village-content").html()
     $("#toggleVisualVillage").val('off')
 
     $(".toggleVisualVillage").on("change",function(){
+        if(!textBasedVillageContent){let textBasedVillageContent = $(".village-content").html()}
         ($("#toggleVisualVillage").val() == 'on' ? $("#toggleVisualVillage").val('off')   : $("#toggleVisualVillage").val('on') )
         console.log($("#toggleVisualVillage").val())
 
@@ -105,4 +155,14 @@ function initToggleVisualVillageSwitch(){
             initVillage()
         }
     })
+}
+
+function getCnclBtnHtml(building_path){
+    const cnclBtnHtml = '<button class="cancelUpgrade btn btn-danger" id="'+building_path+'">Cancel</button>';
+    return cnclBtnHtml;
+}
+
+function getUpgrdBtnHtml(building_path){
+    const upgrdBtnHtml = '<button class="upgrade btn btn-primary" id="'+building_path+'">Upgrade</button>';
+    return upgrdBtnHtml;
 }

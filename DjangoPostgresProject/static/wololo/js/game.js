@@ -4,6 +4,7 @@ var selectedVillage = JSON.parse(($('.selected-village').attr('data')).replace(/
 
 var winW = document.body.offsetWidth;
 var winH = document.body.offsetHeight;
+var pathfinding
 
 game = new Phaser.Game(winW / 2, winH / 3 * 2, Phaser.AUTO, 'game-container', { preload: preload, create: create, update: update });
 
@@ -14,30 +15,21 @@ function preload() {
     // game.load.spritesheet('castle', '../static/wololo/mapAssets/sprites/castle.png', { frameWidth: 48, frameHeight: 48 });
     // game.load.spritesheet('pathDot', '../static/wololo/mapAssets/sprites/pathDot.png', { frameWidth: 16, frameHeight: 16 });
     // game.load.spritesheet('selected', '../static/wololo/mapAssets/sprites/selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
-    game.load.image("tiles", " http://titans55.pythonanywhere.com/static/wololo/mapAssets/tilesets/overworld_tileset_grass.png");
-    game.load.tilemap('map', ' http://titans55.pythonanywhere.com/static/wololo/mapAssets/tilemaps/mapv3.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('castle', ' http://titans55.pythonanywhere.com/static/wololo/mapAssets/sprites/castle.png', { frameWidth: 48, frameHeight: 48 });
-    game.load.spritesheet('pathDot', ' http://titans55.pythonanywhere.com/static/wololo/mapAssets/sprites/pathDot.png', { frameWidth: 16, frameHeight: 16 });
-    game.load.spritesheet('selected', ' http://titans55.pythonanywhere.com/static/wololo/mapAssets/sprites/selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
+    game.load.image("tiles", " http://localhost:8000/static/wololo/mapAssets/tilesets/overworld_tileset_grass.png");
+    game.load.tilemap('map', ' http://localhost:8000/static/wololo/mapAssets/tilemaps/mapv3.json', null, Phaser.Tilemap.TILED_JSON);
+    const spriteRoot = 'http://localhost:8000/static/wololo/mapAssets/sprites/'
+    
+    game.load.spritesheet('tr1', spriteRoot + 'cultures/turkish/on.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('tr2', spriteRoot + 'cultures/turkish/2.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('castle', spriteRoot + 'castle.png', { frameWidth: 48, frameHeight: 48 });
+    game.load.spritesheet('pathDot', spriteRoot + 'pathDot.png', { frameWidth: 16, frameHeight: 16 });
+    game.load.spritesheet('selected', spriteRoot + 'selection-circle_1_64x64.png', { frameWidth: 64, frameHeight: 64 });
 }
 
 function create() {
     createMap();
     loadVillages(infos);
     initSwitchVillage()
-    
-    console.log(infos)
-    // initialize pathfinding
-
-    // let targetX = 112
-    // let targetY = 384
-    // let fromX = 0
-    // let fromY = 0
-    // let target_position = new Phaser.Point(targetX, targetY)
-    // let from = new Phaser.Point(fromX, fromY)
-    
-    // this.pathfinding.find_path(from, target_position, this.move_through_path, this)
-  
 }
 
 function update(time, delta) {
@@ -68,25 +60,41 @@ function createMap() {
 function loadVillages(infos) {
     var sprite
     tile_dimensions = new Phaser.Point(map.tileWidth, map.tileHeight);
-    pathfinding = this.game.plugins.add(PathfindingExample.Pathfinding, map.layers[1].data, [-1], tile_dimensions);
     infos.forEach(function(element) {
-        sprite = game.add.sprite(element.coords.x, element.coords.y, 'castle');
-        sprite.village_id = element.village_id;
-        sprite.user_id = element.user_id;
-        sprite.owner = element.owner ? 'yours' : ''
-        sprite.villageName = element.villageName;
-        sprite.playerName = element.playerName;
-        sprite.x = element.coords.x;
-        sprite.y = element.coords.y;
-        sprite.inputEnabled = true;
-        sprite.events.onInputDown.add(onClickListener, sprite);
-        sprite.events.onInputOver.add(onHoverListener, sprite);
-        sprite.events.onInputOut.add(onOutListener, sprite);
+        if(element.playerName != ''){
+            let villageImage;
+            if(element.villagePoints>200){
+                villageImage = 'tr2'
+            }else{
+                villageImage = 'tr1'
+            }
+
+            sprite = game.add.sprite(element.coords.x, element.coords.y, villageImage);
+            sprite.village_id = element.village_id;
+            sprite.user_id = element.user_id;
+            sprite.owner = element.owner ? 'yours' : ''
+            sprite.villageName = element.villageName;
+            sprite.playerName = element.playerName;
+            sprite.villagePoints = element.points
+            sprite.village_id = element.village_id
+            sprite.player_id = element.user_id
+            sprite.x = element.coords.x;
+            sprite.y = element.coords.y;
+            sprite.inputEnabled = true;
+            sprite.events.onInputDown.add(onClickListener, sprite);
+            sprite.events.onInputOver.add(onHoverListener, sprite);
+            sprite.events.onInputOut.add(onOutListener, sprite);
+        }
     })
 }
 
 function onClickListener(sprite) {
     console.log(selectedVillage)
+    targetVilCoords = {
+        'x' : sprite.x,
+        'y' : sprite.y
+    }
+    
     if (isVillageSelected) {
         console.log(selectedIndicator)
         selectedIndicator.kill();
@@ -94,25 +102,20 @@ function onClickListener(sprite) {
         selectedIndicator = game.add.sprite(sprite.x - 10, sprite.y - 8, 'selected');
         isVillageSelected = true;
         initSideBar(sprite)
-
         removePathSprites()
         if(!sprite.owner){
-            let target_position = new Phaser.Point(sprite.x, sprite.y)
-            let from = new Phaser.Point(selectedVillage.coords.x, selectedVillage.coords.y)
-            pathfinding.find_path(from, target_position, this.move_through_path, this)
+            findPath(selectedVillage.coords, targetVilCoords)
         }
+
     }else{
         selectedIndicator = game.add.sprite(sprite.x - 10, sprite.y - 8, 'selected');
         isVillageSelected = true;
         initSideBar(sprite)
 
         if(!sprite.owner){
-            let target_position = new Phaser.Point(sprite.x, sprite.y)
-            let from = new Phaser.Point(selectedVillage.coords.x, selectedVillage.coords.y)
-            pathfinding.find_path(from, target_position, this.move_through_path, this)
+            findPath(selectedVillage.coords, targetVilCoords)
         }
     }
-    
 }
 
 function onHoverListener(sprite, event) {
@@ -163,8 +166,11 @@ function initSideBar(sprite){
     // $("#villageOverview").show()
     $("#villageOverview").removeClass("d-none")
     $("#villageOverview").addClass("animated")
-    $("#villageOverview").find(".card-title").html(sprite.villageName)
-    $("#villageOverview").find(".card-text").html("Belongs to "+ sprite.playerName)
+    $("#villageOverview").find(".card-title").html("<a href='/game/villages/"+sprite.village_id+"'>"+ sprite.villageName +"</a>")
+    $("#villageOverview").find(".card-text")
+        .html("Belongs to <a href='/game/players/"+sprite.player_id+"'>"+ sprite.playerName +"</a>")
+            .append("<br>"+
+                "Village Points = " + sprite.villagePoints)
 }
 
 function initSwitchVillage(){
@@ -183,5 +189,52 @@ function removePathSprites(){
             sprite.kill()
             console.log(sprite, "killing")
         });
+    }
+}
+
+function findPath(sourceVillageCoords, targetVillageCoords){
+    sourceVillageCoords = JSON.stringify(sourceVillageCoords)
+    targetVillageCoords = JSON.stringify(targetVillageCoords)
+
+    let csrftoken = getCookie('csrftoken');
+    $.ajax({
+        type: 'POST',
+        url: '/game/map/findPath',
+        data: {
+            sourceVillageCoords: sourceVillageCoords,
+            targetVillageCoords: targetVillageCoords,
+            csrfmiddlewaretoken: csrftoken 
+        },
+        success:function(data){
+            console.log(data, "wololo")
+            drawPath(data.path)
+        }
+    })
+}
+
+function drawPath(path){
+    var path_positions;
+    path_positions = [];
+    pathSprites = [];
+    console.log(path, typeof(path), "asdadsads")
+    if (path !== null) {
+        path.forEach(function(path_coord){
+            console.log(path_coord)
+            let path_position = {
+                'x' : path_coord[0],
+                'y' : path_coord[1]
+            }
+            path_positions.push(path_position);
+            const pathSprite = game.add.sprite(path_position.x+12, path_position.y+12, 'pathDot');
+            pathSprite.alpha = 0.65
+            pathSprites.push(pathSprite)
+        
+        })
+        console.log(path, "path")
+        console.log(path_positions, "path positions")
+        const pathLength = pathSprites.length
+        console.log(pathLength, "path length")
+    }else{
+        console.log("you cant travel through sea, you are not jesus!")
     }
 }
