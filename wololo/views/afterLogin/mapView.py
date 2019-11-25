@@ -2,7 +2,6 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from wololo.initFirestore import get_db, get_auth
-from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 import urllib.request
 import urllib.error

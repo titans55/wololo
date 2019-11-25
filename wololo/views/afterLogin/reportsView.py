@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect
-from wololo.firebaseUser import firebaseUser
 import urllib.request
 import urllib.error
 from django.contrib.auth.decorators import login_required
 from wololo.commonFunctions import getGameConfig, getVillageIndex
-from wololo.helperFunctions import getUsernameByUserID, getVillagenameByVillageID
 from wololo.models import Reports
 import datetime
 from django.core.serializers.json import DjangoJSONEncoder

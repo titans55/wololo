@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from wololo.tasks import schedule_upgrade_building
 from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, getRequiredTimeForUpgrade
-from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 import urllib.request
 import urllib.error

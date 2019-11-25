@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from wololo.initFirestore import get_db, get_auth
-from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig
 import urllib.request
 import urllib.error

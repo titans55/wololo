@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from wololo.tasks import train_unit
 from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource
 from wololo.initFirestore import get_db, get_auth
-from wololo.firebaseUser import firebaseUser
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from wololo.models import Villages
 import urllib.request

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from wololo.firebaseUser import firebaseUser
 import urllib.request
 import urllib.error
 from django.contrib.auth.decorators import login_required
