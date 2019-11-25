@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from wololo.initFirestore import get_db, get_auth
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 import urllib.request
 import urllib.error
@@ -12,8 +11,6 @@ from django.contrib.auth.decorators import login_required
 from wololo.models import Villages, get_public_villages
 from wololo.helperFunctions import calculate_map_pathfinding
 
-db = get_db()
-auth = get_auth()
 gameConfig = getGameConfig()
 
 @login_required

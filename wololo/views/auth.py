@@ -2,15 +2,12 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.contrib import messages
-from wololo.initFirestore import get_db, get_auth
 from wololo.commonFunctions import getGameConfig
 import urllib.request
 import urllib.error
 
 from django.contrib.auth import authenticate, login
 
-db = get_db()
-# auth = get_auth()
 gameConfig = getGameConfig()
 
 def createAccount(request):

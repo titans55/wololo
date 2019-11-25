@@ -4,7 +4,6 @@ import datetime
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 import os
-from .initFirestore import get_db
 import pytz
 from DjangoPostgresProject import settings
 import django
@@ -19,7 +18,6 @@ from django.db import transaction
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-db = get_db()
 gameConfig = getGameConfig()
 
 # set the default Django settings module for the 'celery' program.

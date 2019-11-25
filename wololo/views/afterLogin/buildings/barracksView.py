@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from wololo.tasks import train_unit
 from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource
-from wololo.initFirestore import get_db, get_auth
 from wololo.commonFunctions import getGameConfig, getVillageIndex
 from wololo.models import Villages
 import urllib.request
@@ -17,8 +16,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
-db = get_db()
-auth = get_auth()
 gameConfig = getGameConfig()
 
 @login_required    

@@ -2,8 +2,6 @@ from channels.generic.websocket import WebsocketConsumer, AsyncConsumer, AsyncJs
 import json
 from asgiref.sync import async_to_sync
 from django.conf import settings
-from .initFirestore import get_auth
-auth = get_auth()
 class ChatConsumer(WebsocketConsumer):
     def connect ( self ) :
         # Connects the channel named `self.channel_name`
