@@ -5,21 +5,18 @@ var villageData = JSON.parse(($("#villageDataJSON").attr("data")).replace(/'/g, 
 
 $(function(){
     // data = JSON.parse(data.replace(/'/g, '"'))
-    village_id = villageData.id
+    village_id = villageData.village_id
     incrementOfResorcesByTime()
     calculatePopulationAndWrite()
 })
 
 function incrementOfResorcesByTime(){
-    //console.log(gameConfigs.buildings.resources, villageData.resources)
 
     let woodDate = moment(villageData.buildings.resources.woodCamp.lastInteractionDate).format()
     let ironDate = moment(villageData.buildings.resources.ironMine.lastInteractionDate).format()
     let clayDate = moment(villageData.buildings.resources.clayPit.lastInteractionDate).format()
-    console.log(woodDate, ironDate, clayDate)
 
     let storageCapacity = gameConfigs.buildings.storage.capacity[villageData.buildings.storage.level]
-    // console.log(woodDate)
     tick()
     setInterval(() => {
         tick()
@@ -89,6 +86,8 @@ function calculatePopulationAndWrite(){
         }
     }
     
-    console.log(usedPopulation,"wololo")
     $("#population").html(usedPopulation + " / " + farmLimit)
+    if(usedPopulation>=farmLimit){
+        $("#population").addClass("text-danger")
+    }
 }
