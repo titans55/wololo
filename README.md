@@ -28,7 +28,7 @@ virtualenv yourenvname
 Install modules:
 
 ```
-pip3 install requierments.txt
+pip3 install -r requirements.txt
 ```
 
 Log in to your psql and create database for migration:
