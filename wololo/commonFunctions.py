@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 
 def getGameConfig():
     script_dir = os.path.dirname(__file__)
-    file_path = os.path.join(script_dir, 'gameConfig.json')
+    file_path = os.path.join(script_dir, 'game-config/gameConfig.json')
     with open(file_path, 'r') as f:
         gameConfig = json.load(f)
     return gameConfig

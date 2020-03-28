@@ -305,6 +305,9 @@ class Villages(models.Model):
     def get_update_url(self):
         return reverse('wololo_villages_update', args=(self.pk,))
 
+    def _setup_village(self):
+        pass
+
     def train_unit(self, unit_type, unit_name):
         #TODO check if population limit is not reached
         

@@ -8,8 +8,8 @@ from wololo.views.afterLogin.profiles import playerProfileView, villageProfileVi
 from wololo.views import auth
 urlpatterns = [
     path('', landingView.landingPage, name='landingPage'),
-    path('register', registerView.registerPage, name='registerPage'),
-    path('createAccount', auth.createAccount, name='createAccount'), #FORM CALL
+    path('register', registerView.register, name='register'),
+    path('create_account', auth.create_account, name='create_account'), #FORM CALL
     path('game/selectRegion', selectingRegionView.selectRegionOnFirstLoginView, name='selectRegion'),
 
 

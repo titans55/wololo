@@ -14,16 +14,19 @@
                 <h1 class="title">JOIN TO THE ADVENTURE</h1>
                 <hr />
             </div>
-        </div> 
+        </div>
         <div class="main-login main-center">
-            <form action="/createAccount" method="post" class="form-horizontal">
+            <form class="form-horizontal" action="{% url 'register' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="email" class="cols-sm-2 control-label">Your Email</label>
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-envelope fa" aria-hidden="true"></i></span>
-                            <input type="text" class="form-control" name="email" id="email"  placeholder="Enter your Email"/>
+                            {{form.email}}
+                        </div>
+                        <div class="text-danger">
+                            {{form.email.errors}}
                         </div>
                     </div>
                 </div>
@@ -32,8 +35,10 @@
                     <label for="username" class="cols-sm-2 control-label">Username</label>
                     <div class="cols-sm-10">
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
-                            <input type="text" class="form-control" name="username" id="username"  placeholder="Enter your Username"/>
+                            {{form.username}}
+                        </div>
+                        <div class="text-danger">
+                            {{form.username.errors}}
                         </div>
                     </div>
                 </div>
@@ -43,7 +48,10 @@
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                            <input type="password" class="form-control" name="password" id="password"  placeholder="Enter your Password"/>
+                            {{form.password1}}
+                        </div>
+                        <div class="text-danger">
+                            {{form.password1.errors}}
                         </div>
                     </div>
                 </div>
@@ -53,7 +61,10 @@
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                            <input type="password" class="form-control" name="confirm" id="confirm"  placeholder="Confirm your Password"/>
+                            {{form.password2}}
+                        </div>
+                        <div class="text-danger">
+                            {{form.password2.errors}}
                         </div>
                     </div>
                 </div>
@@ -76,7 +87,8 @@
     </div>
     <div class="col-md-5  col-lg-5" style="margin-top:100px ">
         <div class="text-center" style="max-width:350px;margin:0 auto">
-            <a class="btn btn-block btn-social btn-facebook" href="../auth/?provider=Facebook" style="margin-bottom:9px">
+            <a class="btn btn-block btn-social btn-facebook" href="../auth/?provider=Facebook"
+                style="margin-bottom:9px">
                 <i class="fa fa-facebook"></i> Register with Facebook
             </a>
             <a class="btn btn-block btn-social btn-google" href="../auth/?provider=Google" style="margin-bottom:9px">
