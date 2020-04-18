@@ -46,6 +46,11 @@ class VillagesAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
+class VillageBuildingsInlineAdmin(admin.TabularInline):
+    model = VillageBuildings
+    fields = ['village']
+
+
 class VillagesAdmin(admin.ModelAdmin):
     form = VillagesAdminForm
     list_display = ['id', 'village_name',
@@ -54,6 +59,7 @@ class VillagesAdmin(admin.ModelAdmin):
                     'coords_y', 'points', 'region'
                     ]
     readonly_fields = ['id']
+    inlines = [VillageBuildingsInlineAdmin]
 
     actions = ['create_village_buildings_and_troops']
 
@@ -125,6 +131,7 @@ class RegionsAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     readonly_fields = ['id']
 
+
 admin.site.register(Regions, RegionsAdmin)
 
 
@@ -140,6 +147,7 @@ class VillageTroopsAdmin(admin.ModelAdmin):
     list_display = ['in_village_troops_quantity_json',
                     'on_move_troops_quantity_json', 'total_troops_quantity_json']
     # readonly_fields = ['in_village_troops_quantity', 'on_move_troops_quantity', 'total_troops_quantity']
+
 
 admin.site.register(VillageTroops, VillageTroopsAdmin)
 
@@ -157,6 +165,7 @@ class TrainingQueueAdmin(admin.ModelAdmin):
                     'units_left', 'started_at', 'will_end_at']
     # readonly_fields = ['chain_id', 'unit_name', 'unit_type', 'units_left', 'started_at', 'will_end_at']
 
+
 admin.site.register(TrainingQueue, TrainingQueueAdmin)
 
 
@@ -173,6 +182,7 @@ class ReportsAdmin(admin.ModelAdmin):
                     'created_at', 'sended_to_user', 'content']
     readonly_fields = ['id']
 
+
 admin.site.register(Reports, ReportsAdmin)
 
 
@@ -187,6 +197,7 @@ class BattleResultsAdmin(admin.ModelAdmin):
     form = BattleResultsAdminForm
     list_display = ['id', 'quantity_and_losses_troops_json']
     readonly_fields = ['id']
+
 
 admin.site.register(BattleResults, BattleResultsAdmin)
 
@@ -220,6 +231,7 @@ class TroopMovementsAdmin(admin.ModelAdmin):
                     'state', 'arrival_time', 'moving_troops_json']
     # readonly_fields = ['task_id', 'arrival_time', 'moving_troops_json']
 
+
 admin.site.register(TroopMovements, TroopMovementsAdmin)
 
 
@@ -235,6 +247,7 @@ class VillageBuildingsAdmin(admin.ModelAdmin):
     list_display = ['id', 'building_name', 'village', 'level', 'is_upgrading',
                     'upgrading_details_id', 'is_resource_building', 'resource_building_detail_id']
     # readonly_fields = ['building_name', 'is_upgrading', 'is_resource_building']
+
 
 admin.site.register(VillageBuildings, VillageBuildingsAdmin)
 
@@ -252,6 +265,7 @@ class UpgradingDetailsAdmin(admin.ModelAdmin):
                     'started_upgrading_at', 'will_be_upgraded_at']
     readonly_fields = ['id']
 
+
 admin.site.register(UpgradingDetails, UpgradingDetailsAdmin)
 
 
@@ -264,8 +278,16 @@ class ResourceBuildingDetailsAdminForm(forms.ModelForm):
 
 class ResourceBuildingDetailsAdmin(admin.ModelAdmin):
     form = ResourceBuildingDetailsAdminForm
-    list_display = ['id', 'last_interaction_date', 'sum']
+    list_display = ['id', 'village_name',
+                    'building_name', 'last_interaction_date', 'sum']
     readonly_fields = ['id']
+    inlines = [VillageBuildingsInlineAdmin]
+
+    def village_name(self, obj):
+        return obj.village_building.village.village_name
+
+    def building_name(self, obj):
+        return obj.village_building.building_name
+
 
 admin.site.register(ResourceBuildingDetails, ResourceBuildingDetailsAdmin)
-
