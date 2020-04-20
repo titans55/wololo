@@ -8,7 +8,7 @@ class RegisterForm(UserCreationForm):
 
     username = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'})
-    )  # ignored
+    )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
@@ -29,7 +29,5 @@ class RegisterForm(UserCreationForm):
         """
 
         cleaned_data = super(UserCreationForm, self).clean(*args, **kwargs)
-        if 'email' in cleaned_data:
-            cleaned_data['username'] = cleaned_data['email']
 
         return cleaned_data
