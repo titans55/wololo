@@ -11,6 +11,7 @@ import pytz
 from celery import chain
 from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 
 gameConfig = getGameConfig()
 
@@ -104,36 +105,37 @@ def upgrade(request):
         iron_total = current_resources['ironMine']
 
         if(wood_total >= required_wood and iron_total >= required_iron and clay_total >= required_clay):
-            #update sum and lastInteractionDate of resources (-cost)
-            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', wood_total-required_wood, now)
-            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
-            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
-            
-            task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
-            task_id = task_id.id
-                        
-            user.set_upgrading_time_and_state(village_id, building_path, reqiured_time, str(task_id), now)
+            with transaction.atomic():
+                #update sum and lastInteractionDate of resources (-cost)
+                set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', wood_total-required_wood, now)
+                set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
+                set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
+                
+                task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
+                task_id = task_id.id
+                            
+                user.set_upgrading_time_and_state(village_id, building_path, reqiured_time, str(task_id), now)
 
-            # print(user.myVillages[selected_village_index]['buildings']['resources'])
-            # user.update()
-            # newResources = user.myVillages[selected_village_index]['buildings']['resources']
+                # print(user.myVillages[selected_village_index]['buildings']['resources'])
+                # user.update()
+                # newResources = user.myVillages[selected_village_index]['buildings']['resources']
 
-            newResources = user.get_my_villages()[selected_village_index]['buildings']['resources']
+                newResources = user.get_my_villages()[selected_village_index]['buildings']['resources']
 
-            print(newResources)
-            data = {
-                'result' : 'Success',
-                'newResources' : newResources
-            }
-            if( '.' not in building_path):
-                data['newBuilding'] = user.get_my_villages()[selected_village_index]['buildings'][building_path]
-            
+                print(newResources)
+                data = {
+                    'result' : 'Success',
+                    'newResources' : newResources
+                }
+                if( '.' not in building_path):
+                    data['newBuilding'] = user.get_my_villages()[selected_village_index]['buildings'][building_path]
+                
 
-            print("upgrading")
+                print("upgrading")
 
-            print(datetime.datetime.now(pytz.utc))
+                print(datetime.datetime.now(pytz.utc))
 
-            return JsonResponse(data)
+                return JsonResponse(data)
         else:
             data = {
                 'result' : 'Fail',
