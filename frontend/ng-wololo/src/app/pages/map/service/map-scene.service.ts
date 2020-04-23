@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WoVillageSprite } from '../../../wo-phaser/wo-phaser-sprite/wll-phaser-sprite';
+import { WoVillageSprite } from 'src/app/wo-common/wo-phaser-sprite/wo-phaser-sprite';
 
 @Injectable({
   providedIn: 'root'
@@ -122,6 +122,10 @@ export class MapSceneService extends Phaser.Scene {
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
   }
 
+  
+  selectedIndicator: Phaser.GameObjects.Sprite;
+  selectedVillage;
+  isVillageSelected: boolean;
   private loadVillages() {
     let tile_dimensions = new Phaser.Geom.Point(
       this.map.tileWidth,
@@ -133,8 +137,8 @@ export class MapSceneService extends Phaser.Scene {
         playerName: "sdad",
         villagePoints: 150,
         coords: {
-          x: 100,
-          y: 100
+          x: 300,
+          y: 300
         },
         village_id: "2",
         user_id: 2,
@@ -145,16 +149,17 @@ export class MapSceneService extends Phaser.Scene {
     ]
 
     let parentThis = this;
+    
     infos.forEach(function (element) {
       if (element.playerName != "") {
-        let villageImage;
+        let villageImageName: string;
         if (element.villagePoints > 200) {
-          villageImage = "tr2";
+          villageImageName = "tr2";
         } else {
-          villageImage = "tr1";
+          villageImageName = "tr1";
         }
 
-        let mySprite = new WoVillageSprite(parentThis, element.coords.x, element.coords.y, villageImage)
+        let mySprite = new WoVillageSprite(parentThis, element.coords.x, element.coords.y, villageImageName)
         mySprite.villageId = element.village_id;
         mySprite.userId = element.user_id;
         mySprite.owner = element.owner ? "yours" : "";
@@ -163,10 +168,74 @@ export class MapSceneService extends Phaser.Scene {
         mySprite.villagePoints = element.points;
         mySprite.x = element.coords.x;
         mySprite.y = element.coords.y;
-        parentThis.add.existing(
+        let sprite = <WoVillageSprite>parentThis.add.existing(
           mySprite
         );
-        
+        sprite.on('pointerdown', ()=>{
+          debugger
+          console.log(parentThis.selectedVillage);
+          let targetVilCoords = {
+            x: sprite.x,
+            y: sprite.y,
+          };
+      
+          if (parentThis.isVillageSelected) {
+            console.log(parentThis.selectedIndicator);
+            parentThis.selectedIndicator.destroy();
+            parentThis.isVillageSelected = false;
+            parentThis.selectedIndicator = parentThis.add.sprite(
+              sprite.x - 10,
+              sprite.y - 8,
+              "selected"
+            );
+            parentThis.isVillageSelected = true;
+            // initSideBar(sprite);
+            // removePathSprites();
+            // if (!sprite.owner) {
+            //   findPath(this.selectedVillage.coords, targetVilCoords);
+            // }
+          } else {
+            console.log("wolol")
+            parentThis.selectedIndicator = parentThis.add.sprite(
+              sprite.x - 10,
+              sprite.y - 8,
+              "selected"
+            );
+            parentThis.isVillageSelected = true;
+            // initSideBar(sprite);
+      
+            // if (!sprite.owner) {
+            //   findPath(this.selectedVillage.coords, targetVilCoords);
+            // }
+          }
+        })
+        sprite.on('pointerover', ()=>{
+          // document.body.style.cursor = "pointer";
+
+          // let mousePositionX = event.pageX;
+          // let mousePositionY = event.pageY;
+          // $("#tooltip span").html(
+          //   sprite.playerName + "<br>" + sprite.villageName + "<br>" + sprite.owner
+          // );
+          // $("#tooltip").stop(false, true).fadeIn(1000);
+          // $("#tooltip").css({
+          //   top: mousePositionY - winH / 18,
+          //   left: mousePositionX - winW / 40 + 40,
+          // });
+
+          // var tooltip = document.querySelectorAll("#tooltip");
+
+          // function fn(e) {
+          //   for (var i = tooltip.length; i--; ) {
+          //     tooltip[i].style.left = e.pageX + "px";
+          //     tooltip[i].style.top = e.pageY + "px";
+          //   }
+          // }
+
+          // document.addEventListener("mousemove", fn, false);
+        })
+        sprite.setInteractive()
+
         // sprite.inputEnabled = true;
         // sprite.on("pointerover", function (pointer) {
         //   parentThis.onHoverListener();
@@ -177,70 +246,10 @@ export class MapSceneService extends Phaser.Scene {
     });
   }
 
-  // selectedIndicator: Phaser.GameObjects.Sprite;
-  // selectedVillage;
-  // isVillageSelected: boolean;
-  // onClickListener(sprite) {
-  //   console.log(this.selectedVillage);
-  //   let targetVilCoords = {
-  //     x: sprite.x,
-  //     y: sprite.y,
-  //   };
-
-  //   if (this.isVillageSelected) {
-  //     console.log(this.selectedIndicator);
-  //     this.selectedIndicator.destroy();
-  //     this.isVillageSelected = false;
-  //     this.selectedIndicator = this.add.sprite(
-  //       sprite.x - 10,
-  //       sprite.y - 8,
-  //       "selected"
-  //     );
-  //     this.isVillageSelected = true;
-  //     initSideBar(sprite);
-  //     removePathSprites();
-  //     if (!sprite.owner) {
-  //       findPath(this.selectedVillage.coords, targetVilCoords);
-  //     }
-  //   } else {
-  //     this.selectedIndicator = this.add.sprite(
-  //       sprite.x - 10,
-  //       sprite.y - 8,
-  //       "selected"
-  //     );
-  //     this.isVillageSelected = true;
-  //     initSideBar(sprite);
-
-  //     if (!sprite.owner) {
-  //       findPath(this.selectedVillage.coords, targetVilCoords);
-  //     }
-  //   }
-  // }
+  
 
   // onHoverListener(sprite, event) {
-  //   document.body.style.cursor = "pointer";
 
-  //   let mousePositionX = event.pageX;
-  //   let mousePositionY = event.pageY;
-  //   $("#tooltip span").html(
-  //     sprite.playerName + "<br>" + sprite.villageName + "<br>" + sprite.owner
-  //   );
-  //   $("#tooltip").stop(false, true).fadeIn(1000);
-  //   $("#tooltip").css({
-  //     top: mousePositionY - winH / 18,
-  //     left: mousePositionX - winW / 40 + 40,
-  //   });
-
-  //   var tooltip = document.querySelectorAll("#tooltip");
-
-  //   function fn(e) {
-  //     for (var i = tooltip.length; i--; ) {
-  //       tooltip[i].style.left = e.pageX + "px";
-  //       tooltip[i].style.top = e.pageY + "px";
-  //     }
-  //   }
-
-  //   document.addEventListener("mousemove", fn, false);
   // }
 
   // onOutListener(sprite) {
