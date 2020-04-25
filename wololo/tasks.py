@@ -343,27 +343,28 @@ def return_from_attack(self, target_village_id, home_village_id, returning_troop
     # inVillage = village_ref.get({'troops.inVillage'}).to_dict()['troops']['inVillage']
 
     home_village = Villages.objects.get(id=home_village_id)
-   
-    for unitTypeName, unitType in returning_troops.items():
-        for unitName, unit_quantity in unitType.items():
-            home_village.village_troops.in_village_troops_quantity_json\
-                [unitTypeName][unitName] += unit_quantity
-            home_village.village_troops.on_move_troops_quantity_json\
-                [unitTypeName][unitName] -= unit_quantity
+    
+    with transaction.atomic():
+        for unitTypeName, unitType in returning_troops.items():
+            for unitName, unit_quantity in unitType.items():
+                home_village.village_troops.in_village_troops_quantity_json\
+                    [unitTypeName][unitName] += unit_quantity
+                home_village.village_troops.on_move_troops_quantity_json\
+                    [unitTypeName][unitName] -= unit_quantity
 
-    returning_troop_movement = TroopMovements.objects.get(task_id=current_task_id)
+        returning_troop_movement = TroopMovements.objects.get(task_id=current_task_id)
 
-    returning_troop_movement.delete()
-    home_village.village_troops.save()
+        returning_troop_movement.delete()
+        home_village.village_troops.save()
 
-    # for unitTypeName, unitType in returning_troops.items():
-    #     for unitName, unit in unitType.items():
-    #         inVillage[unitTypeName][unitName] += unit
+        # for unitTypeName, unitType in returning_troops.items():
+        #     for unitName, unit in unitType.items():
+        #         inVillage[unitTypeName][unitName] += unit
 
-    # village_ref.update({
-    #     'troops.onMove.'+current_task_id: DELETE_FIELD,
-    #     'troops.inVillage' : inVillage,
-    # })
-    print("removed onMove from attacker")
+        # village_ref.update({
+        #     'troops.onMove.'+current_task_id: DELETE_FIELD,
+        #     'troops.inVillage' : inVillage,
+        # })
+        print("removed onMove from attacker")
 
-    print("TROOPS RETURNED HOME")
+        print("TROOPS RETURNED HOME")

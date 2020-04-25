@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 
+from django.db import transaction
+
 gameConfig = getGameConfig()
 
 @login_required    
@@ -88,67 +90,68 @@ def trainUnits(request):
         reqiuredWood, reqiuredIron, reqiuredClay = 0, 0, 0 #FOR DEBUGGING
         reqiured_time = 10 #FOR DEBUGGING
 
-        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', current_resources['woodCamp']-reqiuredWood, now)
-        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', current_resources['ironMine']-reqiuredIron, now)
-        set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', current_resources['clayPit']-reqiuredClay, now)
+        with transaction.atomic():
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', current_resources['woodCamp']-reqiuredWood, now)
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', current_resources['ironMine']-reqiuredIron, now)
+            set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', current_resources['clayPit']-reqiuredClay, now)
 
-        # 
-        # print(vil_obj.village_troops.in_village_troops_quantity_json)
-        #   
+            # 
+            # print(vil_obj.village_troops.in_village_troops_quantity_json)
+            #   
 
-        # tq_last_unit_type = user.checkTrainingQueueReturnLastOneIfExists(village_id, unit_type)
-        tq_last_unit_type = vil_obj.get_last_training_queue_by_unit_type('infantry')
+            # tq_last_unit_type = user.checkTrainingQueueReturnLastOneIfExists(village_id, unit_type)
+            tq_last_unit_type = vil_obj.get_last_training_queue_by_unit_type('infantry')
 
-        if(tq_last_unit_type == False):
-            subtasks = []
-            for i in range(number_of_units_to_train):
-                subtasks.append(
-                    train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=reqiured_time)
-                )
-                
-            workflow = chain(*subtasks)
-            generated_chain = workflow.apply_async()
-            chain_id = generated_chain.id
-            will_end_at = now + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
-            vil_obj.add_to_training_queue(chain_id, unit_type, unit_name, number_of_units_to_train, now, will_end_at)
-        else:
-            will_start_at = tq_last_unit_type.started_at
-            print("i will wait in queue totally seconds = >")
-            first_task_delayed_countdown = math.ceil(((tq_last_unit_type.will_end_at + datetime.timedelta(0, reqiured_time)) - now).total_seconds())
-            print(first_task_delayed_countdown)
-
-            subtasks = []
-            for i in range(number_of_units_to_train):
-                if i == 0 :
-                    subtasks.append(
-                        train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=first_task_delayed_countdown)
-                    )
-                else:
+            if(tq_last_unit_type == False):
+                subtasks = []
+                for i in range(number_of_units_to_train):
                     subtasks.append(
                         train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=reqiured_time)
                     )
-                
-            workflow = chain(*subtasks)
-            generated_chain = workflow.apply_async()
-            chain_id = generated_chain.id
-            will_end_at = will_start_at + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
-            vil_obj.add_to_training_queue(chain_id, unit_type, unit_name, number_of_units_to_train, will_start_at, will_end_at)
-        print(datetime.datetime.now(pytz.utc))
+                    
+                workflow = chain(*subtasks)
+                generated_chain = workflow.apply_async()
+                chain_id = generated_chain.id
+                will_end_at = now + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+                vil_obj.add_to_training_queue(chain_id, unit_type, unit_name, number_of_units_to_train, now, will_end_at)
+            else:
+                will_start_at = tq_last_unit_type.started_at
+                print("i will wait in queue totally seconds = >")
+                first_task_delayed_countdown = math.ceil(((tq_last_unit_type.will_end_at + datetime.timedelta(0, reqiured_time)) - now).total_seconds())
+                print(first_task_delayed_countdown)
 
-        print(datetime.datetime.now(pytz.utc))
-        new_resources = user.get_my_villages()[selected_village_index]['buildings']['resources']
+                subtasks = []
+                for i in range(number_of_units_to_train):
+                    if i == 0 :
+                        subtasks.append(
+                            train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=first_task_delayed_countdown)
+                        )
+                    else:
+                        subtasks.append(
+                            train_unit.si(user_id = user_id, village_id = village_id, unit_type = unit_type, unit_name = unit_name).set(countdown=reqiured_time)
+                        )
+                    
+                workflow = chain(*subtasks)
+                generated_chain = workflow.apply_async()
+                chain_id = generated_chain.id
+                will_end_at = will_start_at + datetime.timedelta(0, reqiured_time*number_of_units_to_train)
+                vil_obj.add_to_training_queue(chain_id, unit_type, unit_name, number_of_units_to_train, will_start_at, will_end_at)
+            print(datetime.datetime.now(pytz.utc))
 
-        data = {
-            'result' : 'Success',
-            'newResources' : new_resources,
-            'newQueueElement' : {
-                'willEndAt' : will_end_at,
-                'unitName' : unit_name,
-                'unitsLeft' : number_of_units_to_train
+            print(datetime.datetime.now(pytz.utc))
+            new_resources = user.get_my_villages()[selected_village_index]['buildings']['resources']
+
+            data = {
+                'result' : 'Success',
+                'newResources' : new_resources,
+                'newQueueElement' : {
+                    'willEndAt' : will_end_at,
+                    'unitName' : unit_name,
+                    'unitsLeft' : number_of_units_to_train
+                }
             }
-        }
 
-        return JsonResponse(data)
+            return JsonResponse(data)
 
     else:
 
@@ -157,5 +160,3 @@ def trainUnits(request):
         }
 
         return JsonResponse(data)
-
-
