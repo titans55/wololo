@@ -1,0 +1,20 @@
+<div
+  id="villageOverview"
+  class="card fadeInRight mt-5"
+  *ngIf="selectedVillage"
+  [class]="!selectedVillage ? 'd-none' : ''"
+>
+  <div class="card-header">
+    Village Overview
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">
+      <a href="#"> {{ selectedVillage.villageName }} </a>
+    </h5>
+    <p class="card-text">
+      <a href="#">Belongs to {{ selectedVillage.playerName }} </a>
+      <br />
+      Village Points = {{ selectedVillage.villagePoints }}
+    </p>
+  </div>
+</div>

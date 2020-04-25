@@ -1,10 +1,12 @@
-import { Routes, RouterModule } from '@angular/router';
-import { MapComponent } from './map/component/map.component';
+import { Routes, RouterModule } from "@angular/router";
+import { AfterLoginRoutes } from "./after-login/after-login.routing";
+import { AfterLoginComponent } from "./after-login/component/after-login.component";
 
 export const pageRoutes: Routes = [
-  { 
-    path: "map",
-    component: MapComponent
+  {
+    path: "game",
+    component: AfterLoginComponent,
+    children: AfterLoginRoutes,
   },
 ];
 

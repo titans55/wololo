@@ -6,20 +6,15 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
+    "resolveJsonModule": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom",
-      "scripthost"
-    ]
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom", "scripthost"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

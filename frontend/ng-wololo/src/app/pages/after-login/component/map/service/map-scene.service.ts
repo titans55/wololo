@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { WoVillageSprite } from 'src/app/wo-common/wo-phaser-sprite/wo-phaser-sprite';
+import { Injectable } from "@angular/core";
+import { WoVillageSprite } from "src/app/wo-common/wo-phaser-sprite/wo-phaser-sprite";
+import { Subject } from "rxjs";
+import { VillageDetailCardService } from "../component/village-detail-card/service/village-detail-card.service";
+import { Game } from "phaser";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class MapSceneService extends Phaser.Scene {
+class MapScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   controls: Phaser.Cameras.Controls.FixedKeyControl;
 
-  constructor() {
+  constructor(public villageDetailCardService: VillageDetailCardService) {
     super({ key: "main" });
   }
 
@@ -27,7 +27,11 @@ export class MapSceneService extends Phaser.Scene {
   }
 
   preload() {
-    this.game.scale.scaleMode = Phaser.Scale.FIT;
+    // this.load.image(
+    //   "tiles",
+    //   "assets/ulku-example/tileset.png"
+    // );
+    // this.load.tilemapTiledJSON("map", "assets/ulku-example/tilemap.json");
     this.load.image(
       "tiles",
       "assets/map-assets/tilesets/overworld_tileset_grass.png"
@@ -122,10 +126,9 @@ export class MapSceneService extends Phaser.Scene {
     this.controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
   }
 
-  
   selectedIndicator: Phaser.GameObjects.Sprite;
-  selectedVillage;
-  isVillageSelected: boolean;
+  selectedVillageSubject: Subject<WoVillageSprite> = new Subject();
+  selectedVillage: WoVillageSprite;
   private loadVillages() {
     let tile_dimensions = new Phaser.Geom.Point(
       this.map.tileWidth,
@@ -134,22 +137,22 @@ export class MapSceneService extends Phaser.Scene {
 
     let infos = [
       {
-        playerName: "sdad",
+        playerName: "wololoPlayerrr",
         villagePoints: 150,
         coords: {
           x: 300,
-          y: 300
+          y: 300,
         },
         village_id: "2",
         user_id: 2,
         owner: "yours",
         villageName: "wololo",
-        points: 200
-      }
-    ]
+        points: 200,
+      },
+    ];
 
     let parentThis = this;
-    
+
     infos.forEach(function (element) {
       if (element.playerName != "") {
         let villageImageName: string;
@@ -159,7 +162,12 @@ export class MapSceneService extends Phaser.Scene {
           villageImageName = "tr1";
         }
 
-        let mySprite = new WoVillageSprite(parentThis, element.coords.x, element.coords.y, villageImageName)
+        let mySprite = new WoVillageSprite(
+          parentThis,
+          element.coords.x,
+          element.coords.y,
+          villageImageName
+        );
         mySprite.villageId = element.village_id;
         mySprite.userId = element.user_id;
         mySprite.owner = element.owner ? "yours" : "";
@@ -168,50 +176,41 @@ export class MapSceneService extends Phaser.Scene {
         mySprite.villagePoints = element.points;
         mySprite.x = element.coords.x;
         mySprite.y = element.coords.y;
-        let sprite = <WoVillageSprite>parentThis.add.existing(
-          mySprite
-        );
-        sprite.on('pointerdown', ()=>{
-          debugger
-          console.log(parentThis.selectedVillage);
+        let sprite = <WoVillageSprite>parentThis.add.existing(mySprite);
+        sprite.on("pointerdown", () => {
           let targetVilCoords = {
             x: sprite.x,
             y: sprite.y,
           };
-      
-          if (parentThis.isVillageSelected) {
+
+          if (parentThis.selectedVillage) {
             console.log(parentThis.selectedIndicator);
             parentThis.selectedIndicator.destroy();
-            parentThis.isVillageSelected = false;
-            parentThis.selectedIndicator = parentThis.add.sprite(
-              sprite.x - 10,
-              sprite.y - 8,
-              "selected"
-            );
-            parentThis.isVillageSelected = true;
+            parentThis.selectedVillage = null;
+
             // initSideBar(sprite);
             // removePathSprites();
             // if (!sprite.owner) {
             //   findPath(this.selectedVillage.coords, targetVilCoords);
             // }
           } else {
-            console.log("wolol")
+            parentThis.selectedVillageSubject.next(sprite);
+            parentThis.villageDetailCardService.villageSelected(sprite);
             parentThis.selectedIndicator = parentThis.add.sprite(
               sprite.x - 10,
               sprite.y - 8,
               "selected"
             );
-            parentThis.isVillageSelected = true;
+            parentThis.selectedVillage = sprite;
             // initSideBar(sprite);
-      
+
             // if (!sprite.owner) {
             //   findPath(this.selectedVillage.coords, targetVilCoords);
             // }
           }
-        })
-        sprite.on('pointerover', ()=>{
+        });
+        sprite.on("pointerover", () => {
           // document.body.style.cursor = "pointer";
-
           // let mousePositionX = event.pageX;
           // let mousePositionY = event.pageY;
           // $("#tooltip span").html(
@@ -222,19 +221,16 @@ export class MapSceneService extends Phaser.Scene {
           //   top: mousePositionY - winH / 18,
           //   left: mousePositionX - winW / 40 + 40,
           // });
-
           // var tooltip = document.querySelectorAll("#tooltip");
-
           // function fn(e) {
           //   for (var i = tooltip.length; i--; ) {
           //     tooltip[i].style.left = e.pageX + "px";
           //     tooltip[i].style.top = e.pageY + "px";
           //   }
           // }
-
           // document.addEventListener("mousemove", fn, false);
-        })
-        sprite.setInteractive()
+        });
+        sprite.setInteractive();
 
         // sprite.inputEnabled = true;
         // sprite.on("pointerover", function (pointer) {
@@ -246,8 +242,6 @@ export class MapSceneService extends Phaser.Scene {
     });
   }
 
-  
-
   // onHoverListener(sprite, event) {
 
   // }
@@ -257,4 +251,17 @@ export class MapSceneService extends Phaser.Scene {
 
   //   document.body.style.cursor = "default";
   // }
+}
+
+@Injectable({
+  providedIn: "root",
+})
+export class MapSceneService {
+  mapScene: Phaser.Scene;
+
+  constructor(public villageDetailCardService: VillageDetailCardService) {}
+
+  getNewInstanceOfMapScene() {
+    return new MapScene(this.villageDetailCardService);
+  }
 }

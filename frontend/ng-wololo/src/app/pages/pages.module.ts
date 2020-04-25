@@ -1,12 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MapModule } from './map/map.module';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { AfterLoginModule } from "./after-login/after-login.module";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MapModule
-  ],
-  declarations: []
+  imports: [CommonModule, AfterLoginModule],
+  declarations: [],
 })
-export class PagesModule { }
+export class PagesModule {}
