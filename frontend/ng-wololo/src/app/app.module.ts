@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormsModule } from "@angular/forms";
 import { MapSceneService } from "./pages/after-login/component/map/service/map-scene.service";
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { MapSceneService } from "./pages/after-login/component/map/service/map-s
     BrowserAnimationsModule,
     NgbModule,
     FormsModule,
+    HttpClientModule
   ],
   providers: [MapSceneService],
   bootstrap: [AppComponent],

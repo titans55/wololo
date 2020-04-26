@@ -62,27 +62,43 @@
       </div>
       {% endif %} -->
     </div>
-    <div class="col">
-      <span class="badge badge-warning"
-        >Wood
-        <div>{{ currentWood }}</div></span
+    <div class="col" *ngIf="currentWood">
+      <span class="badge badge-warning">
+        Wood
+        <div [class]="currentWood.isCapacityReached ? 'text-danger' : ''">
+          {{ currentWood.quantity }}
+        </div>
+      </span>
+      <span class="badge badge-warning" *ngIf="currentIron">
+        Iron
+        <div [class]="currentIron.isCapacityReached ? 'text-danger' : ''">
+          {{ currentIron.quantity }}
+        </div>
+      </span>
+      <span class="badge badge-warning" *ngIf="currentClay">
+        Clay
+        <div [class]="currentClay.isCapacityReached ? 'text-danger' : ''">
+          {{ currentClay.quantity }}
+        </div>
+      </span>
+      <span class="badge badge-info" *ngIf="storageCapacity">
+        Storage
+        <div>{{ storageCapacity }}</div></span
       >
-      <span class="badge badge-warning"
-        >Iron
-        <div>{{ currentIron }}</div></span
-      >
-      <span class="badge badge-warning"
-        >Clay
-        <div>{{ currentClay }}</div></span
-      >
-      <span class="badge badge-info"
-        >Storage
-        <div id="storage">T</div></span
-      >
-      <span class="badge badge-success"
-        >Population
-        <div id="population">100/500</div></span
-      >
+      <span class="badge badge-success">
+        Population
+        <div
+          [class]="
+            populationInfo.currentPopulation >= populationInfo.populationLimit
+              ? 'text-warning'
+              : ''
+          "
+        >
+          {{ populationInfo.currentPopulation }}/{{
+            populationInfo.populationLimit
+          }}
+        </div>
+      </span>
     </div>
   </div>
   <div class="building" buildingName="townCenter"></div>

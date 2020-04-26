@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as gameConfig from "../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
+import { AuthenticatedGlobalService } from "../../../service/authenticated-global.service";
 
 @Injectable({
   providedIn: "root",
@@ -7,5 +8,5 @@ import * as gameConfig from "../../../../../../../../../../postgreswololo/wololo
 export class VillageService {
   public buildingsConfig: typeof gameConfig.buildings = gameConfig.buildings;
 
-  constructor() {}
+  constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {}
 }

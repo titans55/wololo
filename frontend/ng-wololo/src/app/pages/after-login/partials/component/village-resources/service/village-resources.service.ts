@@ -3,48 +3,168 @@ import * as moment from "moment";
 import {
   ResourcesModel,
   ResourceModel,
+  VillageResourceDetailModel,
+  PopulationModel,
 } from "src/app/pages/after-login/component/village/model/village-data.model";
 import * as gameConfigs from "../../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
+import { AuthenticatedGlobalService } from "src/app/pages/after-login/service/authenticated-global.service";
+import {
+  VillageDto,
+  ResourceBuildingDetails,
+  SelectedVillageBuildings,
+  ResourcesBuildings,
+} from "src/app/pages/after-login/component/village/model/village.dto";
+import { TimeInterval, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class VillageResourcesService extends ResourcesModel {
   readonly resources: Array<ResourceModel> = [this.wood, this.iron, this.clay];
-  constructor() {
+  private villageData: VillageDto;
+  constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {
     super();
     this.production();
   }
 
-  private production(): void {
+  private async production(): Promise<void> {
+    if (this.villageData == null) {
+      await this.setVillageData();
+    }
     this.resources.forEach((resource) => {
-      resource.buildingLevel = 10;
-      resource.lastInteractionDate = new Date();
-      resource.lastSummary = 0;
       this.productionInterval(resource);
     });
   }
 
-  private productionInterval(resource: ResourceModel): void {
-    this.produce(resource);
-    setInterval(() => {
-      this.produce(resource);
-    }, (60 / gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[resource.buildingLevel]) * 60 * 1000);
+  private productionInterval(resourceModel: ResourceModel): void {
+    if (resourceModel) {
+      this.produce(resourceModel);
+      setInterval(() => {
+        this.produce(resourceModel);
+      }, (60 / gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[resourceModel.level]) * 60 * 1000);
+    } else {
+      throw "villageResourceBuildingDetails cannot be null or undefined";
+    }
   }
 
-  produce(resource: ResourceModel): void {
+  produce(resourceModel: ResourceModel): void {
     const hourlyProduction =
       gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[
-        resource.buildingLevel
+        resourceModel.level
       ];
     let now = moment(new Date());
-    let woodHours = now.diff(resource.lastInteractionDate) / (1000 * 60 * 60);
+    let woodHours =
+      now.diff(resourceModel.lastInteractionDate) / (1000 * 60 * 60);
 
     let currentResource: number = parseInt(
       (hourlyProduction * woodHours).toFixed()
     );
-    currentResource += resource.lastSummary;
-    resource.currentSummary.next(currentResource);
+
+    currentResource += resourceModel.sum;
+    resourceModel.currentSummary.next(this.fitIntoStorage(currentResource));
+  }
+
+  private fitIntoStorage(quantity: number): VillageResourceDetailModel {
+    return {
+      quantity:
+        quantity > this.storageCapacity ? this.storageCapacity : quantity,
+      isCapacityReached: quantity > this.storageCapacity,
+    };
+  }
+
+  private async setVillageData() {
+    return this.authenticatedGlobalService
+      .get("villagesView")
+      .then((villageData: VillageDto) => {
+        this.villageData = villageData;
+        this.setAndEmitStorageCapacity();
+        this.setAndEmitPopulationInfo();
+        for (const resourceBuildingName in this.villageData.selectedVillage
+          .buildings.resources) {
+          let resourceBuildingDetails: ResourceBuildingDetails = this
+            .villageData.selectedVillage.buildings.resources[
+            resourceBuildingName
+          ];
+          let resourceModel = this.resources.find((resource) => {
+            return resource.buildingName == resourceBuildingName;
+          });
+          Object.assign(resourceModel, resourceBuildingDetails);
+        }
+      });
+  }
+
+  private storageCapacity: number;
+  storageSubject: Subject<number> = new Subject();
+  private setAndEmitStorageCapacity(): void {
+    this.storageCapacity =
+      gameConfigs.buildings.storage.capacity[
+        this.villageData.selectedVillage.buildings.storage.level
+      ];
+    return this.storageSubject.next(this.storageCapacity);
+  }
+
+  private population: PopulationModel;
+  populationSubject: Subject<PopulationModel> = new Subject();
+  private setAndEmitPopulationInfo() {
+    let populationLimit: number =
+      gameConfigs.buildings.farm.populationLimit[
+        this.villageData.selectedVillage.buildings.farm.level
+      ];
+    this.villageData.selectedVillage.troops.total;
+    this.population = new PopulationModel(
+      this.calculateUsedPopulation(),
+      populationLimit
+    );
+    this.populationSubject.next(this.population);
+  }
+
+  private calculateUsedPopulation(): number {
+    let usedPopulation = 0;
+
+    for (const bn in this.villageData.selectedVillage.buildings) {
+      const buildingName = <keyof SelectedVillageBuildings>bn;
+      if (buildingName != "resources") {
+        let level: number = this.villageData.selectedVillage.buildings[
+          buildingName
+        ].level;
+        usedPopulation +=
+          gameConfigs.buildings[buildingName].neededPopulation[level];
+      } else {
+        for (const rbn in this.villageData.selectedVillage.buildings[
+          buildingName
+        ]) {
+          let resourceBuildingName = <keyof ResourcesBuildings>rbn;
+          let level: number = this.villageData.selectedVillage.buildings[
+            buildingName
+          ][resourceBuildingName].level;
+          usedPopulation +=
+            gameConfigs.buildings[buildingName][resourceBuildingName]
+              .neededPopulation[level];
+        }
+      }
+    }
+    for (let [unitType, units] of Object.entries(
+      this.villageData.selectedVillage.troops.total
+    )) {
+      for (let [unit, size] of Object.entries(units)) {
+        const unitSize = <number>size;
+        usedPopulation +=
+          unitSize * gameConfigs.units[unitType][unit].neededPopulation;
+      }
+    }
+
+    for (let [unitTypeName, unitTypeQueueList] of Object.entries(
+      this.villageData.selectedVillage.troops.trainingQueue
+    )) {
+      for (let queue in unitTypeQueueList) {
+        usedPopulation +=
+          unitTypeQueueList[queue]["unitsLeft"] *
+          gameConfigs.units[unitTypeName][unitTypeQueueList[queue]["unitName"]]
+            .neededPopulation;
+      }
+    }
+
+    return usedPopulation;
   }
 
   // incrementOfResorcesByTime(){

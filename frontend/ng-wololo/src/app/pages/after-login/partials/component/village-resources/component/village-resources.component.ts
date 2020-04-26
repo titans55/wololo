@@ -1,5 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { VillageResourcesService } from "../service/village-resources.service";
+import {
+  VillageResourceDetailModel,
+  PopulationModel,
+} from "src/app/pages/after-login/component/village/model/village-data.model";
+import { Subject } from "rxjs";
 
 @Component({
   selector: "woo-village-resources",
@@ -7,9 +12,11 @@ import { VillageResourcesService } from "../service/village-resources.service";
   styleUrls: ["./village-resources.component.css"],
 })
 export class VillageResourcesComponent implements OnInit {
-  currentWood: number = 0;
-  currentIron: number = 0;
-  currentClay: number = 0;
+  currentWood: VillageResourceDetailModel;
+  currentIron: VillageResourceDetailModel;
+  currentClay: VillageResourceDetailModel;
+  storageCapacity: number;
+  populationInfo: PopulationModel;
 
   constructor(public villageResourcesService: VillageResourcesService) {}
 
@@ -27,6 +34,14 @@ export class VillageResourcesComponent implements OnInit {
     this.villageResourcesService.clay.currentSummary.subscribe(
       (currentClay) => {
         this.currentClay = currentClay;
+      }
+    );
+    this.villageResourcesService.storageSubject.subscribe((storageCapacity) => {
+      this.storageCapacity = storageCapacity;
+    });
+    this.villageResourcesService.populationSubject.subscribe(
+      (populationInfo) => {
+        this.populationInfo = populationInfo;
       }
     );
   }

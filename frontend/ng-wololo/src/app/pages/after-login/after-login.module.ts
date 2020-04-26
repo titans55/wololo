@@ -7,6 +7,7 @@ import { PartialsModule } from "./partials/partials.module";
 import { WoCommonModule } from "src/app/wo-common/wo-common.module";
 import { MapModule } from "./component/map/map.module";
 import { VillageModule } from "./component/village/village.module";
+import { AuthenticatedGlobalService } from "./service/authenticated-global.service";
 
 @NgModule({
   imports: [
@@ -19,5 +20,6 @@ import { VillageModule } from "./component/village/village.module";
   ],
   exports: [AfterLoginComponent],
   declarations: [AfterLoginComponent],
+  providers: [AuthenticatedGlobalService],
 })
 export class AfterLoginModule {}
