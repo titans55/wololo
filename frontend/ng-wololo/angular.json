@@ -26,9 +26,13 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "node_modules/animate.css/animate.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": ["node_modules/phaser/dist/phaser.min.js"]
+            "scripts": [
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/phaser/dist/phaser.min.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -5,14 +5,16 @@ import {
   ResourceModel,
   VillageResourceDetailModel,
   PopulationModel,
+  VillageModel,
 } from "src/app/pages/after-login/component/village/model/village-data.model";
 import * as gameConfigs from "../../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
 import { AuthenticatedGlobalService } from "src/app/pages/after-login/service/authenticated-global.service";
 import {
-  VillageDto,
+  PlayerDataDto,
   ResourceBuildingDetails,
   SelectedVillageBuildings,
   ResourcesBuildings,
+  Village,
 } from "src/app/pages/after-login/component/village/model/village.dto";
 import { TimeInterval, Subject } from "rxjs";
 
@@ -21,7 +23,9 @@ import { TimeInterval, Subject } from "rxjs";
 })
 export class VillageResourcesService extends ResourcesModel {
   readonly resources: Array<ResourceModel> = [this.wood, this.iron, this.clay];
-  private villageData: VillageDto;
+  private villageData: PlayerDataDto;
+  private productionIntervals: Array<any> = [];
+
   constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {
     super();
     this.production();
@@ -29,7 +33,7 @@ export class VillageResourcesService extends ResourcesModel {
 
   private async production(): Promise<void> {
     if (this.villageData == null) {
-      await this.setVillageData();
+      await this.setPlayerData();
     }
     this.resources.forEach((resource) => {
       this.productionInterval(resource);
@@ -39,9 +43,11 @@ export class VillageResourcesService extends ResourcesModel {
   private productionInterval(resourceModel: ResourceModel): void {
     if (resourceModel) {
       this.produce(resourceModel);
-      setInterval(() => {
-        this.produce(resourceModel);
-      }, (60 / gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[resourceModel.level]) * 60 * 1000);
+      this.productionIntervals.push(
+        setInterval(() => {
+          this.produce(resourceModel);
+        }, (60 / gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[resourceModel.level]) * 60 * 1000)
+      );
     } else {
       throw "villageResourceBuildingDetails cannot be null or undefined";
     }
@@ -72,13 +78,17 @@ export class VillageResourcesService extends ResourcesModel {
     };
   }
 
-  private async setVillageData() {
+  public async setPlayerData(villageIndex: number = 0) {
+    this.productionIntervals.forEach((productionInterval) => {
+      clearInterval(productionInterval);
+    });
     return this.authenticatedGlobalService
-      .get("villagesView")
-      .then((villageData: VillageDto) => {
+      .get("villagesView/" + villageIndex)
+      .then((villageData: PlayerDataDto) => {
         this.villageData = villageData;
         this.setAndEmitStorageCapacity();
         this.setAndEmitPopulationInfo();
+        this.setAndEmitVillagesOfPlayer();
         for (const resourceBuildingName in this.villageData.selectedVillage
           .buildings.resources) {
           let resourceBuildingDetails: ResourceBuildingDetails = this
@@ -116,6 +126,21 @@ export class VillageResourcesService extends ResourcesModel {
       populationLimit
     );
     this.populationSubject.next(this.population);
+  }
+
+  private villagesOfPlayer: Array<VillageModel>;
+  villagesOfPlayerSubject: Subject<Array<VillageModel>> = new Subject();
+  private setAndEmitVillagesOfPlayer() {
+    this.villagesOfPlayer = [];
+    this.villageData.villagesInfo.forEach((village) => {
+      let villageModel = new VillageModel();
+      Object.assign(villageModel, village);
+      this.villagesOfPlayer.push(villageModel);
+    });
+    this.villagesOfPlayer.find((village) => {
+      return village.villageId == this.villageData.selectedVillage.villageId;
+    }).selected = true;
+    this.villagesOfPlayerSubject.next(this.villagesOfPlayer);
   }
 
   private calculateUsedPopulation(): number {

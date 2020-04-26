@@ -30,7 +30,7 @@ def getVillageIndex(request, user, village_index):
         selected_village_index = 0
         request.session['selected_village_index'] = 0
 
-    if village_index is not None and user.number_of_villages <= village_index:
+    if village_index is not None and user.number_of_villages < village_index:
         request.session['selected_village_index'] = 0
         selected_village_index = 'outOfList'
     

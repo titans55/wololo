@@ -1,10 +1,10 @@
 import { Resources } from "./village-data.model";
 
-export interface VillageDto {
+export interface PlayerDataDto {
   totalIncomingStrangerTroops: any[];
   totalOnMove: any[];
-  villagesInfo: SelectedVillage[];
-  selectedVillage: SelectedVillage;
+  villagesInfo: Village[];
+  selectedVillage: Village;
   gameConfig: GameConfig;
   unviewedReportExists: boolean;
   page: string;
@@ -134,11 +134,11 @@ export interface RAM {
   speed: number;
 }
 
-export interface SelectedVillage {
+export interface Village {
   buildings: SelectedVillageBuildings;
   villageName: string;
   troops: Troops;
-  villageID: number;
+  villageId: number;
   coords: Coords;
 }
 

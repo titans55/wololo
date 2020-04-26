@@ -6,47 +6,7 @@
 <div class="card">
   <div class="row mt-3 mb-3 ml-2">
     <div class="col">
-      <div class="btn-group">
-        <button
-          id="switchVillage"
-          type="button"
-          class="btn btn-primary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          "Village name"
-        </button>
-        <!-- <div class="dropdown-menu">
-          {% for village in myVillages %} {% if data.page == 'myVillages' %}
-          <a class="dropdown-item" href="/game/{{ village.village_id }}">{{
-            village.villageName
-          }}</a>
-          {% elif data.page == 'playerProfile' %}
-          <a
-            class="dropdown-item"
-            href="/game/{{ village.village_id }}/players/{{
-              data.profileOfPlayerID
-            }}"
-            >{{ village.villageName }}</a
-          >
-          {% elif data.page == 'report' %}
-          <a
-            class="dropdown-item"
-            href="/game/{{ village.village_id }}/reports/{{
-              data.report_index
-            }}"
-            >{{ village.villageName }}</a
-          >
-          {% else %}
-          <a
-            class="dropdown-item"
-            href="/game/{{ village.village_id }}/{{ data.page }}"
-            >{{ village.villageName }}</a
-          >
-          {% endif %} {%endfor%}
-        </div> -->
-      </div>
+      <woo-switch-village></woo-switch-village>
     </div>
     <div class="col">
       <!-- {% if data.page == 'myVillages' %}

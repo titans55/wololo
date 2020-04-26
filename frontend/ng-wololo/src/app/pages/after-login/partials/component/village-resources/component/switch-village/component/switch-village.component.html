@@ -1,0 +1,18 @@
+<div ngbDropdown class="d-inline-block">
+  <button
+    class="btn btn-outline-primary"
+    *ngIf="villagesOfPlayer"
+    ngbDropdownToggle
+  >
+    {{ selectedVillageName }}
+  </button>
+  <div ngbDropdownMenu>
+    <button
+      ngbDropdownItem
+      *ngFor="let village of villagesOfPlayer; let index = index"
+      (click)="villageSelectClick(index)"
+    >
+      {{ village.villageName }}
+    </button>
+  </div>
+</div>

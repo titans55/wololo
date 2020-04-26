@@ -4,6 +4,10 @@ import {
   ResourcesBuildings,
   ResourceBuildingDetails,
   Upgrading,
+  Village,
+  SelectedVillageBuildings,
+  Troops,
+  Coords,
 } from "./village.dto";
 export type GameConfig = typeof gameConfig;
 
@@ -73,4 +77,13 @@ export class PopulationModel {
     public currentPopulation: number,
     public populationLimit: number
   ) {}
+}
+
+export class VillageModel implements Village {
+  buildings: SelectedVillageBuildings;
+  villageName: string;
+  troops: Troops;
+  villageId: number;
+  coords: Coords;
+  selected: boolean = false;
 }

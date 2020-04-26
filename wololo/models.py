@@ -68,7 +68,7 @@ class Users(AbstractUser):
                 },
                 'villageName': village.village_name,
                 'troops': {},
-                'village_id': village.id,
+                'villageId': village.id,
                 'coords': {
                     'x': village.coords_x,
                     'y': village.coords_y

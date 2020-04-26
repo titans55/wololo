@@ -32,7 +32,7 @@ class VillagesView(APIView):
         
         selected_village_index = getVillageIndex(request, user, village_index)
         if(selected_village_index is 'outOfList'):
-            return redirect('myVillage')
+            return redirect('villageApi')
 
         totalOnMove = []
         totalIncomingStrangerTroops = []
@@ -56,7 +56,7 @@ class VillagesView(APIView):
         data = { 
             'totalIncomingStrangerTroops' : totalIncomingStrangerTroops,
             'totalOnMove' : totalOnMove,
-            'villages_info' : my_villages,
+            'villagesInfo' : my_villages,
             'selectedVillage': my_villages[selected_village_index],
             'gameConfig' : gameConfig,
             'unviewedReportExists' : user.is_unviewed_reports_exists,
