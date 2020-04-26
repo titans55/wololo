@@ -79,9 +79,10 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   public async setPlayerData(villageIndex: number = 0) {
-    this.productionIntervals.forEach((productionInterval) => {
-      clearInterval(productionInterval);
-    });
+    for (let i = 0; i < this.productionIntervals.length; i++) {
+      clearInterval(this.productionIntervals[i]);
+      this.productionIntervals.pop();
+    }
     return this.authenticatedGlobalService
       .get("villagesView/" + villageIndex)
       .then((villageData: PlayerDataDto) => {

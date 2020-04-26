@@ -27,7 +27,6 @@ export class SwitchVillageComponent implements OnInit {
 
   villageSelectClick(villageIndex: number) {
     this.service.switchVillageButton(villageIndex).then(() => {
-      console.log(this.villagesOfPlayer);
       this.setSelectedVillageName();
     });
   }
