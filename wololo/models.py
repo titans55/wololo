@@ -86,10 +86,10 @@ class Users(AbstractUser):
                         'lastInteractionDate': rbd.last_interaction_date,
                         'upgrading': {
                             'state': village_building.is_upgrading,
-                            'task_id': ud.task_id if ud else '',
+                            'task_id': ud.task_id if ud else None,
                             'time': {
-                                'startedUpgradingAt': ud.started_upgrading_at if ud else '',
-                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else ''
+                                'startedUpgradingAt': ud.started_upgrading_at if ud else None,
+                                'willBeUpgradedAt': ud.will_be_upgraded_a if ud else None
                             }
                         }
                     }
@@ -99,10 +99,10 @@ class Users(AbstractUser):
                         'level': village_building.level,
                         'upgrading': {
                             'state': village_building.is_upgrading,
-                            'task_id': ud.task_id if ud else '',
+                            'task_id': ud.task_id if ud else None,
                             'time': {
-                                'startedUpgradingAt': ud.started_upgrading_at if ud else '',
-                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else ''
+                                'startedUpgradingAt': ud.started_upgrading_at if ud else None,
+                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
                             }
                         }
                     }
@@ -141,17 +141,6 @@ class Users(AbstractUser):
                         "troops": vtm.moving_troops_json
                     }
 
-            else:
-                pass
-
-            for buildingName, building in village_dict['buildings'].items():
-                if buildingName == 'resources':
-                    for resource in building:
-                        village_dict['buildings']['resources'][resource]['upgrading']['state'] = 'true' if village_dict[
-                            'buildings']['resources'][resource]['upgrading']['state'] else 'false'
-                else:
-                    village_dict['buildings'][buildingName]['upgrading']['state'] = 'true' if village_dict[
-                        'buildings'][buildingName]['upgrading']['state'] else 'false'
 
             village_dict['troops']['trainingQueue'] = {
                 'infantry': [],
