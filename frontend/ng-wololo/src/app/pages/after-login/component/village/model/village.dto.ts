@@ -159,7 +159,7 @@ export interface BaseBuilding {
 
 export interface Upgrading {
   state: boolean;
-  taskID: string;
+  taskId: string;
   time: Time;
 }
 

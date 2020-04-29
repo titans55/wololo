@@ -9,10 +9,13 @@
   </div>
   <div class="card-body">
     <h5 class="card-title">
-      <a href="#"> {{ selectedVillage.villageName }} </a>
+      <a href="#">
+        {{ selectedVillage.villageName }}({{ selectedVillage.x }},
+        {{ selectedVillage.y }})
+      </a>
     </h5>
     <p class="card-text">
-      <a href="#">Belongs to {{ selectedVillage.playerName }} </a>
+      Belongs to <a href="#">{{ selectedVillage.playerName }}</a>
       <br />
       Village Points = {{ selectedVillage.villagePoints }}
     </p>

@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from . import api
 from api.views.after_login.villages_view import VillagesView
+from api.views.after_login.map_view import MapView
 
 router = routers.DefaultRouter()
 router.register(r'villages', api.VillagesViewSet)
@@ -21,6 +22,6 @@ router.register(r'resourcebuildingdetails', api.ResourceBuildingDetailsViewSet)
 urlpatterns = (
     # urls for Django Rest Framework API
     path('v1/', include(router.urls)),
-    path('villagesView/', VillagesView.as_view(), name='villageApi'),
-    path('villagesView/<int:village_index>', VillagesView.as_view()),
+    path('villagesView/<int:village_index>', VillagesView.as_view(), name='villageApi'),
+    path('mapView/', MapView.as_view()),
 )

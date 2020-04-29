@@ -3,16 +3,20 @@ import { WoVillageSprite } from "src/app/wo-common/wo-phaser-sprite/wo-phaser-sp
 import { Subject } from "rxjs";
 import { VillageDetailCardService } from "../component/village-detail-card/service/village-detail-card.service";
 import { Game } from "phaser";
+import { MapVillagesService } from "./map-villages.service";
 
 class MapScene extends Phaser.Scene {
   map: Phaser.Tilemaps.Tilemap;
   controls: Phaser.Cameras.Controls.FixedKeyControl;
 
-  constructor(public villageDetailCardService: VillageDetailCardService) {
+  constructor(
+    public villageDetailCardService: VillageDetailCardService,
+    public mapVillagesService: MapVillagesService
+  ) {
     super({ key: "main" });
   }
 
-  create() {
+  async create() {
     console.log("create method");
     this.createMap();
     this.cameras.main.setBounds(
@@ -23,7 +27,7 @@ class MapScene extends Phaser.Scene {
       true
     );
     this.setCursorControls();
-    this.loadVillages();
+    await this.loadVillages();
   }
 
   preload() {
@@ -129,116 +133,101 @@ class MapScene extends Phaser.Scene {
   selectedIndicator: Phaser.GameObjects.Sprite;
   selectedVillageSubject: Subject<WoVillageSprite> = new Subject();
   selectedVillage: WoVillageSprite;
-  private loadVillages() {
-    let tile_dimensions = new Phaser.Geom.Point(
-      this.map.tileWidth,
-      this.map.tileHeight
-    );
-
-    let infos = [
-      {
-        playerName: "wololoPlayerrr",
-        villagePoints: 150,
-        coords: {
-          x: 300,
-          y: 300,
-        },
-        village_id: "2",
-        user_id: 2,
-        owner: "yours",
-        villageName: "wololo",
-        points: 200,
-      },
-    ];
-
+  private async loadVillages() {
+    // let tile_dimensions = new Phaser.Geom.Point(
+    //   this.map.tileWidth,
+    //   this.map.tileHeight
+    // );
     let parentThis = this;
 
-    infos.forEach(function (element) {
-      if (element.playerName != "") {
-        let villageImageName: string;
-        if (element.villagePoints > 200) {
-          villageImageName = "tr2";
-        } else {
-          villageImageName = "tr1";
-        }
-
-        let mySprite = new WoVillageSprite(
-          parentThis,
-          element.coords.x,
-          element.coords.y,
-          villageImageName
-        );
-        mySprite.villageId = element.village_id;
-        mySprite.userId = element.user_id;
-        mySprite.owner = element.owner ? "yours" : "";
-        mySprite.villageName = element.villageName;
-        mySprite.playerName = element.playerName;
-        mySprite.villagePoints = element.points;
-        mySprite.x = element.coords.x;
-        mySprite.y = element.coords.y;
-        let sprite = <WoVillageSprite>parentThis.add.existing(mySprite);
-        sprite.on("pointerdown", () => {
-          let targetVilCoords = {
-            x: sprite.x,
-            y: sprite.y,
-          };
-
-          if (parentThis.selectedVillage) {
-            console.log(parentThis.selectedIndicator);
-            parentThis.selectedIndicator.destroy();
-            parentThis.selectedVillage = null;
-
-            // initSideBar(sprite);
-            // removePathSprites();
-            // if (!sprite.owner) {
-            //   findPath(this.selectedVillage.coords, targetVilCoords);
-            // }
+    await this.mapVillagesService.getMapVillages().then((mapVillages) => {
+      mapVillages.forEach(function (element) {
+        if (element.playerName != "") {
+          let villageImageName: string;
+          if (element.points > 200) {
+            villageImageName = "tr2";
           } else {
-            parentThis.selectedVillageSubject.next(sprite);
-            parentThis.villageDetailCardService.villageSelected(sprite);
-            parentThis.selectedIndicator = parentThis.add.sprite(
-              sprite.x - 10,
-              sprite.y - 8,
-              "selected"
-            );
-            parentThis.selectedVillage = sprite;
-            // initSideBar(sprite);
-
-            // if (!sprite.owner) {
-            //   findPath(this.selectedVillage.coords, targetVilCoords);
-            // }
+            villageImageName = "tr1";
           }
-        });
-        sprite.on("pointerover", () => {
-          // document.body.style.cursor = "pointer";
-          // let mousePositionX = event.pageX;
-          // let mousePositionY = event.pageY;
-          // $("#tooltip span").html(
-          //   sprite.playerName + "<br>" + sprite.villageName + "<br>" + sprite.owner
-          // );
-          // $("#tooltip").stop(false, true).fadeIn(1000);
-          // $("#tooltip").css({
-          //   top: mousePositionY - winH / 18,
-          //   left: mousePositionX - winW / 40 + 40,
-          // });
-          // var tooltip = document.querySelectorAll("#tooltip");
-          // function fn(e) {
-          //   for (var i = tooltip.length; i--; ) {
-          //     tooltip[i].style.left = e.pageX + "px";
-          //     tooltip[i].style.top = e.pageY + "px";
-          //   }
-          // }
-          // document.addEventListener("mousemove", fn, false);
-        });
-        sprite.setInteractive();
 
-        // sprite.inputEnabled = true;
-        // sprite.on("pointerover", function (pointer) {
-        //   parentThis.onHoverListener();
-        // });
-        // sprite.eventNames.add(onHoverListener, sprite);
-        // sprite.events.onInputOut.add(onOutListener, sprite);
-      }
+          let mySprite = new WoVillageSprite(
+            parentThis,
+            element.coords.x,
+            element.coords.y,
+            villageImageName
+          );
+          mySprite.villageId = element.villageId.toString();
+          mySprite.userId = element.userId;
+          mySprite.owner = element.owner ? "yours" : "";
+          mySprite.villageName = element.villageName;
+          mySprite.playerName = element.playerName;
+          mySprite.villagePoints = element.points;
+          mySprite.x = element.coords.x;
+          mySprite.y = element.coords.y;
+          let sprite = <WoVillageSprite>parentThis.add.existing(mySprite);
+          sprite.on("pointerdown", () => {
+            let targetVilCoords = {
+              x: sprite.x,
+              y: sprite.y,
+            };
+
+            if (parentThis.selectedVillage) {
+              console.log(parentThis.selectedIndicator);
+              parentThis.selectedIndicator.destroy();
+              parentThis.selectedVillage = null;
+
+              // initSideBar(sprite);
+              // removePathSprites();
+              // if (!sprite.owner) {
+              //   findPath(this.selectedVillage.coords, targetVilCoords);
+              // }
+            } else {
+              parentThis.selectedVillageSubject.next(sprite);
+              parentThis.villageDetailCardService.villageSelected(sprite);
+              parentThis.selectedIndicator = parentThis.add.sprite(
+                sprite.x,
+                sprite.y,
+                "selected"
+              );
+              parentThis.selectedVillage = sprite;
+              // initSideBar(sprite);
+
+              // if (!sprite.owner) {
+              //   findPath(this.selectedVillage.coords, targetVilCoords);
+              // }
+            }
+          });
+          sprite.on("pointerover", () => {
+            // document.body.style.cursor = "pointer";
+            // let mousePositionX = event.pageX;
+            // let mousePositionY = event.pageY;
+            // $("#tooltip span").html(
+            //   sprite.playerName + "<br>" + sprite.villageName + "<br>" + sprite.owner
+            // );
+            // $("#tooltip").stop(false, true).fadeIn(1000);
+            // $("#tooltip").css({
+            //   top: mousePositionY - winH / 18,
+            //   left: mousePositionX - winW / 40 + 40,
+            // });
+            // var tooltip = document.querySelectorAll("#tooltip");
+            // function fn(e) {
+            //   for (var i = tooltip.length; i--; ) {
+            //     tooltip[i].style.left = e.pageX + "px";
+            //     tooltip[i].style.top = e.pageY + "px";
+            //   }
+            // }
+            // document.addEventListener("mousemove", fn, false);
+          });
+          sprite.setInteractive();
+
+          // sprite.inputEnabled = true;
+          // sprite.on("pointerover", function (pointer) {
+          //   parentThis.onHoverListener();
+          // });
+          // sprite.eventNames.add(onHoverListener, sprite);
+          // sprite.events.onInputOut.add(onOutListener, sprite);
+        }
+      });
     });
   }
 
@@ -259,9 +248,12 @@ class MapScene extends Phaser.Scene {
 export class MapSceneService {
   mapScene: Phaser.Scene;
 
-  constructor(public villageDetailCardService: VillageDetailCardService) {}
+  constructor(
+    public villageDetailCardService: VillageDetailCardService,
+    public mapVillagesService: MapVillagesService
+  ) {}
 
   getNewInstanceOfMapScene() {
-    return new MapScene(this.villageDetailCardService);
+    return new MapScene(this.villageDetailCardService, this.mapVillagesService);
   }
 }
