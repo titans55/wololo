@@ -1,164 +1,227 @@
-village works
-<!-- <div class="village-content">
-  <ul class="list-group">
-    {% for buildingName, building in data.selectedVillage.buildings.items %} {%
-    if buildingName != 'resources' %}
-    <li class="list-group-item">
-      <div class="row" id="{{ buildingName }}-row">
-        <div class="col">
-          <div class="row">
-            <a class="col" href="/game/{{ buildingName }}">
-              {{ buildingName | humanizeCamelCase }}
-            </a>
-            <div class="col">
-              <span id="{{ buildingName }}-level" class="badge badge-info">
-                Level
-                <div class="level">
-                  {{ building.level }}
-                </div>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div buildingName="{{ buildingName }}" class="upgradeBuildings">
-            <div class="row buildingDetailsSection">
-              {% if building.upgrading.state == 'true' %}
-              <div class="progress">
-                <div
-                  id="{{ buildingName }}-progressBar"
-                  class="progress-bar progress-bar-success progress-bar-striped active"
-                  role="progressbar"
-                  aria-valuenow="0"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style="width: 0%;"
-                >
-                  <span id="current-progress"></span>
-                </div>
-              </div>
-              {% else %}
-              <div class="col">
-                <div class="neededWood">XXX</div>
-                Wood
-              </div>
-              <div class="col">
-                <div class="neededIron">XXX</div>
-                Iron
-              </div>
-              <div class="col">
-                <div class="neededClay">XXX</div>
-                Clay
-              </div>
-              <div class="col">
-                <div class="neededTime">
-                  XXX
-                </div>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <div class="col upgradeOrCancelBtn">
-          {% if building.upgrading.state == 'true' %}
-          <button class="cancelUpgrade btn btn-danger" id="{{ buildingName }}">
-            Cancel
-          </button>
-          {% else %}
-          <button class="upgrade btn btn-primary" id="{{ buildingName }}">
-            Upgrade
-          </button>
-          {% endif %}
-        </div>
-      </div>
-    </li>
-    {% else %} {% for resourceBuildingName, resourceBuilding in building.items
-    %}
-    <li class="list-group-item">
-      <div class="row" id="resources-{{ resourceBuildingName }}-row">
-        <div class="col">
+<div class="village-content">
+  <ul class="list-group" *ngIf="selectedVillage">
+    <!-- {% for buildingName, building in data.selectedVillage.buildings.items %} {%
+    if buildingName != 'resources' %} -->
+    <div *ngFor="let building of selectedVillage.buildings | keyvalue">
+      <ng-container
+        *ngIf="
+          building.key != 'resources';
+          then buildingTemplate;
+          else resourceBuildingTemplate
+        "
+      ></ng-container>
+      <ng-template #buildingTemplate>
+        <li class="list-group-item">
           <div class="row">
             <div class="col">
-              {{ resourceBuildingName | humanizeCamelCase }}
+              <div class="row">
+                <a class="col" href="/game/{{ building.key }}">
+                  {{ building.key | humanizeCamelCase }}
+                </a>
+                <div class="col">
+                  <span class="badge badge-info">
+                    Level
+                    <div class="level">
+                      {{ building.value.level }}
+                    </div>
+                  </span>
+                </div>
+              </div>
             </div>
             <div class="col">
-              <span
-                id="resources.{{ resourceBuildingName }}-level"
-                class="badge badge-info"
-              >
-                Level
-                <div class="level">
-                  {{ resourceBuilding.level }}
+              <div class="upgradeBuildings">
+                <div class="row buildingDetailsSection">
+                  <ng-container
+                    *ngIf="
+                      building.value.upgrading.state;
+                      then progressBarTemplate;
+                      else neededResourcesTemplate
+                    "
+                  ></ng-container>
+                  <ng-template #progressBarTemplate>
+                    <div class="progress">
+                      <div
+                        id="{{ building.key }}-progressBar"
+                        class="progress-bar progress-bar-success progress-bar-striped active"
+                        role="progressbar"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style="width: 0%;"
+                      >
+                        <span id="current-progress"></span>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <ng-template #neededResourcesTemplate>
+                    <div class="col">
+                      <div class="neededWood">
+                        {{ getBuildingNeededResources(building.key).wood }}
+                      </div>
+                      Wood
+                    </div>
+                    <div class="col">
+                      <div class="neededIron">
+                        {{ getBuildingNeededResources(building.key).iron }}
+                      </div>
+                      Iron
+                    </div>
+                    <div class="col">
+                      <div class="neededClay">
+                        {{ getBuildingNeededResources(building.key).clay }}
+                      </div>
+                      Clay
+                    </div>
+                    <div class="col">
+                      <div class="neededTime">
+                        {{ getBuildingUpgradeTime(building.key) }}
+                      </div>
+                    </div>
+                  </ng-template>
                 </div>
-              </span>
+              </div>
+            </div>
+            <div class="col upgradeOrCancelBtn">
+              <ng-container
+                *ngIf="
+                  building.value.upgrading.state;
+                  then cancelUpgradeBtn;
+                  else upgradeBtn
+                "
+              ></ng-container>
+              <ng-template #cancelUpgradeBtn>
+                <button class="cancelUpgrade btn btn-danger">
+                  Cancel
+                </button>
+              </ng-template>
+              <ng-template #upgradeBtn>
+                <button class="upgrade btn btn-primary">
+                  Upgrade
+                </button>
+              </ng-template>
             </div>
           </div>
-        </div>
-        <div class="col">
-          <div
-            buildingName="{{ resourceBuildingName }}"
-            class="upgradeResources"
-            resourceType="wood"
-          >
-            <div class="row buildingDetailsSection">
-              {% if resourceBuilding.upgrading.state == 'true' %}
-              <div class="progress">
-                <div
-                  id="{{ resourceBuildingName }}-progressBar"
-                  class="progress-bar progress-bar-success progress-bar-striped active"
-                  role="progressbar"
-                  aria-valuenow="0"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style="width: 0%;"
-                >
-                  <span id="current-progress"></span>
+        </li>
+      </ng-template>
+      <ng-template #resourceBuildingTemplate>
+        <li
+          class="list-group-item"
+          *ngFor="let resourceBuilding of building.value | keyvalue"
+        >
+          <div class="row">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  {{ resourceBuilding.key | humanizeCamelCase }}
+                </div>
+                <div class="col">
+                  <span class="badge badge-info">
+                    Level
+                    <div class="level">
+                      {{ resourceBuilding.value.level }}
+                    </div>
+                  </span>
                 </div>
               </div>
-              {% else %}
-              <div class="col">
-                <div class="neededWood">XXX</div>
-                Wood
-              </div>
-              <div class="col">
-                <div class="neededIron">XXX</div>
-                Iron
-              </div>
-              <div class="col">
-                <div class="neededClay">XXX</div>
-                Clay
-              </div>
-              <div class="col">
-                <div class="neededTime">
-                  XXX
+            </div>
+            <div class="col">
+              <div class="upgradeResources" resourceType="wood">
+                <div class="row buildingDetailsSection">
+                  <ng-container
+                    *ngIf="
+                      resourceBuilding.value.upgrading.state;
+                      then progressBarTemplate;
+                      else neededResourcesTemplate
+                    "
+                  ></ng-container>
+                  <ng-template #progressBarTemplate>
+                    <div class="progress">
+                      <div
+                        id="{{ resourceBuilding.key }}-progressBar"
+                        class="progress-bar progress-bar-success progress-bar-striped active"
+                        role="progressbar"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style="width: 0%;"
+                      >
+                        <span id="current-progress"></span>
+                      </div>
+                    </div>
+                  </ng-template>
+                  <ng-template #neededResourcesTemplate>
+                    <div class="col">
+                      <div class="neededWood">
+                        {{
+                          getBuildingNeededResources(
+                            building.key,
+                            resourceBuilding.key
+                          ).wood
+                        }}
+                      </div>
+                      Wood
+                    </div>
+                    <div class="col">
+                      <div class="neededIron">
+                        {{
+                          getBuildingNeededResources(
+                            building.key,
+                            resourceBuilding.key
+                          ).iron
+                        }}
+                      </div>
+                      Iron
+                    </div>
+                    <div class="col">
+                      <div class="neededClay">
+                        {{
+                          getBuildingNeededResources(
+                            building.key,
+                            resourceBuilding.key
+                          ).clay
+                        }}
+                      </div>
+                      Clay
+                    </div>
+                    <div class="col">
+                      <div class="neededTime">
+                        {{
+                          getBuildingUpgradeTime(
+                            building.key,
+                            resourceBuilding.key
+                          )
+                        }}
+                      </div>
+                    </div>
+                  </ng-template>
                 </div>
               </div>
-              {% endif %}
+            </div>
+            <div class="col upgradeOrCancelBtn">
+              <ng-container
+                *ngIf="
+                  resourceBuilding.value.upgrading.state;
+                  then cancelUpgradeBtn;
+                  else upgradeBtn
+                "
+              ></ng-container>
+              <ng-template #cancelUpgradeBtn>
+                <button class="cancelUpgrade btn btn-danger">
+                  Cancel
+                </button>
+              </ng-template>
+              <ng-template #upgradeBtn>
+                <button class="upgrade btn btn-primary">
+                  Upgrade
+                </button>
+              </ng-template>
             </div>
           </div>
-        </div>
-        <div class="col upgradeOrCancelBtn">
-          {% if resourceBuilding.upgrading.state == 'true' %}
-          <button
-            class="cancelUpgrade btn btn-danger"
-            id="resources.{{ resourceBuildingName }}"
-          >
-            Cancel
-          </button>
-          {% else %}
-          <button
-            class="upgrade btn btn-primary"
-            id="resources.{{ resourceBuildingName }}"
-          >
-            Upgrade
-          </button>
-          {% endif %}
-        </div>
-      </div>
-    </li>
-    {% endfor %} {% endif %} {% endfor %}
+        </li>
+      </ng-template>
+    </div>
   </ul>
-
+  <!--
   <div
     class="modal fade"
     id="insufficentResources"
@@ -268,5 +331,5 @@ village works
       </div>
       {% endif %}
     </div>
-  </div>
-</div> -->
+  </div> -->
+</div>
