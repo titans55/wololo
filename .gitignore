@@ -9,4 +9,4 @@ wololo/__pycache__/
 
 .vscode/
 
-worker.state
+**/worker.state
