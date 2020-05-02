@@ -5,6 +5,8 @@ from . import api
 from api.views.after_login.villages_view import VillagesView
 from api.views.after_login.map_view import MapView
 
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
+
 router = routers.DefaultRouter()
 router.register(r'villages', api.VillagesViewSet)
 router.register(r'regions', api.RegionsViewSet)
@@ -22,6 +24,8 @@ router.register(r'resourcebuildingdetails', api.ResourceBuildingDetailsViewSet)
 urlpatterns = (
     # urls for Django Rest Framework API
     path('v1/', include(router.urls)),
+    path('token-auth/', obtain_jwt_token),
+    path('token-refresh/', refresh_jwt_token),
     path('villagesView/<int:village_index>', VillagesView.as_view(), name='villageApi'),
     path('mapView/', MapView.as_view()),
 )
