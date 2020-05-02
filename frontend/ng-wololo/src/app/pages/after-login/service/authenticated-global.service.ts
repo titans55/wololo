@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { EnviromentEnumDev } from "./enum/enviroment.enum";
+import { Enviroment } from "./enviroment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({
@@ -18,13 +18,17 @@ export class AuthenticatedGlobalService {
 
   get(url: string): Promise<any> {
     return this.http
-      .get(EnviromentEnumDev.BASE_URL + url, this.httpOptions())
+      .get("http://" + Enviroment.BASE_URL + "/" + url, this.httpOptions())
       .toPromise();
   }
 
   post(url: string, data?: any): Promise<any> {
     return this.http
-      .post(EnviromentEnumDev.BASE_URL + url, data, this.httpOptions())
+      .post(
+        "http://" + Enviroment.BASE_URL + "/" + url,
+        data,
+        this.httpOptions()
+      )
       .toPromise();
   }
 

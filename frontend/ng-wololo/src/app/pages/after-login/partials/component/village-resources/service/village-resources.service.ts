@@ -6,7 +6,7 @@ import {
   VillageResourceDetailModel,
   PopulationModel,
   VillageModel,
-} from "src/app/pages/after-login/component/village/model/village-data.model";
+} from "src/app/pages/after-login/component/village/model/general/village-data.model";
 import * as gameConfigs from "../../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
 import { AuthenticatedGlobalService } from "src/app/pages/after-login/service/authenticated-global.service";
 import {
@@ -14,9 +14,8 @@ import {
   ResourceBuildingDetails,
   SelectedVillageBuildings,
   ResourcesBuildings,
-  Village,
-} from "src/app/pages/after-login/component/village/model/village.dto";
-import { TimeInterval, Subject } from "rxjs";
+} from "src/app/pages/after-login/component/village/model/general/village.dto";
+import { Subject, Observable, ReplaySubject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -130,7 +129,12 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   private villagesOfPlayer: Array<VillageModel>;
-  villagesOfPlayerSubject: Subject<Array<VillageModel>> = new Subject();
+  private _villagesOfPlayerSubject: ReplaySubject<
+    Array<VillageModel>
+  > = new ReplaySubject();
+  get villagesOfPlayerSubject(): Observable<VillageModel[]> {
+    return this._villagesOfPlayerSubject.asObservable();
+  }
   private setAndEmitVillagesOfPlayer() {
     this.villagesOfPlayer = [];
     this.villageData.villagesInfo.forEach((village) => {
@@ -141,7 +145,7 @@ export class VillageResourcesService extends ResourcesModel {
     this.villagesOfPlayer.find((village) => {
       return village.villageId == this.villageData.selectedVillage.villageId;
     }).selected = true;
-    this.villagesOfPlayerSubject.next(this.villagesOfPlayer);
+    this._villagesOfPlayerSubject.next(this.villagesOfPlayer);
   }
 
   private calculateUsedPopulation(): number {

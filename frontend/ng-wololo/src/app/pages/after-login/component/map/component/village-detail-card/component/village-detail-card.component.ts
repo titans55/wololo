@@ -17,7 +17,7 @@ export class VillageDetailCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.villageSelectedSubscription = this.villageDetailCardService.villageSelectedSubject.subscribe(
-      (selectedVillage) => {
+      (selectedVillage: WoVillageSprite) => {
         this.selectedVillage = selectedVillage;
       }
     );

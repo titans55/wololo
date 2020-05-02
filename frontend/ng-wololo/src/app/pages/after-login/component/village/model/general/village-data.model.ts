@@ -1,4 +1,4 @@
-import * as gameConfig from "../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
+import * as gameConfig from "../../../../../../../../../../wololo/game-config/gameConfig.json";
 import { Subject } from "rxjs";
 import {
   ResourcesBuildings,
@@ -10,6 +10,10 @@ import {
   Coords,
 } from "./village.dto";
 export type GameConfig = typeof gameConfig;
+export type BuildingsConfigs = typeof gameConfig.buildings;
+export type BuildingConfig =
+  | typeof gameConfig.buildings
+  | typeof gameConfig.buildings.resources;
 
 export interface Resources<T> {
   wood: T;

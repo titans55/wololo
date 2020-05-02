@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { SwitchVillageService } from "../service/switch-village.service";
 import { VillageResourcesService } from "../../../service/village-resources.service";
-import { VillageModel } from "src/app/pages/after-login/component/village/model/village-data.model";
+import { VillageModel } from "src/app/pages/after-login/component/village/model/general/village-data.model";
 
 @Component({
   selector: "woo-switch-village",

@@ -3,7 +3,7 @@ import { VillageResourcesService } from "../service/village-resources.service";
 import {
   VillageResourceDetailModel,
   PopulationModel,
-} from "src/app/pages/after-login/component/village/model/village-data.model";
+} from "src/app/pages/after-login/component/village/model/general/village-data.model";
 import { Subject } from "rxjs";
 
 @Component({
