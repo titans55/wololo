@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import datetime
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -48,6 +50,17 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'wololo.Users'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+}
 
 
 MIDDLEWARE = [
@@ -88,7 +101,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 
 WSGI_APPLICATION = 'DjangoPostgresProject.wsgi.application'
@@ -150,7 +162,7 @@ LANDING_PAGE_REDIRECT_URL = '/'
 LOGIN_URL = '/'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 60 * 60 * 4 #4hours
+SESSION_COOKIE_AGE = 60 * 60 * 4  # 4hours
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
