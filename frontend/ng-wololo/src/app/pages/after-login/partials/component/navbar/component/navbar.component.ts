@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AfterLoginRoutesEnum } from "src/app/pages/after-login/after-login.routing";
+import { UserService } from "src/app/pages/after-login/service/user/user.service";
 
 @Component({
   selector: "woo-navbar",
@@ -8,8 +9,15 @@ import { AfterLoginRoutesEnum } from "src/app/pages/after-login/after-login.rout
 })
 export class NavbarComponent implements OnInit {
   isCollapsed: boolean = true;
+  username: string;
 
-  constructor() {}
+  constructor(private userService: UserService) {
+    this.username = this.userService.username;
+  }
+
+  logout() {
+    this.userService.logout();
+  }
 
   ngOnInit() {}
 

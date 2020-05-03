@@ -8,6 +8,7 @@ import { WoCommonModule } from "src/app/wo-common/wo-common.module";
 import { MapModule } from "./component/map/map.module";
 import { VillageModule } from "./component/village/village.module";
 import { AuthenticatedGlobalService } from "./service/authenticated-global.service";
+import { AuthGuard } from "./service/user/guard/auth.guard";
 
 @NgModule({
   imports: [
@@ -20,6 +21,6 @@ import { AuthenticatedGlobalService } from "./service/authenticated-global.servi
   ],
   exports: [AfterLoginComponent],
   declarations: [AfterLoginComponent],
-  providers: [AuthenticatedGlobalService],
+  providers: [AuthenticatedGlobalService, AuthGuard],
 })
 export class AfterLoginModule {}

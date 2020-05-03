@@ -15,17 +15,21 @@ from django.db import transaction
 from wololo.models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import  permissions
+from rest_framework_jwt import authentication
+from django.contrib.auth.models import User
 
 gameConfig = getGameConfig()
 
 class VillagesView(APIView):
-
+    authentication_classes = (authentication.JSONWebTokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    
     def get(self, request, village_index=None):
         # user_id = request.user.id
         # user = request.user
         #TODO revert when auth added
-        user = Users.objects.get(id=1)
-        user_id = user.id
+        user = request.user
 
         if user.is_region_selected is False :
             return redirect("selectRegion")

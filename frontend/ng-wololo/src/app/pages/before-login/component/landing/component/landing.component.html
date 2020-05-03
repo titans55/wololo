@@ -21,44 +21,7 @@
     </div>
     <div class="col-sm-4">
       <div class="login-form mt-4">
-        <form action="verifyLogin" method="post">
-          <h2 class="text-center">Log in</h2>
-          <div class="form-group">
-            <input
-              type="text"
-              class="form-control"
-              name="username"
-              placeholder="Username"
-              required="required"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              class="form-control"
-              name="password"
-              placeholder="Password"
-              required="required"
-            />
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">
-              Log in
-            </button>
-          </div>
-          <div class="clearfix">
-            <label class="pull-left checkbox-inline"
-              ><input type="checkbox" /> Remember me</label
-            >
-            <a href="#" class="pull-right">Forgot Password?</a>
-            <!-- {% for message in messages %}
-            <div class="alert alert-danger">
-              <a class="close" href="#" data-dismiss="alert">×</a> {{ message }}
-            </div>
-            {% endfor %} -->
-          </div>
-        </form>
-        <p class="text-center"><a href="/register">Create an Account</a></p>
+        <woo-login-form></woo-login-form>
       </div>
     </div>
   </div>
