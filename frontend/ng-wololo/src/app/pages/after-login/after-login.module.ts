@@ -16,7 +16,7 @@ import { AuthenticatedGlobalService } from "./service/authenticated-global.servi
     WoCommonModule,
     MapModule,
     VillageModule,
-    RouterModule.forRoot(AfterLoginRoutes),
+    RouterModule.forChild(AfterLoginRoutes),
   ],
   exports: [AfterLoginComponent],
   declarations: [AfterLoginComponent],

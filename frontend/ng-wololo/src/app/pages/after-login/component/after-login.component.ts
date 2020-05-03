@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { RouterOutletEnum } from "../enum/router-outlet.enum";
 import { WebsocketService } from "../service/websocket.service";
+import { AfterRouterOutletEnum } from "../enum/after-router-outlet.enum";
 
 @Component({
   selector: "woo-after-login",
@@ -12,7 +12,7 @@ export class AfterLoginComponent implements OnInit {
   }
 
   get afterLoginRouterOutlet(): string {
-    return RouterOutletEnum.ROUTER_OUTLET_NAME;
+    return AfterRouterOutletEnum.ROUTER_OUTLET_NAME;
   }
 
   ngOnInit() {}
