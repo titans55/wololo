@@ -1,14 +1,14 @@
 from channels.routing import ProtocolTypeRouter, URLRouter, ChannelNameRouter
-import wololo.routing
-from wololo.consumers import ChatConsumer
+from wololo.websocket.routing import websocket_urlpatterns
 from channels.sessions import SessionMiddlewareStack
+from wololo.websocket.websocket_jwt_auth import JWTAuthMiddlewareStack
 
 application = ProtocolTypeRouter({
     # (http->django views is added by default)
 
-    'websocket': SessionMiddlewareStack(
+    'websocket': JWTAuthMiddlewareStack(
         URLRouter(
-            wololo.routing.websocket_urlpatterns
+            websocket_urlpatterns
         )
     ),
 })

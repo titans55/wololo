@@ -6,9 +6,11 @@ class ChatConsumer(WebsocketConsumer):
     def connect ( self ) :
         # Connects the channel named `self.channel_name`
         # to the group `jokes`
-        
+        if self.scope["user"].is_anonymous:
+            raise Exception("Anonymous users not allowed")
+        print(self.scope["user"].id)
         async_to_sync ( self. channel_layer . group_add ) (
-            self.scope["session"]['userID'] , self. channel_name
+            str(self.scope["user"].id) , self. channel_name
         )
         # Accepts connection
         self. accept ( )
@@ -16,7 +18,7 @@ class ChatConsumer(WebsocketConsumer):
         # Disables the channel named `self.channel_name`
         # from the group `jokes`
         async_to_sync ( self. channel_layer . group_discard ) (
-            self.scope["session"]['userID'] , self. channel_name
+            str(self.scope["user"].id) , self. channel_name
         )
     # Method `notify_user` - event handler` notify.user`
     def notify_user ( self, event ) :

@@ -89,7 +89,6 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   public async initPlayer(villageIndex: number = 0) {
-    debugger;
     for (let i = 0; i < this.productionIntervals.length; i++) {
       clearInterval(this.productionIntervals[i]);
       this.productionIntervals.pop();

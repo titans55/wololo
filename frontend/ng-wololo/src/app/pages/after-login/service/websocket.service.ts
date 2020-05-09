@@ -1,18 +1,21 @@
 import { Injectable } from "@angular/core";
 import * as gameConfigs from "../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
 import { Enviroment } from "./enviroment";
+import { UserService } from "./user/user.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class WebsocketService {
   socket: WebSocket;
-  constructor() {}
+  constructor(private userService: UserService) {}
 
   initWebsockets() {
     if (this.socket == null) {
       const parentThis = this;
-      this.socket = new WebSocket("ws://" + Enviroment.HOST + "ws/game/");
+      this.socket = new WebSocket(
+        "ws://" + Enviroment.HOST + "ws/game/?token=" + this.userService.token
+      );
 
       this.socket.onopen = function (e) {
         console.log("websocket connected", e);

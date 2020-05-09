@@ -75,6 +75,7 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
+    'JWT_AUTH_COOKIE': 'JWT',     # the cookie will also be sent on WebSocket connections
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
 }
 
@@ -184,3 +185,5 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
     'http://127.0.0.1:4200'
 ]
+
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
