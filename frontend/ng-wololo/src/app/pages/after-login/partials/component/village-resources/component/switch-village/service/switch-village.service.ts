@@ -8,6 +8,6 @@ export class SwitchVillageService {
   constructor(private villageResourcesService: VillageResourcesService) {}
 
   async switchVillageButton(villageIndex: number): Promise<void> {
-    await this.villageResourcesService.setPlayerData(villageIndex);
+    await this.villageResourcesService.initPlayer(villageIndex);
   }
 }

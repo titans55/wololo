@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as gameConfig from "../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
-import { AuthenticatedGlobalService } from "../../../service/authenticated-global.service";
+import { GlobalService } from "../../../service/global.service";
 import {
   BuildingsConfigs,
   Resources,
@@ -18,7 +18,7 @@ import { calculateHumanizedTimeFromMinutes } from "../../../../../utils/date-uti
 export class VillageService {
   public buildingsConfigs: BuildingsConfigs = gameConfig.buildings;
 
-  constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {}
+  constructor(public globalService: GlobalService) {}
 
   getBuildingNeededResources(
     selectedVillage: VillageModel,

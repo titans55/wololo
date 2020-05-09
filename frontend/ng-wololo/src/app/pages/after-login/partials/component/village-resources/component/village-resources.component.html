@@ -45,7 +45,7 @@
         Storage
         <div>{{ storageCapacity }}</div></span
       >
-      <span class="badge badge-success">
+      <span class="badge badge-success" *ngIf="populationInfo">
         Population
         <div
           [class]="

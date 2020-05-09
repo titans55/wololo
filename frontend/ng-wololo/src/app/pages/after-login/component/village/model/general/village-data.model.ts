@@ -1,5 +1,5 @@
 import * as gameConfig from "../../../../../../../../../../wololo/game-config/gameConfig.json";
-import { Subject } from "rxjs";
+import { Subject, ReplaySubject } from "rxjs";
 import {
   ResourcesBuildings,
   ResourceBuildingDetails,
@@ -35,7 +35,9 @@ export class ResourcesModel implements Resources<ResourceModel> {
 
 export class ResourceModel implements ResourceBuildingDetails {
   private _buildingName: keyof ResourcesBuildings;
-  currentSummary: Subject<VillageResourceDetailModel> = new Subject();
+  currentSummary: ReplaySubject<
+    VillageResourceDetailModel
+  > = new ReplaySubject();
   level: number;
   sum: number;
   lastInteractionDate: Date;

@@ -5,12 +5,22 @@ import { Enviroment } from "../enviroment";
 import { ReplaySubject, BehaviorSubject } from "rxjs";
 import * as moment from "moment";
 import { Router } from "@angular/router";
+import { PlayerDataDto } from "../../component/village/model/general/village.dto";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class UserService {
-  // the actual JWT token
+  private playerData: PlayerDataDto;
+
+  setPlayerData(playerDataDto: PlayerDataDto): void {
+    if (playerDataDto) {
+      this.playerData = playerDataDto;
+    }
+  }
+
+  getPlayerData(): PlayerDataDto {
+    return this.playerData;
+  }
+
   get token(): string {
     return localStorage.getItem("token");
   }

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AuthenticatedGlobalService } from "../../../service/authenticated-global.service";
+import { GlobalService } from "../../../service/global.service";
 import { MapConfigsEnum } from "../enum/map-configs.enum";
 import { PublicVillageDto } from "../model/public-village.dto";
 
@@ -7,11 +7,9 @@ import { PublicVillageDto } from "../model/public-village.dto";
   providedIn: "root",
 })
 export class MapVillagesService {
-  constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {}
+  constructor(public globalService: GlobalService) {}
 
   getMapVillages(): Promise<Array<PublicVillageDto>> {
-    return this.authenticatedGlobalService.get(
-      MapConfigsEnum.MAP_VILLAGES_ENDPOINT
-    );
+    return this.globalService.get(MapConfigsEnum.MAP_VILLAGES_ENDPOINT);
   }
 }

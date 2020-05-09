@@ -8,31 +8,42 @@ import {
   VillageModel,
 } from "src/app/pages/after-login/component/village/model/general/village-data.model";
 import * as gameConfigs from "../../../../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
-import { AuthenticatedGlobalService } from "src/app/pages/after-login/service/authenticated-global.service";
+import { GlobalService } from "src/app/pages/after-login/service/global.service";
 import {
   PlayerDataDto,
   ResourceBuildingDetails,
   SelectedVillageBuildings,
   ResourcesBuildings,
 } from "src/app/pages/after-login/component/village/model/general/village.dto";
-import { Subject, Observable, ReplaySubject } from "rxjs";
+import { ReplaySubject, Observable } from "rxjs";
+import { UserService } from "src/app/pages/after-login/service/user/user.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class VillageResourcesService extends ResourcesModel {
   readonly resources: Array<ResourceModel> = [this.wood, this.iron, this.clay];
-  private villageData: PlayerDataDto;
   private productionIntervals: Array<any> = [];
-
-  constructor(public authenticatedGlobalService: AuthenticatedGlobalService) {
+  constructor(
+    private globalService: GlobalService,
+    private userService: UserService
+  ) {
     super();
     this.production();
   }
 
+  private getPlayerData(): PlayerDataDto {
+    return this.userService.getPlayerData();
+  }
+
+  private setPlayerData(playerData: PlayerDataDto) {
+    console.log("setting player data");
+    this.userService.setPlayerData(playerData);
+  }
+
   private async production(): Promise<void> {
-    if (this.villageData == null) {
-      await this.setPlayerData();
+    if (this.getPlayerData() == null) {
+      await this.initPlayer();
     }
     this.resources.forEach((resource) => {
       this.productionInterval(resource);
@@ -77,24 +88,23 @@ export class VillageResourcesService extends ResourcesModel {
     };
   }
 
-  public async setPlayerData(villageIndex: number = 0) {
+  public async initPlayer(villageIndex: number = 0) {
+    debugger;
     for (let i = 0; i < this.productionIntervals.length; i++) {
       clearInterval(this.productionIntervals[i]);
       this.productionIntervals.pop();
     }
-    return this.authenticatedGlobalService
+    return this.globalService
       .get("villagesView/" + villageIndex)
       .then((villageData: PlayerDataDto) => {
-        this.villageData = villageData;
+        this.setPlayerData(villageData);
         this.setAndEmitStorageCapacity();
         this.setAndEmitPopulationInfo();
         this.setAndEmitVillagesOfPlayer();
-        for (const resourceBuildingName in this.villageData.selectedVillage
+        for (const resourceBuildingName in this.getPlayerData().selectedVillage
           .buildings.resources) {
-          let resourceBuildingDetails: ResourceBuildingDetails = this
-            .villageData.selectedVillage.buildings.resources[
-            resourceBuildingName
-          ];
+          let resourceBuildingDetails: ResourceBuildingDetails = this.getPlayerData()
+            .selectedVillage.buildings.resources[resourceBuildingName];
           let resourceModel = this.resources.find((resource) => {
             return resource.buildingName == resourceBuildingName;
           });
@@ -104,23 +114,23 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   private storageCapacity: number;
-  storageSubject: Subject<number> = new Subject();
+  storageSubject: ReplaySubject<number> = new ReplaySubject();
   private setAndEmitStorageCapacity(): void {
     this.storageCapacity =
       gameConfigs.buildings.storage.capacity[
-        this.villageData.selectedVillage.buildings.storage.level
+        this.getPlayerData().selectedVillage.buildings.storage.level
       ];
     return this.storageSubject.next(this.storageCapacity);
   }
 
   private population: PopulationModel;
-  populationSubject: Subject<PopulationModel> = new Subject();
+  populationSubject: ReplaySubject<PopulationModel> = new ReplaySubject();
   private setAndEmitPopulationInfo() {
     let populationLimit: number =
       gameConfigs.buildings.farm.populationLimit[
-        this.villageData.selectedVillage.buildings.farm.level
+        this.getPlayerData().selectedVillage.buildings.farm.level
       ];
-    this.villageData.selectedVillage.troops.total;
+    this.getPlayerData().selectedVillage.troops.total;
     this.population = new PopulationModel(
       this.calculateUsedPopulation(),
       populationLimit
@@ -137,13 +147,15 @@ export class VillageResourcesService extends ResourcesModel {
   }
   private setAndEmitVillagesOfPlayer() {
     this.villagesOfPlayer = [];
-    this.villageData.villagesInfo.forEach((village) => {
+    this.getPlayerData().villagesInfo.forEach((village) => {
       let villageModel = new VillageModel();
       Object.assign(villageModel, village);
       this.villagesOfPlayer.push(villageModel);
     });
     this.villagesOfPlayer.find((village) => {
-      return village.villageId == this.villageData.selectedVillage.villageId;
+      return (
+        village.villageId == this.getPlayerData().selectedVillage.villageId
+      );
     }).selected = true;
     this._villagesOfPlayerSubject.next(this.villagesOfPlayer);
   }
@@ -151,20 +163,20 @@ export class VillageResourcesService extends ResourcesModel {
   private calculateUsedPopulation(): number {
     let usedPopulation = 0;
 
-    for (const bn in this.villageData.selectedVillage.buildings) {
+    for (const bn in this.getPlayerData().selectedVillage.buildings) {
       const buildingName = <keyof SelectedVillageBuildings>bn;
       if (buildingName != "resources") {
-        let level: number = this.villageData.selectedVillage.buildings[
+        let level: number = this.getPlayerData().selectedVillage.buildings[
           buildingName
         ].level;
         usedPopulation +=
           gameConfigs.buildings[buildingName].neededPopulation[level];
       } else {
-        for (const rbn in this.villageData.selectedVillage.buildings[
+        for (const rbn in this.getPlayerData().selectedVillage.buildings[
           buildingName
         ]) {
           let resourceBuildingName = <keyof ResourcesBuildings>rbn;
-          let level: number = this.villageData.selectedVillage.buildings[
+          let level: number = this.getPlayerData().selectedVillage.buildings[
             buildingName
           ][resourceBuildingName].level;
           usedPopulation +=
@@ -174,7 +186,7 @@ export class VillageResourcesService extends ResourcesModel {
       }
     }
     for (let [unitType, units] of Object.entries(
-      this.villageData.selectedVillage.troops.total
+      this.getPlayerData().selectedVillage.troops.total
     )) {
       for (let [unit, size] of Object.entries(units)) {
         const unitSize = <number>size;
@@ -184,7 +196,7 @@ export class VillageResourcesService extends ResourcesModel {
     }
 
     for (let [unitTypeName, unitTypeQueueList] of Object.entries(
-      this.villageData.selectedVillage.troops.trainingQueue
+      this.getPlayerData().selectedVillage.troops.trainingQueue
     )) {
       for (let queue in unitTypeQueueList) {
         usedPopulation +=

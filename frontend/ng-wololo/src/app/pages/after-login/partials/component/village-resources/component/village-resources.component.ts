@@ -4,7 +4,7 @@ import {
   VillageResourceDetailModel,
   PopulationModel,
 } from "src/app/pages/after-login/component/village/model/general/village-data.model";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
 @Component({
   selector: "woo-village-resources",
@@ -12,6 +12,7 @@ import { Subject } from "rxjs";
   styleUrls: ["./village-resources.component.css"],
 })
 export class VillageResourcesComponent implements OnInit {
+  subscriptions: Subscription = new Subscription();
   currentWood: VillageResourceDetailModel;
   currentIron: VillageResourceDetailModel;
   currentClay: VillageResourceDetailModel;
@@ -21,28 +22,45 @@ export class VillageResourcesComponent implements OnInit {
   constructor(public villageResourcesService: VillageResourcesService) {}
 
   ngOnInit() {
-    this.villageResourcesService.wood.currentSummary.subscribe(
-      (currentWood) => {
-        this.currentWood = currentWood;
-      }
+    this.subscriptions.add(
+      this.villageResourcesService.wood.currentSummary.subscribe(
+        (currentWood) => {
+          console.log(this.currentWood);
+          this.currentWood = currentWood;
+        }
+      )
     );
-    this.villageResourcesService.iron.currentSummary.subscribe(
-      (currentIron) => {
-        this.currentIron = currentIron;
-      }
+    this.subscriptions.add(
+      this.villageResourcesService.iron.currentSummary.subscribe(
+        (currentIron) => {
+          this.currentIron = currentIron;
+        }
+      )
     );
-    this.villageResourcesService.clay.currentSummary.subscribe(
-      (currentClay) => {
-        this.currentClay = currentClay;
-      }
+    this.subscriptions.add(
+      this.villageResourcesService.clay.currentSummary.subscribe(
+        (currentClay) => {
+          this.currentClay = currentClay;
+        }
+      )
     );
-    this.villageResourcesService.storageSubject.subscribe((storageCapacity) => {
-      this.storageCapacity = storageCapacity;
-    });
-    this.villageResourcesService.populationSubject.subscribe(
-      (populationInfo) => {
-        this.populationInfo = populationInfo;
-      }
+    this.subscriptions.add(
+      this.villageResourcesService.storageSubject.subscribe(
+        (storageCapacity) => {
+          this.storageCapacity = storageCapacity;
+        }
+      )
     );
+    this.subscriptions.add(
+      this.villageResourcesService.populationSubject.subscribe(
+        (populationInfo) => {
+          this.populationInfo = populationInfo;
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

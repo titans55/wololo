@@ -6,7 +6,7 @@ import { UserService } from "./user/user.service";
 @Injectable({
   providedIn: "root",
 })
-export class AuthenticatedGlobalService {
+export class GlobalService {
   constructor(public http: HttpClient, private userService: UserService) {}
 
   private httpOptions() {
