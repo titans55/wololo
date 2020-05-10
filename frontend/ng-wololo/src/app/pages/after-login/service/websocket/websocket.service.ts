@@ -15,8 +15,8 @@ export class WebsocketService {
     private villageResourcesService: VillageResourcesService
   ) {}
 
-  initWebsockets() {
-    if (this.socket == null) {
+  initWebsockets(forceInit: boolean = false) {
+    if (forceInit || this.socket == null) {
       const parentThis = this;
       this.socket = new WebSocket(
         "ws://" + Enviroment.HOST + "ws/game/?token=" + this.userService.token
@@ -88,62 +88,6 @@ export class WebsocketService {
     //   }, 3000);
     // }
   }
-  //   incrementLevelOfBuilding(target) {
-  //     let targetRow;
-  //     let newLevel = this.getBuildingCurrentLevel(target);
-  //     console.log("incrementing Level");
-  //     if (target.includes(".")) {
-  //       let targetBuildingName = target.split(".")[1];
-  //       // villageData.buildings.resources[targetBuildingName].level = newLevel
-  //       // villageData.buildings.resources[targetBuildingName].upgrading.state = 'false';
-  //       if (page == "myVillages") {
-  //         console.log("hololo");
-  //         targetRow = $("#resources-" + targetBuildingName + "-row");
-  //         targetRow.find(".buildingDetailsSection").html(getUpgReqHtml());
-  //         fillUpgReq(target);
-  //         targetRow.find(".level").html(newLevel);
-  //         targetRow.find(".upgradeOrCancelBtn").html(getUpgBtnHtml(target));
-  //         initUpgradeButtons();
-  //       }
-  //     } else {
-  //       // villageData.buildings[target].level = newLevel
-  //       // villageData.buildings[target].upgrading.state = 'false';
-  //       if (page == "myVillages") {
-  //         targetRow = $("#" + target + "-row");
-  //         targetRow.find(".buildingDetailsSection").html(getUpgReqHtml());
-  //         fillUpgReq(target);
-  //         targetRow.find(".level").html(newLevel);
-  //         targetRow.find(".upgradeOrCancelBtn").html(getUpgBtnHtml(target));
-  //         initUpgradeButtons();
-  //       }
-  //     }
-  //   }
-
-  //   fillUpgReq(target) {
-  //     let targetBuildingName, targetRow, neededResources, mins;
-  //     let buildingNextLevel = String(
-  //       parseInt(this.getBuildingCurrentLevel(target)) + 1
-  //     );
-  //     if (target.includes(".")) {
-  //       targetBuildingName = target.split(".")[1];
-  //       targetRow = $("#resources-" + targetBuildingName + "-row");
-  //       neededResources =
-  //         gameConfigs.buildings.resources[String(targetBuildingName)]
-  //           .upgradingCosts[buildingNextLevel];
-  //     } else {
-  //       targetBuildingName = target;
-  //       targetRow = $("#" + targetBuildingName + "-row");
-  //       neededResources =
-  //         gameConfigs.buildings[String(targetBuildingName)].upgradingCosts[
-  //           buildingNextLevel
-  //         ];
-  //     }
-  //     let neededTime = getBuildingUpgradingNeededTime(target);
-  //     targetRow.find(".neededWood").html(neededResources.wood);
-  //     targetRow.find(".neededIron").html(neededResources.iron);
-  //     targetRow.find(".neededClay").html(neededResources.clay);
-  //     targetRow.find(".neededTime").html(neededTime);
-  //   }
 
   //   getBuildingUpgradingNeededTime(building_path) {
   //     let mins = getBuildingUpgradingMins(building_path);

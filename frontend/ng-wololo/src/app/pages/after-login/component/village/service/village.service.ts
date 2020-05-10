@@ -88,38 +88,5 @@ export class VillageService {
           this.villageResourcesService.production();
         }
       });
-    //   let building_path = $(this).attr('id')
-    //   $.ajax({
-    //     type: 'POST',
-    //     url: '/game/upgrade',
-    //     data: {
-    //         building_path: building_path,
-    //         village_id: villageData.village_id,
-    //         firingTime: firingTime,
-    //         csrfmiddlewaretoken: csrftoken
-    //     },
-    //     success:function(data){
-    //       if(data['result'] == 'Success'){
-    //           console.log(data['newResources'])
-
-    //           if(!building_path.includes('.')){
-    //               villageData.buildings[building_path] = data['newBuilding']
-    //           }
-    //           console.log(data['newResources'])
-    //           villageData.buildings.resources = data['newResources']
-
-    //           let targetRow = getTargetBuildingRow(building_path)
-    //           targetRow.find(".buildingDetailsSection").html(getProgressBarHtml(building_path))
-    //           targetRow.find(".upgradeOrCancelBtn").html(getCnclBtnHtml(building_path))
-    //           initProgressBar(building_path)
-    //           initCancelButtons()
-
-    //       }else if(data['result'] == 'Fail'){
-    //           // alert("Fail")
-    //           console.log("WOLOLO")
-    //           $('#insufficentResources').modal('show')
-    //       }
-    //     }
-    // })
   }
 }

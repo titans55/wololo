@@ -29,11 +29,10 @@ export class VillageResourcesService extends ResourcesModel {
     private userService: UserService
   ) {
     super();
-    this.production();
   }
 
-  public async production(): Promise<void> {
-    await this.initPlayer();
+  public async production(forceFetchData: boolean = false): Promise<void> {
+    await this.initPlayer(forceFetchData);
     this.resources.forEach((resource) => {
       this.productionInterval(resource);
     });
@@ -84,20 +83,26 @@ export class VillageResourcesService extends ResourcesModel {
     };
   }
 
-  private async initPlayer(villageIndex: number = 0): Promise<void> {
+  private async initPlayer(forceFetchData: boolean = false): Promise<void> {
     for (let i = 0; i < this.productionIntervals.length; i++) {
       clearInterval(this.productionIntervals[i]);
       this.productionIntervals.pop();
     }
-    if (this.userService.getPlayerData() == null) {
-      await this.fetchPlayerData().then((playerData: PlayerDataDto) => {
-        this.userService.setPlayerData(villageIndex, playerData);
+    if (forceFetchData || this.userService.getPlayerData() == null) {
+      await this.fetchPlayerData(
+        this.userService.getSelectedVillageIndex()
+      ).then((playerData: PlayerDataDto) => {
+        this.userService.setPlayerData(
+          this.userService.getSelectedVillageIndex(),
+          playerData
+        );
       });
     }
     this.initVillage();
   }
 
   private fetchPlayerData(villageIndex: number = 0): Promise<PlayerDataDto> {
+    console.log("fetching player data");
     return this.globalService
       .get("villagesView/" + villageIndex)
       .then((villageData: PlayerDataDto) => {

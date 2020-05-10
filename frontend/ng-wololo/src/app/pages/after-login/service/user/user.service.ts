@@ -29,6 +29,9 @@ export class UserService {
   }
 
   private selectedVillageIndex: number = 0;
+  getSelectedVillageIndex(): number {
+    return this.selectedVillageIndex;
+  }
   getSelectedVillageInfo(): SelectedVillageModel {
     let selectedVillage = new SelectedVillageModel();
     Object.assign(selectedVillage, this.playerData.selectedVillage);
