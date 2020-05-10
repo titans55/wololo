@@ -1,14 +1,19 @@
 import { Injectable } from "@angular/core";
-import * as gameConfigs from "../../../../../../../../postgreswololo/wololo/game-config/gameConfig.json";
-import { Enviroment } from "./enviroment";
-import { UserService } from "./user/user.service";
+import * as gameConfigs from "../../../../../../../../wololo/game-config/gameConfig.json";
+import { Enviroment } from "../enviroment";
+import { UserService } from "../user/user.service";
+import { UpgradedBuildingMessage } from "./messages-dtos/upgraded-building.dto";
+import { VillageResourcesService } from "src/app/pages/after-login/partials/component/village-resources/service/village-resources.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class WebsocketService {
   socket: WebSocket;
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private villageResourcesService: VillageResourcesService
+  ) {}
 
   initWebsockets() {
     if (this.socket == null) {
@@ -38,7 +43,7 @@ export class WebsocketService {
   }
 
   incomingMessageEndpoints(incomingJson) {
-    console.log("message has arrived");
+    console.log(incomingJson, "message has arrived");
 
     switch (incomingJson.messageType) {
       case "upgradeBuilding":
@@ -55,8 +60,15 @@ export class WebsocketService {
     Listening Upgrade Building Notifications
 */
 
-  listenUpgradeBuilding(incomingJson) {
-    console.log(incomingJson);
+  listenUpgradeBuilding(upgradedBuildingMessage: UpgradedBuildingMessage) {
+    console.log(upgradedBuildingMessage);
+    let selectedVillage = this.userService.getSelectedVillageInfo();
+    if (selectedVillage.villageId == upgradedBuildingMessage.villageId) {
+      this.userService.setBuildingsOfSelectedVillage(
+        upgradedBuildingMessage.newBuildings
+      );
+      this.villageResourcesService.production();
+    }
     // if (incomingJson.village_id == village_id) {
     //   villageData.buildings = incomingJson.newBuildings;
     //   this.incrementLevelOfBuilding(incomingJson.target);

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { WebsocketService } from "../service/websocket.service";
+import { WebsocketService } from "../service/websocket/websocket.service";
 import { AfterRouterOutletEnum } from "../enum/after-router-outlet.enum";
 
 @Component({

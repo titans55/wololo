@@ -69,7 +69,7 @@ def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level)
         'messageType': 'upgradeBuilding',
         'target': building_path,
         'newBuildings' : newBuildings,
-        'village_id' : village_id
+        'villageId' : village_id
     }    
 
     async_to_sync ( channel_layer. group_send ) (

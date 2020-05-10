@@ -32,22 +32,18 @@ export class VillageResourcesService extends ResourcesModel {
     this.production();
   }
 
-  private getPlayerData(): PlayerDataDto {
-    return this.userService.getPlayerData();
-  }
-
-  private setPlayerData(playerData: PlayerDataDto) {
-    console.log("setting player data");
-    this.userService.setPlayerData(playerData);
-  }
-
-  private async production(): Promise<void> {
-    if (this.getPlayerData() == null) {
-      await this.initPlayer();
-    }
+  public async production(): Promise<void> {
+    await this.initPlayer();
     this.resources.forEach((resource) => {
       this.productionInterval(resource);
     });
+  }
+
+  public async switchVillage(villageIndex: number) {
+    await this.fetchPlayerData(villageIndex).then((playerData) => {
+      this.userService.setPlayerData(villageIndex, playerData);
+    });
+    this.production();
   }
 
   private productionInterval(resourceModel: ResourceModel): void {
@@ -63,7 +59,7 @@ export class VillageResourcesService extends ResourcesModel {
     }
   }
 
-  produce(resourceModel: ResourceModel): void {
+  private produce(resourceModel: ResourceModel): void {
     const hourlyProduction =
       gameConfigs.buildings.resources.woodCamp.hourlyProductionByLevel[
         resourceModel.level
@@ -88,28 +84,40 @@ export class VillageResourcesService extends ResourcesModel {
     };
   }
 
-  public async initPlayer(villageIndex: number = 0) {
+  private async initPlayer(villageIndex: number = 0): Promise<void> {
     for (let i = 0; i < this.productionIntervals.length; i++) {
       clearInterval(this.productionIntervals[i]);
       this.productionIntervals.pop();
     }
+    if (this.userService.getPlayerData() == null) {
+      await this.fetchPlayerData().then((playerData: PlayerDataDto) => {
+        this.userService.setPlayerData(villageIndex, playerData);
+      });
+    }
+    this.initVillage();
+  }
+
+  private fetchPlayerData(villageIndex: number = 0): Promise<PlayerDataDto> {
     return this.globalService
       .get("villagesView/" + villageIndex)
       .then((villageData: PlayerDataDto) => {
-        this.setPlayerData(villageData);
-        this.setAndEmitStorageCapacity();
-        this.setAndEmitPopulationInfo();
-        this.setAndEmitVillagesOfPlayer();
-        for (const resourceBuildingName in this.getPlayerData().selectedVillage
-          .buildings.resources) {
-          let resourceBuildingDetails: ResourceBuildingDetails = this.getPlayerData()
-            .selectedVillage.buildings.resources[resourceBuildingName];
-          let resourceModel = this.resources.find((resource) => {
-            return resource.buildingName == resourceBuildingName;
-          });
-          Object.assign(resourceModel, resourceBuildingDetails);
-        }
+        return villageData;
       });
+  }
+
+  private initVillage() {
+    this.setAndEmitStorageCapacity();
+    this.setAndEmitPopulationInfo();
+    this.setAndEmitVillagesOfPlayer();
+    for (const resourceBuildingName in this.userService.getPlayerData()
+      .selectedVillage.buildings.resources) {
+      let resourceBuildingDetails: ResourceBuildingDetails = this.userService.getPlayerData()
+        .selectedVillage.buildings.resources[resourceBuildingName];
+      let resourceModel = this.resources.find((resource) => {
+        return resource.buildingName == resourceBuildingName;
+      });
+      Object.assign(resourceModel, resourceBuildingDetails);
+    }
   }
 
   private storageCapacity: number;
@@ -117,7 +125,7 @@ export class VillageResourcesService extends ResourcesModel {
   private setAndEmitStorageCapacity(): void {
     this.storageCapacity =
       gameConfigs.buildings.storage.capacity[
-        this.getPlayerData().selectedVillage.buildings.storage.level
+        this.userService.getPlayerData().selectedVillage.buildings.storage.level
       ];
     return this.storageSubject.next(this.storageCapacity);
   }
@@ -127,9 +135,9 @@ export class VillageResourcesService extends ResourcesModel {
   private setAndEmitPopulationInfo() {
     let populationLimit: number =
       gameConfigs.buildings.farm.populationLimit[
-        this.getPlayerData().selectedVillage.buildings.farm.level
+        this.userService.getPlayerData().selectedVillage.buildings.farm.level
       ];
-    this.getPlayerData().selectedVillage.troops.total;
+    this.userService.getPlayerData().selectedVillage.troops.total;
     this.population = new PopulationModel(
       this.calculateUsedPopulation(),
       populationLimit
@@ -145,15 +153,17 @@ export class VillageResourcesService extends ResourcesModel {
     return this._villagesOfPlayerSubject.asObservable();
   }
   private setAndEmitVillagesOfPlayer() {
+    console.log("emitting villages of players");
     this.villagesOfPlayer = [];
-    this.getPlayerData().villagesInfo.forEach((village) => {
+    this.userService.getPlayerData().villagesInfo.forEach((village) => {
       let villageModel = new VillageModel();
       Object.assign(villageModel, village);
       this.villagesOfPlayer.push(villageModel);
     });
     this.villagesOfPlayer.find((village) => {
       return (
-        village.villageId == this.getPlayerData().selectedVillage.villageId
+        village.villageId ==
+        this.userService.getPlayerData().selectedVillage.villageId
       );
     }).selected = true;
     this._villagesOfPlayerSubject.next(this.villagesOfPlayer);
@@ -162,22 +172,20 @@ export class VillageResourcesService extends ResourcesModel {
   private calculateUsedPopulation(): number {
     let usedPopulation = 0;
 
-    for (const bn in this.getPlayerData().selectedVillage.buildings) {
+    for (const bn in this.userService.getPlayerData().selectedVillage
+      .buildings) {
       const buildingName = <keyof SelectedVillageBuildings>bn;
       if (buildingName != "resources") {
-        let level: number = this.getPlayerData().selectedVillage.buildings[
-          buildingName
-        ].level;
+        let level: number = this.userService.getPlayerData().selectedVillage
+          .buildings[buildingName].level;
         usedPopulation +=
           gameConfigs.buildings[buildingName].neededPopulation[level];
       } else {
-        for (const rbn in this.getPlayerData().selectedVillage.buildings[
-          buildingName
-        ]) {
+        for (const rbn in this.userService.getPlayerData().selectedVillage
+          .buildings[buildingName]) {
           let resourceBuildingName = <keyof ResourcesBuildings>rbn;
-          let level: number = this.getPlayerData().selectedVillage.buildings[
-            buildingName
-          ][resourceBuildingName].level;
+          let level: number = this.userService.getPlayerData().selectedVillage
+            .buildings[buildingName][resourceBuildingName].level;
           usedPopulation +=
             gameConfigs.buildings[buildingName][resourceBuildingName]
               .neededPopulation[level];
@@ -185,7 +193,7 @@ export class VillageResourcesService extends ResourcesModel {
       }
     }
     for (let [unitType, units] of Object.entries(
-      this.getPlayerData().selectedVillage.troops.total
+      this.userService.getPlayerData().selectedVillage.troops.total
     )) {
       for (let [unit, size] of Object.entries(units)) {
         const unitSize = <number>size;
@@ -195,7 +203,7 @@ export class VillageResourcesService extends ResourcesModel {
     }
 
     for (let [unitTypeName, unitTypeQueueList] of Object.entries(
-      this.getPlayerData().selectedVillage.troops.trainingQueue
+      this.userService.getPlayerData().selectedVillage.troops.trainingQueue
     )) {
       for (let queue in unitTypeQueueList) {
         usedPopulation +=

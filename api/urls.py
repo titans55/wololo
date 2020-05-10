@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from . import api
-from api.views.after_login.villages_view import VillagesView
+from api.views.after_login.villages_view import VillagesView, UpgradeBuildingView
 from api.views.after_login.map_view import MapView
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
@@ -27,5 +27,6 @@ urlpatterns = (
     path('token-auth/', obtain_jwt_token),
     path('token-refresh/', refresh_jwt_token),
     path('villagesView/<int:village_index>', VillagesView.as_view(), name='villageApi'),
+    path('upgrade-building/<int:village_index>', UpgradeBuildingView.as_view()),
     path('mapView/', MapView.as_view()),
 )

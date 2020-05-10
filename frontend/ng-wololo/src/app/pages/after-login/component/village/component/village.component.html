@@ -94,7 +94,10 @@
                 </button>
               </ng-template>
               <ng-template #upgradeBtn>
-                <button class="upgrade btn btn-primary">
+                <button
+                  class="upgrade btn btn-primary"
+                  (click)="onUpgrade(building.key)"
+                >
                   Upgrade
                 </button>
               </ng-template>
@@ -209,7 +212,10 @@
                 </button>
               </ng-template>
               <ng-template #upgradeBtn>
-                <button class="upgrade btn btn-primary">
+                <button
+                  class="upgrade btn btn-primary"
+                  (click)="onUpgrade(building.key + '.' + resourceBuilding.key)"
+                >
                   Upgrade
                 </button>
               </ng-template>

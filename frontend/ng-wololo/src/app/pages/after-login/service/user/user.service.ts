@@ -5,20 +5,47 @@ import { Enviroment } from "../enviroment";
 import { ReplaySubject, BehaviorSubject } from "rxjs";
 import * as moment from "moment";
 import { Router } from "@angular/router";
-import { PlayerDataDto } from "../../component/village/model/general/village.dto";
+import {
+  PlayerDataDto,
+  SelectedVillageBuildings,
+  ResourcesBuildings,
+} from "../../component/village/model/general/village.dto";
+import { SelectedVillageModel } from "./model/selected-village.model";
 
 @Injectable()
 export class UserService {
   private playerData: PlayerDataDto;
-
-  setPlayerData(playerDataDto: PlayerDataDto): void {
+  getPlayerData(): PlayerDataDto {
+    return this.playerData;
+  }
+  setPlayerData(
+    selectedVillageIndex: number,
+    playerDataDto: PlayerDataDto
+  ): void {
     if (playerDataDto) {
       this.playerData = playerDataDto;
+      this.selectedVillageIndex = selectedVillageIndex;
     }
   }
 
-  getPlayerData(): PlayerDataDto {
-    return this.playerData;
+  private selectedVillageIndex: number = 0;
+  getSelectedVillageInfo(): SelectedVillageModel {
+    let selectedVillage = new SelectedVillageModel();
+    Object.assign(selectedVillage, this.playerData.selectedVillage);
+    selectedVillage.villageIndex = this.selectedVillageIndex;
+    return selectedVillage;
+  }
+  setBuildingsOfSelectedVillage(newBuildings: SelectedVillageBuildings): void {
+    this.playerData.selectedVillage.buildings = newBuildings;
+    this.playerData.villagesInfo[
+      this.selectedVillageIndex
+    ].buildings = newBuildings;
+  }
+  setResourcesOfSelectedVillage(newResources: ResourcesBuildings): void {
+    this.playerData.selectedVillage.buildings.resources = newResources;
+    this.playerData.villagesInfo[
+      this.selectedVillageIndex
+    ].buildings.resources = newResources;
   }
 
   get token(): string {

@@ -68,7 +68,7 @@ class Users(AbstractUser):
                 },
                 'villageName': village.village_name,
                 'troops': {},
-                'villageId': village.id,
+                'village_id': village.id,
                 'coords': {
                     'x': village.coords_x,
                     'y': village.coords_y
@@ -89,7 +89,7 @@ class Users(AbstractUser):
                             'task_id': ud.task_id if ud else None,
                             'time': {
                                 'startedUpgradingAt': ud.started_upgrading_at if ud else None,
-                                'willBeUpgradedAt': ud.will_be_upgraded_a if ud else None
+                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
                             }
                         }
                     }

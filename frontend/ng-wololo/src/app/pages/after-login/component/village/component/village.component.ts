@@ -74,4 +74,7 @@ export class VillageComponent implements OnInit {
       return null;
     }
   }
+  onUpgrade(buildingPath: string) {
+    this.service.upgradeBuilding(buildingPath);
+  }
 }
