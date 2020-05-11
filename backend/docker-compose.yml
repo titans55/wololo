@@ -1,0 +1,45 @@
+  version: '3'
+    
+  services:
+    # db:
+    #   image: postgres
+    #   environment:
+    #     - POSTGRES_DB=postgres
+    #     - POSTGRES_USER=postgres
+    #     - POSTGRES_PASSWORD=postgres
+        
+    # gunicorn_api_server:
+    #   build: .
+    #   command: bash -c "pip install gunicorn && python manage.py migrate && gunicorn wololo.wsgi:application --timeout 300 --bind 0.0.0.0:8000
+    #   volumes:
+    #     - .:/code
+    #   expose:
+    #     - 8000
+    #   depends_on:
+    #     - db
+
+    web:
+      build: .
+      command: python manage.py runserver 0.0.0.0:8000
+      ports:
+        - "8000:8000"
+
+    rediscontainer: 
+      image: redis
+      command: redis-server
+      ports: 
+        - '6379:6379'
+
+    worker_channels:
+      build: .
+      command: python manage.py runworker
+      links:
+        - rediscontainer
+
+    channels: 
+      build: .
+      command: daphne -b 0.0.0.0 -p 8001 wololo_project.asgi:channel_layer
+      ports: 
+        - "8001:8001"
+      links: 
+        - rediscontainer

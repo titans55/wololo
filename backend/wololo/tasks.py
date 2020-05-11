@@ -5,7 +5,7 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 import os
 import pytz
-from DjangoPostgresProject import settings
+from wololo_project import settings
 import django
 django.setup()
 from wololo.helperFunctions import calculate_points_for_village, getUserIdByVillageId, getResults
@@ -45,7 +45,7 @@ import urllib.request
 
 @app.task(name='wololo.tasks.upgrade_building')
 def schedule_upgrade_building(user_id, village_id, building_path, upgrade_level):
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'wololo_project.settings'
     channel_layer = get_channel_layer()
 
     user = Users.objects.get(id=user_id)
@@ -89,7 +89,7 @@ def train_unit(self, user_id, village_id, unit_type, unit_name):
         print("cancelled unit")
         self.request.chain = None #For cancelling training units
     else :
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'DjangoPostgresProject.settings'
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'wololo_project.settings'
         channel_layer = get_channel_layer()
         
         vil.train_unit(unit_type, unit_name)
