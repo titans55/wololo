@@ -1,0 +1,243 @@
+{% extends "partials/layout.html" %} 
+{% load static %} 
+{% load custom_template_tags %}
+
+{% block headcdn %} 
+{% endblock %}
+
+{% block content %}
+<div id="villageDataJSON" data='{{data.selectedVillage}}'></div>
+<div id="gameConfigData" data='{{data.gameConfig}}'></div>
+{% include "partials/villageResources.html" %}
+
+<div class="village-content">
+    <ul class="list-group">
+        {% for buildingName, building in data.selectedVillage.buildings.items %}
+            {% if buildingName != 'resources' %}
+                <li class="list-group-item" >
+                    <div class="row" id="{{buildingName}}-row">
+                        <div class="col">
+                            <div class="row">
+                                <a class="col" href="/game/{{buildingName}}">
+                                    {{buildingName|humanizeCamelCase}}
+                                </a>
+                                <div class="col">
+                                    <span id="{{buildingName}}-level" class="badge badge-info">
+                                        Level 
+                                        <div class="level">
+                                            {{building.level}}
+                                        </div>
+                                    </span>                            
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div buildingName="{{buildingName}}" class="upgradeBuildings">
+                                <div class="row buildingDetailsSection">
+                                    {% if building.upgrading.state == 'true' %}
+                                        <div class="progress">
+                                            <div id="{{buildingName}}-progressBar" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                <span id="current-progress"></span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col">
+                                            <div class="neededWood">XXX</div> Wood
+                                        </div>
+                                        <div class="col">
+                                            <div class="neededIron">XXX</div> Iron
+                
+                                        </div>
+                                        <div class="col">
+                                            <div class="neededClay">XXX</div> Clay
+                                        </div>
+                                        <div class="col">
+                                            <div class="neededTime">
+                                                XXX
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col upgradeOrCancelBtn">
+                            {% if building.upgrading.state == 'true' %}
+                                <button class="cancelUpgrade btn btn-danger" id="{{buildingName}}">Cancel</button>
+                            {% else %}
+                                <button class="upgrade btn btn-primary" id="{{buildingName}}">Upgrade</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% else %}
+                {% for resourceBuildingName, resourceBuilding in building.items %}
+                    <li class="list-group-item">
+                        <div class="row" id="resources-{{resourceBuildingName}}-row">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col">
+                                        {{resourceBuildingName|humanizeCamelCase}}
+                                    </div>
+                                    <div  class="col">
+                                        <span id="resources.{{resourceBuildingName}}-level" class="badge badge-info">
+                                            Level 
+                                            <div class="level">
+                                                {{resourceBuilding.level}}
+                                            </div>
+                                        </span>                            
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div buildingName="{{resourceBuildingName}}" class="upgradeResources" resourceType="wood">
+                                    <div class="row buildingDetailsSection">
+                                        {% if resourceBuilding.upgrading.state == 'true' %}
+                                            <div class="progress">
+                                                <div id="{{resourceBuildingName}}-progressBar" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                    <span id="current-progress"></span>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="col">
+                                                <div class="neededWood">XXX</div> Wood
+                                            </div>
+                                            <div class="col">
+                                                <div class="neededIron">XXX</div> Iron
+                    
+                                            </div>
+                                            <div class="col">
+                                                <div class="neededClay">XXX</div> Clay
+                                            </div>
+                                            <div class="col">
+                                                <div class="neededTime">
+                                                    XXX
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col upgradeOrCancelBtn">
+                                {% if resourceBuilding.upgrading.state == 'true' %}
+                                    <button class="cancelUpgrade btn btn-danger" id="resources.{{resourceBuildingName}}">Cancel</button>
+                                {% else %}
+                                    <button class="upgrade btn btn-primary" id="resources.{{resourceBuildingName}}">Upgrade</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </ul> 
+    
+    <div class="modal fade" id="insufficentResources" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Insufficent Resources!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ouh, okay</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {% if data.totalOnMove|length > 0 %}
+
+            <div class="card">
+                <div class="card-header">
+                        On Move(our Troops)
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Arrival Time</th>
+                            <th>Time Left</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for onMove in data.totalOnMove%}
+                            <tr id="onMove-{{onMove.task_id}}">
+                                <td>
+                                    {% if onMove.movementType == 'attack' %}
+                                        
+                                        {% if onMove.state == 'going' %}
+                                            Our troops are attacking to {{onMove.to}}
+
+                                        {% elif onMove.state == 'returning' %}
+                                            Our troops returning from {{onMove.to}}
+
+                                        {% endif %}
+
+
+
+                                    {% elif onMove.movementType == 'support' %}
+                                        {% if onMove.state == 'going' %}
+                                        
+                                        {% elif onMove.state == 'returning' %}
+            
+                                        {% endif %}        
+                                    {% endif %}
+                                </td>
+                                <td>{{onMove.arrivalTime}}</td>
+                                <td>X</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            {% if data.totalIncomingStrangerTroops|length > 0 %}
+            <div class="card">
+                <div class="card-header">
+                    Incoming Troops
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Arrival Time</th>
+                            <th>Time Left</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incomingStrangerTroopsElement in data.totalIncomingStrangerTroops%}
+                            <tr id="incomingStrangerTroopsElement-{{incomingStrangerTroopsElement.task_id}}">
+                                <td>
+                                    {% if incomingStrangerTroopsElement.movementType == 'attack' %}
+                                        {{incomingStrangerTroopsElement.home_village_id}} is attacking us.
+
+                                    {% elif incomingStrangerTroopsElement.movementType == 'support' %}
+                                        {{incomingStrangerTroopsElement.home_village_id}} is supporting us.
+
+                                    {% endif %}
+                                </td>
+                                <td>{{incomingStrangerTroopsElement.arrivalTime}}</td>
+                                <td>X</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
+{% block footerjs %}
+
+<script type="text/javascript" src="{% static 'wololo/assets/js/phaser/build/phaser.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'wololo/js/villages.js' %}"></script>
+<script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
+
+{% endblock %}

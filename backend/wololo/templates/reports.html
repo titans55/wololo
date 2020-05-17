@@ -1,0 +1,50 @@
+{% extends "partials/layout.html" %}
+{% load static %}
+{% load custom_template_tags %}
+
+{% block headcdn %}
+
+{% endblock %}
+
+{% block content %}
+    <div id="villageDataJSON" data='{{data.selectedVillage}}'></div>
+    <div id="gameConfigData" data='{{data.gameConfig}}'></div>
+    {% include "partials/villageResources.html" %}
+    
+
+    <div class="list-group">
+        {% for report in data.reports %}
+            {% if report.type == 'battle' %}  
+            <a href="/game/reports/{{ forloop.counter0 }}" class="list-group-item list-group-item-action">
+                <div class="row">
+                    <div class="col-2">
+                        {{report.type|humanizeCamelCase}} Report
+                        {% if not report.viewed  %}
+                        <i class="fas fa-exclamation text-danger"></i>
+                        {% endif %}
+                    </div>
+                    <div class="col-7">
+                        {% if report.content.attacker.user_id == data.user_id %}
+                            We attacked to {{report.content.defender.username}} and {{report.content.attacker.result}}.
+                        {% elif report.content.defender.user_id == data.user_id %}
+                            We defended against {{report.content.attacker.username}} and {{report.content.defender.result}}.
+
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        {{report.date}}
+                    </div>
+                </div>
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+
+
+{% block footerjs %}
+<script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
+
+{% endblock %}

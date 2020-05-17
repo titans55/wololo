@@ -1,0 +1,24 @@
+.selectRegionMap{
+    width : 100%;
+    height: 100%;
+    margin-top: -80px;
+    margin-bottom: -65px;
+}
+path{
+    fill:none;
+    stroke:black;
+    pointer-events:all;
+}
+/* #path4651:hover, #path4653:hover{
+    fill:white!important
+} */
+
+
+.selectedRegion{
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a7cfdf+0,23538a+100;Blue+3d+%238 */
+    fill: rgb(245, 207, 207)!important;
+}
+
+.hoverRegion{
+    opacity: 0.34!important;
+}

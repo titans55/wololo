@@ -1,0 +1,84 @@
+{% extends "partials/layout.html" %}
+{% load static %}
+
+{% block headcdn %}
+
+{% endblock %}
+
+{% block content %}
+    <div id="villageDataJSON" data='{{data.selectedVillage}}'></div>
+    <div id="gameConfigData" data='{{data.gameConfig}}'></div>
+    
+    {% include "partials/villageResources.html" %}
+
+    <div class="row">
+        <div class="col text-center">
+            <div class="card">
+                <img src="http://placehold.it/300x200" class="rounded mx-auto d-block mt-3 mb-3" alt="pp">
+                {% if currentUser.id == data.profileOfPlayerInfo.id %}
+                    <button type="button" class="btn btn-info">Upload Profile Photo</button>
+                {% endif %}
+            </div>
+            <table class="table table-bordered ">
+                <tbody>
+                    <tr>
+                        <td>Username</td>
+                        <td>
+                            <a href="/game/players/{{data.profileOfPlayerInfo.user_id}}">{{data.profileOfPlayerInfo.username}}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Points</td>
+                        <td>{{data.profileOfPlayerInfo.points}}</td>
+                    </tr>
+                    <tr>
+                        <td>Clan</td>
+                        <td>{{data.profileOfPlayerInfo.clan}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="card-header">
+                Villages
+            </div>
+            <ul class="list-group list-group-flush">
+                <table class="table table-bordered ">
+                    <thead>
+                        <tr>
+                            <th>Village Name</th>
+                            <th>Coordinates</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for village in data.profileOfPlayerInfo.playersVillages %}
+                            <tr>
+                                <td>
+                                    <a href="/game/villages/{{village.village_id}}">{{village.villageName}}</a>
+                                </td>
+                                <td>{{village.coords}}</td>
+                                <td>{{village.points}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </ul>
+        </div>
+        <div class="col">
+            <div class="card">
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                {% if currentUser.id == data.profileOfPlayerInfo.id %}
+                <button type="button" class="btn btn-info">Edit Description</button>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block footerjs %}
+    <script type="text/javascript" src="{% static 'wololo/js/villageResources.js' %}"></script>
+    <script type="text/javascript" src="{% static 'wololo/js/profiles/playerProfile.js' %}"></script>
+
+{% endblock %}
