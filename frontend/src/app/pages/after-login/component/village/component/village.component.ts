@@ -14,7 +14,6 @@ import {
   ResourceBuildingDetails,
 } from "../model/general/village.dto";
 import { Subscription } from "rxjs";
-import { ProgressBarDetails } from '../model/progress-bar/progress-bar-details';
 
 @Component({
   selector: "woo-village",
@@ -79,13 +78,5 @@ export class VillageComponent implements OnInit {
   }
   onUpgrade(buildingPath: string) {
     this.service.upgradeBuilding(buildingPath);
-  }
-
-  progressBarMap: Map<string, ProgressBarDetails>= new Map()
-
-  initProgressBar(buildingPath: string, buildingDetails: BaseBuilding|ResourceBuildingDetails){
-    this.progressBarMap.set(buildingPath,
-      {progressPercantage: 2, interval: setInterval(()=>{}, 2)}
-      )
   }
 }
