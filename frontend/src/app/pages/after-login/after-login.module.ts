@@ -12,6 +12,7 @@ import { AuthGuard } from "./service/user/guard/auth.guard";
 import { UserService } from "./service/user/user.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { DateConverterInterceptor } from "./service/date-converter-http-interceptor/date-converter-http-interceptor";
+import { BuildingsModule } from "./component/buildings/buildings.module";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { DateConverterInterceptor } from "./service/date-converter-http-intercep
     WoCommonModule,
     MapModule,
     VillageModule,
+    BuildingsModule,
     RouterModule.forChild(AfterLoginRoutes),
   ],
   exports: [AfterLoginComponent],

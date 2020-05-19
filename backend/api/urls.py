@@ -4,6 +4,7 @@ from rest_framework import routers
 from . import api
 from api.views.after_login.villages_view import VillagesView, UpgradeBuildingView
 from api.views.after_login.map_view import MapView
+from api.views.after_login.buildings.barracks_view import TrainInfantryView
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -28,5 +29,6 @@ urlpatterns = (
     path('token-refresh/', refresh_jwt_token),
     path('villagesView/<int:village_index>', VillagesView.as_view(), name='villageApi'),
     path('upgrade-building/<int:village_index>', UpgradeBuildingView.as_view()),
+    path('barracks/train-units', TrainInfantryView.as_view()),
     path('mapView/', MapView.as_view()),
 )

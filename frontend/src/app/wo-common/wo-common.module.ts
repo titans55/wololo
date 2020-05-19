@@ -5,6 +5,7 @@ import { PhaserModule } from "phaser-component-library";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { HumanizeCamelCasePipe } from "./pipe/humanize-camel-case.pipe";
 import { WoProgressBarModule } from "./wo-progress-bar/wo-progress-bar.module";
+import { WoUnitTrainFormModule } from "./wo-unit-train-form/wo-unit-train-form.module";
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { WoProgressBarModule } from "./wo-progress-bar/wo-progress-bar.module";
     PhaserModule,
     NgbModule,
     WoProgressBarModule,
+    WoUnitTrainFormModule,
   ],
   exports: [
     FormsModule,
@@ -20,6 +22,7 @@ import { WoProgressBarModule } from "./wo-progress-bar/wo-progress-bar.module";
     NgbModule,
     HumanizeCamelCasePipe,
     WoProgressBarModule,
+    WoUnitTrainFormModule,
   ],
   declarations: [HumanizeCamelCasePipe],
 })

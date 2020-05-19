@@ -4,10 +4,12 @@ import { VillageComponent } from "./component/village/component/village.componen
 import { AfterRouterOutletEnum } from "./enum/after-router-outlet.enum";
 import { AfterLoginComponent } from "./component/after-login.component";
 import { AuthGuard } from "./service/user/guard/auth.guard";
+import { BarracksComponent } from "./component/buildings/barracks/component/barracks.component";
 
 export enum AfterLoginRoutesEnum {
   MAP = "map",
   VILLAGE = "village",
+  BARRACKS = "barracks",
 }
 
 export const AfterLoginRoutes: Routes = [
@@ -23,6 +25,10 @@ export const AfterLoginRoutes: Routes = [
       {
         path: AfterLoginRoutesEnum.MAP,
         component: MapComponent,
+      },
+      {
+        path: AfterLoginRoutesEnum.BARRACKS,
+        component: BarracksComponent,
       },
     ],
   },
