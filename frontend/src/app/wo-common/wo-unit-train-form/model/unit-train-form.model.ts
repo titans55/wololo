@@ -1,7 +1,7 @@
 import { Resources } from "src/app/pages/after-login/component/village/model/general/village-data.model";
 import {
   VillageUnitType,
-  UnitDetails,
+  // UnitDetails,
   UnitTypeConfig,
 } from "../type/unit-types.type";
 
