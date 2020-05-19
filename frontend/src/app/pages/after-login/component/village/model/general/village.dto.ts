@@ -163,9 +163,9 @@ export interface Upgrading {
   time: Time;
 }
 
-export interface Time {
-  startedUpgradingAt: string;
-  willBeUpgradedAt: string;
+export class Time {
+  startedUpgradingAt: Date;
+  willBeUpgradedAt: Date;
 }
 
 export interface ResourcesBuildings {
@@ -174,11 +174,9 @@ export interface ResourcesBuildings {
   woodCamp: ResourceBuildingDetails;
 }
 
-export interface ResourceBuildingDetails {
-  level: number;
+export interface ResourceBuildingDetails extends BaseBuilding {
   sum: number;
   lastInteractionDate: Date;
-  upgrading: Upgrading;
 }
 
 export interface Coords {

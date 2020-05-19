@@ -25,7 +25,6 @@ export class VillageResourcesComponent implements OnInit {
     this.subscriptions.add(
       this.villageResourcesService.wood.currentSummary.subscribe(
         (currentWood) => {
-          console.log(this.currentWood);
           this.currentWood = currentWood;
         }
       )

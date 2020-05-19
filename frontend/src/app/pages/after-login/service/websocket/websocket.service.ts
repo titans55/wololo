@@ -4,6 +4,7 @@ import { Enviroment } from "../enviroment";
 import { UserService } from "../user/user.service";
 import { UpgradedBuildingMessage } from "./messages-dtos/upgraded-building.dto";
 import { VillageResourcesService } from "src/app/pages/after-login/partials/component/village-resources/service/village-resources.service";
+import { ResourceBuildingDetails } from "../../component/village/model/general/village.dto";
 
 @Injectable({
   providedIn: "root",
@@ -61,6 +62,23 @@ export class WebsocketService {
 */
 
   listenUpgradeBuilding(upgradedBuildingMessage: UpgradedBuildingMessage) {
+    for (let key in upgradedBuildingMessage.newBuildings) {
+      if (key != "resources") {
+      } else {
+        upgradedBuildingMessage.newBuildings.resources;
+        for (let buildingName in upgradedBuildingMessage.newBuildings
+          .resources) {
+          let resourceBuilding: ResourceBuildingDetails =
+            upgradedBuildingMessage.newBuildings.resources[buildingName];
+          resourceBuilding.upgrading.time.startedUpgradingAt = new Date(
+            resourceBuilding.upgrading.time.startedUpgradingAt
+          );
+          resourceBuilding.upgrading.time.willBeUpgradedAt = new Date(
+            resourceBuilding.upgrading.time.willBeUpgradedAt
+          );
+        }
+      }
+    }
     console.log(upgradedBuildingMessage);
     let selectedVillage = this.userService.getSelectedVillageInfo();
     if (selectedVillage.villageId == upgradedBuildingMessage.villageId) {

@@ -10,6 +10,8 @@ import { VillageModule } from "./component/village/village.module";
 import { GlobalService } from "./service/global.service";
 import { AuthGuard } from "./service/user/guard/auth.guard";
 import { UserService } from "./service/user/user.service";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { DateConverterInterceptor } from "./service/date-converter-http-interceptor/date-converter-http-interceptor";
 
 @NgModule({
   imports: [
@@ -22,6 +24,14 @@ import { UserService } from "./service/user/user.service";
   ],
   exports: [AfterLoginComponent],
   declarations: [AfterLoginComponent],
-  providers: [AuthGuard, UserService],
+  providers: [
+    AuthGuard,
+    UserService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: DateConverterInterceptor,
+      multi: true,
+    },
+  ],
 })
 export class AfterLoginModule {}

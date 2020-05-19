@@ -29,56 +29,46 @@
               </div>
             </div>
             <div class="col">
-              <div class="upgradeBuildings">
-                <div class="row buildingDetailsSection">
-                  <ng-container
-                    *ngIf="
-                      building.value.upgrading.state;
-                      then progressBarTemplate;
-                      else neededResourcesTemplate
-                    "
-                  ></ng-container>
-                  <ng-template #progressBarTemplate>
-                    <div class="progress">
-                      <div
-                        class="progress-bar progress-bar-success progress-bar-striped active"
-                        role="progressbar"
-                        aria-valuenow="0"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        style="width: 0%;"
-                      >
-                        <span id="current-progress"></span>
-                      </div>
+              <ng-container
+                *ngIf="
+                  building.value.upgrading.state;
+                  then progressBarTemplate;
+                  else neededResourcesTemplate
+                "
+              ></ng-container>
+              <ng-template #progressBarTemplate>
+                <wo-progress-bar
+                  [startTime]="building.value.upgrading.time.startedUpgradingAt"
+                  [endTime]="building.value.upgrading.time.willBeUpgradedAt"
+                ></wo-progress-bar>
+              </ng-template>
+              <ng-template #neededResourcesTemplate>
+                <div class="row">
+                  <div class="col">
+                    <div class="neededWood">
+                      {{ getBuildingNeededResources(building.key).wood }}
                     </div>
-                  </ng-template>
-                  <ng-template #neededResourcesTemplate>
-                    <div class="col">
-                      <div class="neededWood">
-                        {{ getBuildingNeededResources(building.key).wood }}
-                      </div>
-                      Wood
+                    Wood
+                  </div>
+                  <div class="col">
+                    <div class="neededIron">
+                      {{ getBuildingNeededResources(building.key).iron }}
                     </div>
-                    <div class="col">
-                      <div class="neededIron">
-                        {{ getBuildingNeededResources(building.key).iron }}
-                      </div>
-                      Iron
+                    Iron
+                  </div>
+                  <div class="col">
+                    <div class="neededClay">
+                      {{ getBuildingNeededResources(building.key).clay }}
                     </div>
-                    <div class="col">
-                      <div class="neededClay">
-                        {{ getBuildingNeededResources(building.key).clay }}
-                      </div>
-                      Clay
+                    Clay
+                  </div>
+                  <div class="col">
+                    <div class="neededTime">
+                      {{ getBuildingUpgradeTime(building.key) }}
                     </div>
-                    <div class="col">
-                      <div class="neededTime">
-                        {{ getBuildingUpgradeTime(building.key) }}
-                      </div>
-                    </div>
-                  </ng-template>
+                  </div>
                 </div>
-              </div>
+              </ng-template>
             </div>
             <div class="col upgradeOrCancelBtn">
               <ng-container
@@ -127,76 +117,70 @@
               </div>
             </div>
             <div class="col">
-              <div class="upgradeResources" resourceType="wood">
-                <div class="row buildingDetailsSection">
-                  <ng-container
-                    *ngIf="
-                      resourceBuilding.value.upgrading.state;
-                      then progressBarTemplate;
-                      else neededResourcesTemplate
-                    "
-                  ></ng-container>
-                  <ng-template #progressBarTemplate>
-                    <div class="progress">
-                      <div
-                        class="progress-bar progress-bar-success progress-bar-striped active"
-                        role="progressbar"
-                        aria-valuenow="0"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        style="width: 0%;"
-                      >
-                        <span id="current-progress"></span>
-                      </div>
+              <ng-container
+                *ngIf="
+                  resourceBuilding.value.upgrading.state;
+                  then progressBarTemplate;
+                  else neededResourcesTemplate
+                "
+              ></ng-container>
+              <ng-template #progressBarTemplate>
+                <wo-progress-bar
+                  [startTime]="
+                    resourceBuilding.value.upgrading.time.startedUpgradingAt
+                  "
+                  [endTime]="
+                    resourceBuilding.value.upgrading.time.willBeUpgradedAt
+                  "
+                ></wo-progress-bar>
+              </ng-template>
+              <ng-template #neededResourcesTemplate>
+                <div class="row">
+                  <div class="col">
+                    <div class="neededWood">
+                      {{
+                        getBuildingNeededResources(
+                          building.key,
+                          resourceBuilding.key
+                        ).wood
+                      }}
                     </div>
-                  </ng-template>
-                  <ng-template #neededResourcesTemplate>
-                    <div class="col">
-                      <div class="neededWood">
-                        {{
-                          getBuildingNeededResources(
-                            building.key,
-                            resourceBuilding.key
-                          ).wood
-                        }}
-                      </div>
-                      Wood
+                    Wood
+                  </div>
+                  <div class="col">
+                    <div class="neededIron">
+                      {{
+                        getBuildingNeededResources(
+                          building.key,
+                          resourceBuilding.key
+                        ).iron
+                      }}
                     </div>
-                    <div class="col">
-                      <div class="neededIron">
-                        {{
-                          getBuildingNeededResources(
-                            building.key,
-                            resourceBuilding.key
-                          ).iron
-                        }}
-                      </div>
-                      Iron
+                    Iron
+                  </div>
+                  <div class="col">
+                    <div class="neededClay">
+                      {{
+                        getBuildingNeededResources(
+                          building.key,
+                          resourceBuilding.key
+                        ).clay
+                      }}
                     </div>
-                    <div class="col">
-                      <div class="neededClay">
-                        {{
-                          getBuildingNeededResources(
-                            building.key,
-                            resourceBuilding.key
-                          ).clay
-                        }}
-                      </div>
-                      Clay
+                    Clay
+                  </div>
+                  <div class="col">
+                    <div class="neededTime">
+                      {{
+                        getBuildingUpgradeTime(
+                          building.key,
+                          resourceBuilding.key
+                        )
+                      }}
                     </div>
-                    <div class="col">
-                      <div class="neededTime">
-                        {{
-                          getBuildingUpgradeTime(
-                            building.key,
-                            resourceBuilding.key
-                          )
-                        }}
-                      </div>
-                    </div>
-                  </ng-template>
+                  </div>
                 </div>
-              </div>
+              </ng-template>
             </div>
             <div class="col upgradeOrCancelBtn">
               <ng-container

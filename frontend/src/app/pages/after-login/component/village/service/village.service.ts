@@ -84,7 +84,10 @@ export class VillageService {
       .then((data: any) => {
         //TODO write model here
         if (data.result == "Success") {
-          this.userService.setResourcesOfSelectedVillage(data.newResources);
+          if(!buildingPath.includes(".")){
+            this.userService.setBuildingOfSelectedVIllage(<keyof SelectedVillageBuildings>buildingPath, data.newBuilding)
+          }
+          this.userService.setBuildingOfSelectedVIllage("resources", data.newResources)
           this.villageResourcesService.production();
         }
       });

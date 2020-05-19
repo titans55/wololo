@@ -9,6 +9,7 @@ import {
   PlayerDataDto,
   SelectedVillageBuildings,
   ResourcesBuildings,
+  BaseBuilding,
 } from "../../component/village/model/general/village.dto";
 import { SelectedVillageModel } from "./model/selected-village.model";
 
@@ -44,11 +45,11 @@ export class UserService {
       this.selectedVillageIndex
     ].buildings = newBuildings;
   }
-  setResourcesOfSelectedVillage(newResources: ResourcesBuildings): void {
-    this.playerData.selectedVillage.buildings.resources = newResources;
+  setBuildingOfSelectedVIllage(buildingOrResources: keyof SelectedVillageBuildings, data: ResourcesBuildings&BaseBuilding){
+    this.playerData.selectedVillage.buildings[buildingOrResources] = data
     this.playerData.villagesInfo[
       this.selectedVillageIndex
-    ].buildings.resources = newResources;
+    ].buildings[buildingOrResources] = data
   }
 
   get token(): string {
