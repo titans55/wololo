@@ -1,3 +1,4 @@
 wololo/static/wololo/assets/* linguist-vendored
+wololo/static/wololo/templates/* linguist-vendored
 wololo/static/wololo/css/main.css linguist-vendored
 DjangoPostgresProject/static/* linguist-vendored
