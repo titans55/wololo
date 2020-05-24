@@ -57,97 +57,116 @@ class Users(AbstractUser):
     def get_update_url(self):
         return reverse('wololo_users_update', args=(self.pk,))
 
+    def get_my_village(self, village):
+        if not Villages.objects.filter(user_id=self.id, id=village.id).exists():
+            raise Exception("You can only access to your own villages")
+
+        village_dict = {
+            'buildings': {
+                'resources': {}
+            },
+            'villageName': village.village_name,
+            'troops': {},
+            'village_id': village.id,
+            'coords': {
+                'x': village.coords_x,
+                'y': village.coords_y
+            }
+        }
+        village_building_querysets = VillageBuildings.objects.filter(
+            village_id=village)
+        for village_building in village_building_querysets:
+            if village_building.is_resource_building:
+                rbd = village_building.resource_building_detail_id
+                ud = village_building.upgrading_details_id
+                village_dict['buildings']['resources'][village_building.building_name] = {
+                    'level': village_building.level,
+                    'sum': rbd.sum,
+                    'lastInteractionDate': rbd.last_interaction_date,
+                    'upgrading': {
+                        'state': village_building.is_upgrading,
+                        'task_id': ud.task_id if ud else None,
+                        'time': {
+                            'startedUpgradingAt': ud.started_upgrading_at if ud else None,
+                            'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
+                        }
+                    }
+                }
+            else:
+                ud = village_building.upgrading_details_id
+                village_dict['buildings'][village_building.building_name] = {
+                    'level': village_building.level,
+                    'upgrading': {
+                        'state': village_building.is_upgrading,
+                        'task_id': ud.task_id if ud else None,
+                        'time': {
+                            'startedUpgradingAt': ud.started_upgrading_at if ud else None,
+                            'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
+                        }
+                    }
+                }
+        vt = VillageTroops.objects.get(village=village)
+        village_dict['troops'][
+            'inVillage'] = vt.in_village_troops_quantity_json
+        village_dict['troops']['total'] = vt.total_troops_quantity_json
+
+        incoming_stranger_troops = TroopMovements.objects.filter(
+            target_village=village)
+
+        village_dict['troops']['incomingStrangerTroops'] = {}
+        if incoming_stranger_troops:
+            for ist in incoming_stranger_troops:
+                village_dict['troops']['incomingStrangerTroops'][ist.task_id] = {
+                    "from": ist.home_village_id,
+                    "to": ist.target_village_id,
+                    "movementType": ist.movement_type,
+                    "arrivalTime": ist.arrival_time,
+                }
+
+        else:
+            pass
+
+        village_troops_movements = TroopMovements.objects.filter(
+            home_village=village)
+
+        village_dict['troops']['onMove'] = {}
+        if village_troops_movements:
+            for vtm in village_troops_movements:
+                village_dict['troops']['onMove'][vtm.task_id] = {
+                    "from": vtm.home_village_id,
+                    "to": vtm.target_village_id,
+                    "movementType": vtm.movement_type,
+                    "state": vtm.state,
+                    "arrivalTime": vtm.arrival_time,
+                    "troops": vtm.moving_troops_json
+                }
+
+        village_dict['troops']['trainingQueue'] = {
+            'infantry': [{
+                'unit_name': training_element.unit_name,
+                'units_left': training_element.units_left,
+                'will_end_at': training_element.will_end_at
+            } for training_element in village.training_queues.filter(unit_type="infantry").reverse()],
+            'cavalry': [{
+                'unit_name': training_element.unit_name,
+                'units_left': training_element.units_left,
+                'will_end_at': training_element.will_end_at
+            } for training_element in village.training_queues.filter(unit_type="cavalry").reverse()],
+            'siegeWeapons': [{
+                'unit_name': training_element.unit_name,
+                'units_left': training_element.units_left,
+                'will_end_at': training_element.will_end_at
+            } for training_element in village.training_queues.filter(unit_type="siegeWeapons").reverse()],
+            'other': []
+        }
+        return village_dict
+
     def get_my_villages(self):
 
         villages_querysets = Villages.objects.filter(user_id=self.id)
         my_villages = []
         for village in villages_querysets:
-            village_dict = {
-                'buildings': {
-                    'resources': {}
-                },
-                'villageName': village.village_name,
-                'troops': {},
-                'village_id': village.id,
-                'coords': {
-                    'x': village.coords_x,
-                    'y': village.coords_y
-                }
-            }
-            village_building_querysets = VillageBuildings.objects.filter(
-                village_id=village)
-            for village_building in village_building_querysets:
-                if village_building.is_resource_building:
-                    rbd = village_building.resource_building_detail_id
-                    ud = village_building.upgrading_details_id
-                    village_dict['buildings']['resources'][village_building.building_name] = {
-                        'level': village_building.level,
-                        'sum': rbd.sum,
-                        'lastInteractionDate': rbd.last_interaction_date,
-                        'upgrading': {
-                            'state': village_building.is_upgrading,
-                            'task_id': ud.task_id if ud else None,
-                            'time': {
-                                'startedUpgradingAt': ud.started_upgrading_at if ud else None,
-                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
-                            }
-                        }
-                    }
-                else:
-                    ud = village_building.upgrading_details_id
-                    village_dict['buildings'][village_building.building_name] = {
-                        'level': village_building.level,
-                        'upgrading': {
-                            'state': village_building.is_upgrading,
-                            'task_id': ud.task_id if ud else None,
-                            'time': {
-                                'startedUpgradingAt': ud.started_upgrading_at if ud else None,
-                                'willBeUpgradedAt': ud.will_be_upgraded_at if ud else None
-                            }
-                        }
-                    }
-            vt = VillageTroops.objects.get(village_id=village)
-            village_dict['troops']['inVillage'] = vt.in_village_troops_quantity_json
-            village_dict['troops']['total'] = vt.total_troops_quantity_json
-
-            incoming_stranger_troops = TroopMovements.objects.filter(
-                target_village=village)
-
-            village_dict['troops']['incomingStrangerTroops'] = {}
-            if incoming_stranger_troops:
-                for ist in incoming_stranger_troops:
-                    village_dict['troops']['incomingStrangerTroops'][ist.task_id] = {
-                        "from": ist.home_village_id,
-                        "to": ist.target_village_id,
-                        "movementType": ist.movement_type,
-                        "arrivalTime": ist.arrival_time,
-                    }
-
-            else:
-                pass
-
-            village_troops_movements = TroopMovements.objects.filter(
-                home_village=village)
-
-            village_dict['troops']['onMove'] = {}
-            if village_troops_movements:
-                for vtm in village_troops_movements:
-                    village_dict['troops']['onMove'][vtm.task_id] = {
-                        "from": vtm.home_village_id,
-                        "to": vtm.target_village_id,
-                        "movementType": vtm.movement_type,
-                        "state": vtm.state,
-                        "arrivalTime": vtm.arrival_time,
-                        "troops": vtm.moving_troops_json
-                    }
-
-
-            village_dict['troops']['trainingQueue'] = {
-                'infantry': [],
-                'cavalry': [],
-                'siegeWeapons': [],
-                'other': []
-            }
+            village_dict = self.get_my_village(village)
 
             # TODO get trainingQueue and fill dict above
 
@@ -183,13 +202,14 @@ class Users(AbstractUser):
             hourlyProductionByLevel = gameConfig['buildings']['resources'][
                 resource_building.building_name]['hourlyProductionByLevel'][resourceLevel]
             totalHoursOfProduction = (
-                now-resourceLastInteractionDate).total_seconds() / 60 / 60
+                now - resourceLastInteractionDate).total_seconds() / 60 / 60
             totalCurrentResource = (
                 totalHoursOfProduction * hourlyProductionByLevel) + resourceSum
             storage_level = str(VillageBuildings.objects.get(
                 village_id=village_id, building_name='storage').level)
             if totalCurrentResource >= gameConfig['buildings']['storage']['capacity'][storage_level]:
-                totalCurrentResource = gameConfig['buildings']['storage']['capacity'][storage_level]
+                totalCurrentResource = gameConfig['buildings'][
+                    'storage']['capacity'][storage_level]
             currentResources[resourceBuildingName] = int(totalCurrentResource)
         return currentResources
 
@@ -198,7 +218,7 @@ class Users(AbstractUser):
         # village = db.collection('players').document(user_id).collection('villages').document(village_id)
         # now = datetime.datetime.now()
         # now = datetime.datetime.fromtimestamp(now)
-        willEnd = now+datetime.timedelta(0, reqiured_time)
+        willEnd = now + datetime.timedelta(0, reqiured_time)
         if '.' in building_path:
             vb = VillageBuildings.objects.get(building_name=building_path.split('.')[
                                               1], village_id=village_id)
@@ -240,22 +260,24 @@ class Users(AbstractUser):
         vb.upgrading_details_id = None
         vb.save()
 
-    def has_resources_to_train_unit(self, village_id, unit_type, unit_name, number_of_units_to_train):
-
+    def has_resources_to_train_units(self, village_id, unit_type, units_to_train):
+        required_wood_sum, reqiured_iron_sum, reqiured_clay_sum = 0, 0, 0
         current_resources = self.get_current_resources(village_id)
-        reqiured_wood, reqiured_iron, reqiured_clay = get_required_resources_to_train_unit(
-            unit_type,
-            unit_name,
-            number_of_units_to_train
-        )
+        for unit in units_to_train:
+            required_wood, reqiured_iron, reqiured_clay = get_required_resources_to_train_unit(
+                unit_type,
+                unit['unit_name'],
+                unit['amount']
+            )
+            required_wood_sum += required_wood
+            reqiured_iron_sum += reqiured_iron
+            reqiured_clay_sum += reqiured_clay
 
-        if(current_resources['woodCamp'] >= reqiured_wood
-           and current_resources['ironMine'] >= reqiured_iron
-           and current_resources['clayPit'] >= reqiured_clay):
+        print(required_wood_sum, reqiured_iron_sum, reqiured_clay_sum)
 
-            return True
-        else:
-            return False
+        return (current_resources['woodCamp'] >= required_wood_sum
+                and current_resources['ironMine'] >= reqiured_iron_sum
+                and current_resources['clayPit'] >= reqiured_clay_sum)
 
     def get_reports(self):
 
@@ -314,7 +336,8 @@ class Villages(models.Model):
     def train_unit(self, unit_type, unit_name):
         # TODO check if population limit is not reached
 
-        self.village_troops.in_village_troops_quantity_json[unit_type][unit_name] += 1
+        self.village_troops.in_village_troops_quantity_json[
+            unit_type][unit_name] += 1
         self.village_troops.save()
 
         tq = self._get_training_queue_or_queues(unit_type, unit_name)
@@ -345,7 +368,8 @@ class Villages(models.Model):
 
     def get_required_time_for_train_units(self, unit_type, unit_name):
 
-        reqiured_time = gameConfig['units'][unit_type][unit_name]['neededTrainingBaseTime']
+        reqiured_time = gameConfig['units'][unit_type][
+            unit_name]['neededTrainingBaseTime']
         # TODO get building_name dynamically from unit_type
         building_level = self.village_buildings.get(
             building_name='barracks').level
@@ -419,10 +443,11 @@ class VillageTroops(models.Model):
             for unit_name, in_village_unit_amount in unit_type.items():
                 total_troops_quantity_json[unit_type_name][unit_name] = \
                     in_village_unit_amount + \
-                    self.on_move_troops_quantity_json[unit_type_name][unit_name]
+                    self.on_move_troops_quantity_json[
+                        unit_type_name][unit_name]
         return total_troops_quantity_json
     # Relationship Fields
-    village_id = models.OneToOneField(
+    village = models.OneToOneField(
         'wololo.Villages',
         on_delete=models.CASCADE, related_name="village_troops",
     )

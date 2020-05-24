@@ -77,7 +77,7 @@ def trainUnits(request):
     vil_obj = Villages.objects.get(id=village_id)
 
     #if we have resources
-    if(user.has_resources_to_train_unit(village_id, unit_type, unit_name, number_of_units_to_train)):
+    if(user.has_resources_to_train_units(village_id, unit_type, unit_name, number_of_units_to_train)):
 
         reqiured_time = vil_obj.get_required_time_for_train_units(unit_type, unit_name)
 

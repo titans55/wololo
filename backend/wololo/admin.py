@@ -64,56 +64,56 @@ class VillagesAdmin(admin.ModelAdmin):
     actions = ['create_village_buildings_and_troops']
 
     def create_village_buildings_and_troops(self, request, queryset):
-
-        for village in queryset:
-            if(village.has_all_buildings):
-                self.message_user(
-                    request, "%s has buildings already." % village)
-            else:
-                village.points = getFreshVillagePoints()
-                for buildingName, building in game_config['buildings'].items():
-                    if buildingName == 'resources':
-                        for resourceBuildingName, resourceBuilding in building.items():
-                            vbExists = VillageBuildings.objects.filter(
-                                village_id=village.id, building_name=resourceBuildingName)
-                            if vbExists:
-                                vbExists = vbExists.get()
-                                rbdExists = ResourceBuildingDetails.objects.filter(
-                                    id=str(vbExists.resource_building_detail_id))  # check if exists
-                                self.message_user(request, str(
-                                    vbExists.building_name) + " VillageBuildings already exists.")
-                                if(rbdExists):
+        with transaction.atomic():
+            for village in queryset:
+                if(village.has_all_buildings):
+                    self.message_user(
+                        request, "%s has buildings already." % village)
+                else:
+                    village.points = getFreshVillagePoints()
+                    for buildingName, building in game_config['buildings'].items():
+                        if buildingName == 'resources':
+                            for resourceBuildingName, resourceBuilding in building.items():
+                                vbExists = VillageBuildings.objects.filter(
+                                    village_id=village.id, building_name=resourceBuildingName)
+                                if vbExists:
+                                    vbExists = vbExists.get()
+                                    rbdExists = ResourceBuildingDetails.objects.filter(
+                                        id=str(vbExists.resource_building_detail_id))  # check if exists
                                     self.message_user(request, str(
-                                        rbdExists) + " ResourceBuildingDetails already exists.")
+                                        vbExists.building_name) + " VillageBuildings already exists.")
+                                    if(rbdExists):
+                                        self.message_user(request, str(
+                                            rbdExists) + " ResourceBuildingDetails already exists.")
 
-                            if not vbExists:
-                                rbd = ResourceBuildingDetails.objects.create()
-                                VillageBuildings.objects.create(
-                                    building_name=resourceBuildingName,
-                                    is_resource_building=True,
-                                    resource_building_detail_id=rbd,
-                                    village=village,
-                                    level=getFreshBuildingLevel(
-                                        resourceBuildingName)
-                                )
-                    else:
-                        vbExists = VillageBuildings.objects.filter(
-                            village_id=village.id, building_name=buildingName)  # check if exists
-                        if not vbExists:
-                            VillageBuildings.objects.create(
-                                building_name=buildingName,
-                                village=village,
-                                level=getFreshBuildingLevel(buildingName)
-                            )
+                                if not vbExists:
+                                    rbd = ResourceBuildingDetails.objects.create()
+                                    VillageBuildings.objects.create(
+                                        building_name=resourceBuildingName,
+                                        is_resource_building=True,
+                                        resource_building_detail_id=rbd,
+                                        village=village,
+                                        level=getFreshBuildingLevel(
+                                            resourceBuildingName)
+                                    )
                         else:
-                            self.message_user(request, str(
-                                vbExists.get().building_name) + " VillageBuildings already exists.")
+                            vbExists = VillageBuildings.objects.filter(
+                                village_id=village.id, building_name=buildingName)  # check if exists
+                            if not vbExists:
+                                VillageBuildings.objects.create(
+                                    building_name=buildingName,
+                                    village=village,
+                                    level=getFreshBuildingLevel(buildingName)
+                                )
+                            else:
+                                self.message_user(request, str(
+                                    vbExists.get().building_name) + " VillageBuildings already exists.")
 
-            VillageTroops.objects.create(village_id=village)
+                VillageTroops.objects.create(village=village)
 
-            village.has_all_buildings = True
-            village.has_village_troops = True
-            village.save()
+                village.has_all_buildings = True
+                village.has_village_troops = True
+                village.save()
 
 
 admin.site.register(Villages, VillagesAdmin)
@@ -144,7 +144,7 @@ class VillageTroopsAdminForm(forms.ModelForm):
 
 class VillageTroopsAdmin(admin.ModelAdmin):
     form = VillageTroopsAdminForm
-    list_display = ['in_village_troops_quantity_json',
+    list_display = ['village', 'in_village_troops_quantity_json',
                     'on_move_troops_quantity_json', 'total_troops_quantity_json']
     # readonly_fields = ['in_village_troops_quantity', 'on_move_troops_quantity', 'total_troops_quantity']
 
@@ -161,7 +161,7 @@ class TrainingQueueAdminForm(forms.ModelForm):
 
 class TrainingQueueAdmin(admin.ModelAdmin):
     form = TrainingQueueAdminForm
-    list_display = ['chain_id', 'unit_name', 'unit_type',
+    list_display = ['village', 'chain_id', 'unit_name', 'unit_type',
                     'units_left', 'started_at', 'will_end_at']
     # readonly_fields = ['chain_id', 'unit_name', 'unit_type', 'units_left', 'started_at', 'will_end_at']
 

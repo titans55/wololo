@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
 from wololo.tasks import schedule_upgrade_building
 from wololo.helperFunctions import set_sum_and_last_interaction_date_of_resource, getRequiredTimeForUpgrade
 from wololo.commonFunctions import getGameConfig, getVillageIndex
@@ -188,13 +187,13 @@ class UpgradeBuildingView(APIView):
 
                 print(datetime.datetime.now(pytz.utc))
 
-                return JsonResponse(data)
+                return Response(data)
         else:
             data = {
                 'result' : 'Fail',
             }
             print("not enough resources")
-            return JsonResponse(data)
+            return Response(data)
 
 # @login_required
 # def upgrade(request):
@@ -270,13 +269,13 @@ class UpgradeBuildingView(APIView):
 
 #                 print(datetime.datetime.now(pytz.utc))
 
-#                 return JsonResponse(data)
+#                 return Response(data)
 #         else:
 #             data = {
 #                 'result' : 'Fail',
 #             }
 #             print("not enough resources")
-#             return JsonResponse(data)
+#             return Response(data)
 
 
 @login_required
@@ -301,4 +300,4 @@ def cancelUpgrade(request):
         'result' : 'Success',
         'newResources' : newResources
     }
-    return JsonResponse(data)
+    return Response(data)

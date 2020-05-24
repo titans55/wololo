@@ -96,8 +96,9 @@ def train_unit(self, user_id, village_id, unit_type, unit_name):
 
         notifyData = {
             'messageType': 'trainUnit',
-            'unit_name': unit_name,
-            'village_id' : village_id
+            'unitType': unit_type,
+            'unitName': unit_name,
+            'villageId' : village_id
         }    
 
         async_to_sync ( channel_layer. group_send ) (
