@@ -10,8 +10,15 @@ import {
   SelectedVillageBuildings,
   ResourcesBuildings,
   BaseBuilding,
+  TrainingQueueElement,
+  InVillageCavalry,
+  InVillageInfantry,
+  InVillageSiegeWeapons,
+  Village,
+  Troops,
 } from "../../component/village/model/general/village.dto";
 import { SelectedVillageModel } from "./model/selected-village.model";
+import { TrainUnitDto } from "../websocket/messages-dtos/train-unit.dto";
 
 @Injectable()
 export class UserService {
@@ -45,11 +52,53 @@ export class UserService {
       this.selectedVillageIndex
     ].buildings = newBuildings;
   }
-  setBuildingOfSelectedVIllage(buildingOrResources: keyof SelectedVillageBuildings, data: ResourcesBuildings&BaseBuilding){
-    this.playerData.selectedVillage.buildings[buildingOrResources] = data
-    this.playerData.villagesInfo[
-      this.selectedVillageIndex
-    ].buildings[buildingOrResources] = data
+  setBuildingOfSelectedVIllage(
+    buildingOrResources: keyof SelectedVillageBuildings,
+    data: ResourcesBuildings | BaseBuilding
+  ) {
+    (<any>(
+      this.playerData.selectedVillage.buildings[buildingOrResources]
+    )) = data;
+    (<any>(
+      this.playerData.villagesInfo[this.selectedVillageIndex].buildings[
+        buildingOrResources
+      ]
+    )) = data;
+  }
+  onUnitTrain(trainedUnit: TrainUnitDto) {
+    let village = this.playerData.villagesInfo.find((vil) => {
+      return vil.villageId == trainedUnit.villageId;
+    });
+    if (village != null) {
+      try {
+        let trainingQueueElement = <TrainingQueueElement>(
+          village.troops.trainingQueue[trainedUnit.unitType][0]
+        );
+        trainingQueueElement.unitsLeft -= 1;
+        if (trainingQueueElement.unitsLeft == 0) {
+          (<Array<TrainingQueueElement>>(
+            village.troops.trainingQueue[trainedUnit.unitType]
+          )).shift();
+        }
+        village.troops.inVillage[trainedUnit.unitType][
+          trainedUnit.unitName
+        ] += 1;
+        village.troops.total[trainedUnit.unitType][trainedUnit.unitName] += 1;
+
+        if (trainedUnit.villageId == this.getSelectedVillageInfo().villageId) {
+          this.playerData.selectedVillage = village;
+        }
+        console.log("village troops updated onUnitTrain", village);
+      } catch {
+        console.error("error during onUnitTrain");
+      }
+    } else {
+      console.error("village not found on train unit", trainedUnit);
+    }
+  }
+  setTroopsOfVillageById(villageId: number, troops: Troops) {
+    this.playerData.selectedVillage.troops = troops;
+    this.playerData.villagesInfo[this.selectedVillageIndex].troops = troops;
   }
 
   get token(): string {
@@ -59,10 +108,8 @@ export class UserService {
   // the token expiration date
   public expires_at: Date;
 
-  // the username of the logged in user
+  public userId: number;
   public username: string;
-
-  // error messages received from the login attempt
 
   constructor(public http: HttpClient, private router: Router) {}
 
@@ -87,6 +134,7 @@ export class UserService {
   public logout() {
     this.expires_at = null;
     this.username = null;
+    this.userId = null;
     localStorage.removeItem("token");
     localStorage.removeItem("expires_at");
     this.router.navigateByUrl("/");
@@ -98,8 +146,10 @@ export class UserService {
     // decode the token to read the username and expiration timestamp
     const token_parts = this.token.split(/\./);
     const token_decoded = JSON.parse(window.atob(token_parts[1]));
+    console.log("token decoded", token_decoded);
     this.expires_at = new Date(token_decoded.exp * 1000);
     this.username = token_decoded.username;
+    this.userId = token_decoded.user_id;
   }
 
   public isAuthenticated(): boolean {

@@ -3,6 +3,9 @@ import { VillageResourcesService } from "src/app/pages/after-login/partials/comp
 import { Subscription } from "rxjs";
 import { VillageModel } from "../../../village/model/general/village-data.model";
 import * as gameConfig from "../../../../../../../../../gameConfig.json";
+import { UnitTrainFormModel } from "src/app/wo-common/wo-unit-train-form/model/unit-train-form.model";
+import { InVillageInfantry } from "../../../village/model/general/village.dto";
+import { BarracksConfigsEnum } from "../enum/barracks-configs.enum";
 
 export type infantryConfigs = typeof gameConfig.units.infantry;
 
@@ -13,7 +16,7 @@ export type infantryConfigs = typeof gameConfig.units.infantry;
 })
 export class BarracksComponent implements OnInit {
   readonly infantryConfigs: infantryConfigs = gameConfig.units.infantry;
-  public villagesOfPlayer: Array<VillageModel>;
+  public selectedVillage: VillageModel;
   private villagesOfPlayerSubscription: Subscription;
 
   constructor(private villageResourcesService: VillageResourcesService) {}
@@ -22,17 +25,12 @@ export class BarracksComponent implements OnInit {
     console.log(this.infantryConfigs);
     this.villagesOfPlayerSubscription = this.villageResourcesService.villagesOfPlayerSubject.subscribe(
       (villages) => {
-        this.villagesOfPlayer = villages;
-        console.log(this.villagesOfPlayer);
+        this.selectedVillage = villages.find((village) => village.selected);
       }
     );
   }
 
-  get selectedVillage(): VillageModel {
-    if (this.villagesOfPlayer) {
-      return this.villagesOfPlayer.find((village) => village.selected);
-    } else {
-      return null;
-    }
+  get BarracksConfigsEnum() {
+    return BarracksConfigsEnum;
   }
 }

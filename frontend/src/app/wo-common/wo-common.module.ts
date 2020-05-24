@@ -6,6 +6,8 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { HumanizeCamelCasePipe } from "./pipe/humanize-camel-case.pipe";
 import { WoProgressBarModule } from "./wo-progress-bar/wo-progress-bar.module";
 import { WoUnitTrainFormModule } from "./wo-unit-train-form/wo-unit-train-form.module";
+import { WoTrainingQueueModule } from "./wo-training-queue/wo-training-queue.module";
+import { WoCountdownComponent } from "./wo-countdown/wo-countdown.component";
 
 @NgModule({
   imports: [
@@ -15,6 +17,7 @@ import { WoUnitTrainFormModule } from "./wo-unit-train-form/wo-unit-train-form.m
     NgbModule,
     WoProgressBarModule,
     WoUnitTrainFormModule,
+    WoTrainingQueueModule,
   ],
   exports: [
     FormsModule,
@@ -23,6 +26,7 @@ import { WoUnitTrainFormModule } from "./wo-unit-train-form/wo-unit-train-form.m
     HumanizeCamelCasePipe,
     WoProgressBarModule,
     WoUnitTrainFormModule,
+    WoTrainingQueueModule,
   ],
   declarations: [HumanizeCamelCasePipe],
 })

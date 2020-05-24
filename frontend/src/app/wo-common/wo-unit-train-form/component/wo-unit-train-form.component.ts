@@ -11,6 +11,7 @@ import {
   VillageResourceDetailModel,
   PopulationModel,
 } from "src/app/pages/after-login/component/village/model/general/village-data.model";
+import { WoUnitTrainService } from "../service/wo-unit-train.service";
 
 @Component({
   selector: "wo-unit-train-form",
@@ -18,10 +19,11 @@ import {
   styleUrls: ["./wo-unit-train-form.component.css"],
 })
 export class WoUnitTrainFormComponent implements OnInit {
+  @Input() villageId: number;
   @Input() unitTypeConfig: UnitTypeConfig;
   @Input() inVillageUnits: VillageUnitType;
   @Input() totalUnits: VillageUnitType;
-  @Output() onTrain = new EventEmitter<UnitTrainFormModel<VillageUnitType>>();
+  @Input() trainUrl: string;
 
   form: UnitTrainFormModel<VillageUnitType>;
   subscriptions: Subscription = new Subscription();
@@ -32,11 +34,12 @@ export class WoUnitTrainFormComponent implements OnInit {
 
   constructor(
     private toastr: ToastrService,
-    private villageResourcesService: VillageResourcesService
+    private villageResourcesService: VillageResourcesService,
+    private woUnitTrainService: WoUnitTrainService
   ) {}
 
   ngOnInit() {
-    this.form = new UnitTrainFormModel(this.inVillageUnits);
+    this.initUnitTrainForm();
     console.log(this.form);
 
     this.subscriptions.add(
@@ -70,14 +73,17 @@ export class WoUnitTrainFormComponent implements OnInit {
   }
 
   onTrainClick(): void {
-    console.log(this.form);
     if (!this.hasResources()) {
       this.toastr.error("Unsufficient resources!");
+      return;
     }
     if (!this.hasPopulation()) {
       this.toastr.error("Exceeds population limit!");
+      return;
     }
-    this.onTrain.emit(this.form);
+    this.woUnitTrainService.train(this.trainUrl, this.form).then(() => {
+      this.initUnitTrainForm();
+    });
   }
 
   hasResources(): boolean {
@@ -109,5 +115,9 @@ export class WoUnitTrainFormComponent implements OnInit {
     } else {
       return neededResourceOrPopulationPerUnit;
     }
+  }
+
+  private initUnitTrainForm(): void {
+    this.form = new UnitTrainFormModel(this.villageId, this.inVillageUnits);
   }
 }

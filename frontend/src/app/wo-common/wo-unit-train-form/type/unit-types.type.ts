@@ -19,10 +19,10 @@ export type VillageUnitType =
   | InVillageCavalry
   | InVillageSiegeWeapons;
 
-// export type unitNames =
-//   | keyof InVillageInfantry
-//   | keyof InVillageCavalry
-//   | keyof InVillageSiegeWeapons;
+export type UnitNames =
+  | keyof InVillageInfantry
+  | keyof InVillageCavalry
+  | keyof InVillageSiegeWeapons;
 
 // type InfantryUnitDetails = typeof gameConfig.units.infantry[keyof InfantryConfigs];
 // type CavalryUnitDetails = typeof gameConfig.units.cavalry[keyof CavalryConfigs];

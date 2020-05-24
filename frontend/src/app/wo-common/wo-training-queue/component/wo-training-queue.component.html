@@ -1,0 +1,31 @@
+<div *ngIf="trainingQueue.length > 0">
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">Unit Name</th>
+        <th scope="col">Will End At</th>
+        <th scope="col">Time Left</th>
+      </tr>
+    </thead>
+    <tbody class="queueElements">
+      <ng-container
+        *ngFor="let trainingQueueElement of trainingQueue; let i = index"
+      >
+        <tr class="queueElement">
+          <td class="unitsLeft">
+            {{ trainingQueueElement.unitsLeft }}
+            {{ trainingQueueElement.unitName }}
+          </td>
+          <td class="willEndAt">
+            {{ trainingQueueElement.willEndAt | date: "dd.MM.yyyy hh:mm:ss" }}
+          </td>
+          <td class="timeLeft">
+            <wo-countdown
+              [time]="trainingQueueElement.willEndAt"
+            ></wo-countdown>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

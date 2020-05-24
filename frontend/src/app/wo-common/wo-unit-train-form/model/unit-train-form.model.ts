@@ -8,7 +8,7 @@ import {
 export class UnitTrainFormModel<T extends VillageUnitType> {
   public unitsToTrain: Array<UnitToTrain<keyof T>> = [];
 
-  constructor(unitsToTrain: T) {
+  constructor(public villageId: number, unitsToTrain: T) {
     for (let unitName in unitsToTrain) {
       this.unitsToTrain.push({
         unitName: unitName,

@@ -187,8 +187,8 @@ export interface Coords {
 export interface Troops {
   inVillage: InVillage;
   total: InVillage;
-  incomingStrangerTroops: FolkHero;
-  onMove: FolkHero;
+  incomingStrangerTroops: any;
+  onMove: any;
   trainingQueue: TrainingQueue;
 }
 
@@ -216,9 +216,15 @@ export interface InVillageSiegeWeapons {
   catapult: number;
 }
 
+export interface TrainingQueueElement {
+  unitName: number;
+  unitsLeft: number;
+  willEndAt: Date;
+}
+
 export interface TrainingQueue {
-  infantry: any[];
-  cavalry: any[];
-  siegeWeapons: any[];
-  other: any[];
+  infantry: TrainingQueueElement[];
+  cavalry: TrainingQueueElement[];
+  siegeWeapons: TrainingQueueElement[];
+  other: TrainingQueueElement[];
 }

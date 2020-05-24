@@ -1,36 +1,12 @@
 <ng-container *ngIf="selectedVillage">
-  <div
-    class="trainingQueueHolder"
-    *ngIf="selectedVillage.troops.trainingQueue.infantry.length > 0"
-  >
-    <table class="table text-center" id="trainingQueue">
-      <thead>
-        <tr>
-          <th scope="col">Unit Name</th>
-          <th scope="col">Will End At</th>
-          <th scope="col">Time Left</th>
-        </tr>
-      </thead>
-      <tbody class="queueElements">
-        <ng-container
-          *ngFor="
-            let infantryUnit of selectedVillage.troops.trainingQueue.infantry
-          "
-        >
-          <tr class="queueElement">
-            <td class="unitsLeft">
-              {{ infantryUnit.units_left }} {{ infantryUnit.unit_name }}
-            </td>
-            <td class="willEndAt">{{ infantryUnit.will_end_at }}</td>
-            <td class="timeLeft">X</td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
+  <wo-training-queue
+    [trainingQueue]="selectedVillage.troops.trainingQueue.infantry"
+  ></wo-training-queue>
   <wo-unit-train-form
+    [villageId]="selectedVillage.villageId"
     [unitTypeConfig]="infantryConfigs"
     [inVillageUnits]="selectedVillage.troops.inVillage.infantry"
     [totalUnits]="selectedVillage.troops.total.infantry"
+    [trainUrl]="BarracksConfigsEnum.TRAIN_INFANTRY_ENDPOINT"
   ></wo-unit-train-form>
 </ng-container>

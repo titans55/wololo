@@ -5,6 +5,7 @@ import { UserService } from "../user/user.service";
 import { UpgradedBuildingMessage } from "./messages-dtos/upgraded-building.dto";
 import { VillageResourcesService } from "src/app/pages/after-login/partials/component/village-resources/service/village-resources.service";
 import { ResourceBuildingDetails } from "../../component/village/model/general/village.dto";
+import { TrainUnitDto } from "./messages-dtos/train-unit.dto";
 
 @Injectable({
   providedIn: "root",
@@ -51,7 +52,7 @@ export class WebsocketService {
         this.listenUpgradeBuilding(incomingJson);
         break;
       case "trainUnit":
-        // this.listenTrainUnit(incomingJson);
+        this.listenTrainUnit(incomingJson);
         break;
       default:
         alert("message arrived endpoint is not defined");
@@ -79,7 +80,6 @@ export class WebsocketService {
         }
       }
     }
-    console.log(upgradedBuildingMessage);
     let selectedVillage = this.userService.getSelectedVillageInfo();
     if (selectedVillage.villageId == upgradedBuildingMessage.villageId) {
       this.userService.setBuildingsOfSelectedVillage(
@@ -105,6 +105,11 @@ export class WebsocketService {
     //     popperObj.remove();
     //   }, 3000);
     // }
+  }
+
+  listenTrainUnit(trainUnitMessage: TrainUnitDto) {
+    this.userService.onUnitTrain(trainUnitMessage);
+    this.villageResourcesService.production();
   }
 
   //   getBuildingUpgradingNeededTime(building_path) {
