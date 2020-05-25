@@ -14,25 +14,26 @@ from django.db import transaction
 from wololo.models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import  permissions
+from rest_framework import permissions
 from rest_framework_jwt import authentication
 from django.contrib.auth.models import User
 
 gameConfig = getGameConfig()
 
+
 class VillagesView(APIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    
+
     def get(self, request, village_index=None):
         # user_id = request.user.id
         # user = request.user
-        #TODO revert when auth added
+        # TODO revert when auth added
         user = request.user
 
-        if user.is_region_selected is False :
+        if user.is_region_selected is False:
             return redirect("selectRegion")
-        
+
         selected_village_index = getVillageIndex(request, user, village_index)
         if(selected_village_index is 'outOfList'):
             return redirect('villageApi')
@@ -49,21 +50,23 @@ class VillagesView(APIView):
 
             for task_id, incomingStrangerTroopsElement in village['troops']['incomingStrangerTroops'].items():
                 incomingStrangerTroopsElement['task_id'] = task_id
-                totalIncomingStrangerTroops.append(incomingStrangerTroopsElement)
+                totalIncomingStrangerTroops.append(
+                    incomingStrangerTroopsElement)
 
         print("wololo")
         print(totalOnMove)
         print(totalIncomingStrangerTroops)
         print("wololo")
-        my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
-        data = { 
-            'totalIncomingStrangerTroops' : totalIncomingStrangerTroops,
-            'totalOnMove' : totalOnMove,
-            'villagesInfo' : my_villages,
+        my_villages = json.loads(json.dumps(
+            my_villages, cls=DjangoJSONEncoder))
+        data = {
+            'totalIncomingStrangerTroops': totalIncomingStrangerTroops,
+            'totalOnMove': totalOnMove,
+            'villagesInfo': my_villages,
             'selectedVillage': my_villages[selected_village_index],
-            'gameConfig' : gameConfig,
-            'unviewedReportExists' : user.is_unviewed_reports_exists,
-            'page' : 'myVillages',
+            'gameConfig': gameConfig,
+            'unviewedReportExists': user.is_unviewed_reports_exists,
+            'page': 'myVillages',
         }
 
         return Response(data)
@@ -76,7 +79,7 @@ class VillagesView(APIView):
 
 #     if user.is_region_selected is False :
 #         return redirect("selectRegion")
-       
+
 #     selected_village_index = getVillageIndex(request, user, village_index)
 #     if(selected_village_index is 'outOfList'):
 #         return redirect('myVillage')
@@ -100,7 +103,7 @@ class VillagesView(APIView):
 #     print(totalIncomingStrangerTroops)
 #     print("wololo")
 
-#     data = { 
+#     data = {
 #         'totalIncomingStrangerTroops' : totalIncomingStrangerTroops,
 #         'totalOnMove' : totalOnMove,
 #         'villages_info' : my_villages,
@@ -129,23 +132,27 @@ class UpgradeBuildingView(APIView):
         # if user.regionSelected is False :
         #     return redirect("selectRegion")
 
-        selected_village_index = getVillageIndex(request, user, village_index)  
-
+        selected_village_index = getVillageIndex(request, user, village_index)
 
         village = user.get_my_villages()[selected_village_index]
         #upgrade_levelTo = village[building_path]['level'] + 1
-        if '.' in building_path : 
+        if '.' in building_path:
             # print(village['resources'],"kololo")
-            upgrade_levelTo = str(int(village['buildings']['resources'][building_path.split('.')[1]]['level']) + 1)
-            required_clay = gameConfig['buildings']['resources'][building_path.split('.')[1]]['upgradingCosts'][upgrade_levelTo]['clay']
-            required_iron = gameConfig['buildings']['resources'][building_path.split('.')[1]]['upgradingCosts'][upgrade_levelTo]['iron']
-            required_wood = gameConfig['buildings']['resources'][building_path.split('.')[1]]['upgradingCosts'][upgrade_levelTo]['wood']
-        else :
-            upgrade_levelTo = str(int(village['buildings'][building_path]['level']) + 1)
+            upgrade_levelTo = str(
+                int(village['buildings']['resources'][building_path.split('.')[1]]['level']) + 1)
+            required_clay = gameConfig['buildings']['resources'][building_path.split(
+                '.')[1]]['upgradingCosts'][upgrade_levelTo]['clay']
+            required_iron = gameConfig['buildings']['resources'][building_path.split(
+                '.')[1]]['upgradingCosts'][upgrade_levelTo]['iron']
+            required_wood = gameConfig['buildings']['resources'][building_path.split(
+                '.')[1]]['upgradingCosts'][upgrade_levelTo]['wood']
+        else:
+            upgrade_levelTo = str(
+                int(village['buildings'][building_path]['level']) + 1)
             required_clay = gameConfig['buildings'][building_path]['upgradingCosts'][upgrade_levelTo]['clay']
             required_iron = gameConfig['buildings'][building_path]['upgradingCosts'][upgrade_levelTo]['iron']
             required_wood = gameConfig['buildings'][building_path]['upgradingCosts'][upgrade_levelTo]['wood']
-        #retrieve required resources from gameConfig.json with upgrade_level
+        # retrieve required resources from gameConfig.json with upgrade_level
         #reqiured_time = getRequiredTimeForUpgrade(village, building_path, upgrade_levelTo)
         reqiured_time = 10
         # required_clay = 0
@@ -158,30 +165,36 @@ class UpgradeBuildingView(APIView):
 
         if(wood_total >= required_wood and iron_total >= required_iron and clay_total >= required_clay):
             with transaction.atomic():
-                #update sum and lastInteractionDate of resources (-cost)
-                set_sum_and_last_interaction_date_of_resource(user.id, village_id, 'woodCamp', wood_total-required_wood, now)
-                set_sum_and_last_interaction_date_of_resource(user.id, village_id, 'clayPit', clay_total-required_clay, now)
-                set_sum_and_last_interaction_date_of_resource(user.id, village_id, 'ironMine', iron_total-required_iron, now)
-                
-                task_id = schedule_upgrade_building.apply_async((user.id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
+                # update sum and lastInteractionDate of resources (-cost)
+                set_sum_and_last_interaction_date_of_resource(
+                    user.id, village_id, 'woodCamp', wood_total-required_wood, now)
+                set_sum_and_last_interaction_date_of_resource(
+                    user.id, village_id, 'clayPit', clay_total-required_clay, now)
+                set_sum_and_last_interaction_date_of_resource(
+                    user.id, village_id, 'ironMine', iron_total-required_iron, now)
+
+                task_id = schedule_upgrade_building.apply_async(
+                    (user.id, village_id, building_path, upgrade_levelTo), countdown=reqiured_time)
                 task_id = task_id.id
-                            
-                user.set_upgrading_time_and_state(village_id, building_path, reqiured_time, str(task_id), now)
+
+                user.set_upgrading_time_and_state(
+                    village_id, building_path, reqiured_time, str(task_id), now)
 
                 # print(user.myVillages[selected_village_index]['buildings']['resources'])
                 # user.update()
                 # newResources = user.myVillages[selected_village_index]['buildings']['resources']
 
-                newResources = user.get_my_villages()[selected_village_index]['buildings']['resources']
+                newResources = user.get_my_villages(
+                )[selected_village_index]['buildings']['resources']
 
                 print(newResources)
                 data = {
-                    'result' : 'Success',
-                    'newResources' : newResources
+                    'result': 'Success',
+                    'newResources': newResources
                 }
-                if( '.' not in building_path):
-                    data['newBuilding'] = user.get_my_villages()[selected_village_index]['buildings'][building_path]
-                
+                if('.' not in building_path):
+                    data['newBuilding'] = user.get_my_villages(
+                    )[selected_village_index]['buildings'][building_path]
 
                 print("upgrading")
 
@@ -190,7 +203,7 @@ class UpgradeBuildingView(APIView):
                 return Response(data)
         else:
             data = {
-                'result' : 'Fail',
+                'result': 'Fail',
             }
             print("not enough resources")
             return Response(data)
@@ -211,12 +224,12 @@ class UpgradeBuildingView(APIView):
 #         # if user.regionSelected is False :
 #         #     return redirect("selectRegion")
 
-#         selected_village_index = getVillageIndex(request, user, None)  
+#         selected_village_index = getVillageIndex(request, user, None)
 
 
 #         village = user.get_my_villages()[selected_village_index]
 #         #upgrade_levelTo = village[building_path]['level'] + 1
-#         if '.' in building_path : 
+#         if '.' in building_path :
 #             # print(village['resources'],"kololo")
 #             upgrade_levelTo = str(int(village['buildings']['resources'][building_path.split('.')[1]]['level']) + 1)
 #             required_clay = gameConfig['buildings']['resources'][building_path.split('.')[1]]['upgradingCosts'][upgrade_levelTo]['clay']
@@ -244,10 +257,10 @@ class UpgradeBuildingView(APIView):
 #                 set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'woodCamp', wood_total-required_wood, now)
 #                 set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'clayPit', clay_total-required_clay, now)
 #                 set_sum_and_last_interaction_date_of_resource(user_id, village_id, 'ironMine', iron_total-required_iron, now)
-                
+
 #                 task_id = schedule_upgrade_building.apply_async((user_id, village_id, building_path, upgrade_levelTo), countdown = reqiured_time)
 #                 task_id = task_id.id
-                            
+
 #                 user.set_upgrading_time_and_state(village_id, building_path, reqiured_time, str(task_id), now)
 
 #                 # print(user.myVillages[selected_village_index]['buildings']['resources'])
@@ -263,7 +276,7 @@ class UpgradeBuildingView(APIView):
 #                 }
 #                 if( '.' not in building_path):
 #                     data['newBuilding'] = user.get_my_villages()[selected_village_index]['buildings'][building_path]
-                
+
 
 #                 print("upgrading")
 
@@ -281,23 +294,21 @@ class UpgradeBuildingView(APIView):
 @login_required
 def cancelUpgrade(request):
     now = datetime.datetime.now(pytz.utc)
-    village_id = request.POST.get("village_id") 
+    village_id = request.POST.get("village_id")
     building_path = request.POST.get("building_path")
     firing_time = request.POST.get("firingTime")
 
     user_id = request.user.id
     user = request.user
 
-
-
     user.cancelUpgrading(village_id, building_path, now)
 
     user.update()
-    selected_village_index = getVillageIndex(request, user, None)  
+    selected_village_index = getVillageIndex(request, user, None)
     newResources = user.myVillages[selected_village_index]['buildings']['resources']
 
     data = {
-        'result' : 'Success',
-        'newResources' : newResources
+        'result': 'Success',
+        'newResources': newResources
     }
     return Response(data)
