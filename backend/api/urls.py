@@ -5,6 +5,8 @@ from . import api
 from api.views.after_login.villages_view import VillagesView, UpgradeBuildingView
 from api.views.after_login.map_view import MapView
 from api.views.after_login.buildings.unit_training_buildings.barracks_view import BarracksView
+from api.views.after_login.reports_view import reportsList, report
+from api.views.after_login.ranking_view import ranking
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -27,8 +29,12 @@ urlpatterns = (
     path('v1/', include(router.urls)),
     path('token-auth/', obtain_jwt_token),
     path('token-refresh/', refresh_jwt_token),
-    path('villagesView/<int:village_index>', VillagesView.as_view(), name='villageApi'),
+    path('villagesView/<int:village_index>',
+         VillagesView.as_view(), name='villageApi'),
     path('upgrade-building/<int:village_index>', UpgradeBuildingView.as_view()),
     path('barracks/train-units', BarracksView.as_view()),
     path('mapView/', MapView.as_view()),
+    path('reports/', reportsList.as_view()),
+    path('reports/<int:report_index>', report.as_view()),
+    path('rank', ranking.as_view()),
 )
