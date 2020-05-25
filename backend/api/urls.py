@@ -5,10 +5,10 @@ from . import api
 from api.views.after_login.villages_view import VillagesView, UpgradeBuildingView
 from api.views.after_login.map_view import MapView
 from api.views.after_login.buildings.unit_training_buildings.barracks_view import BarracksView
-from api.views.after_login.reports_view import reportsList, report
+from api.views.after_login.reports_view import ReportsList, Report
 from api.views.after_login.ranking_view import ranking
-from api.views.after_login.profiles.playerProfile_view import playerProfile
-from api.views.after_login.profiles.villageProfile_view import villageProfile
+from api.views.after_login.profiles.player_profile_view import PlayerProfile
+from api.views.after_login.profiles.village_profile_view import VillageProfile
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -36,9 +36,9 @@ urlpatterns = (
     path('upgrade-building/<int:village_index>', UpgradeBuildingView.as_view()),
     path('barracks/train-units', BarracksView.as_view()),
     path('mapView/', MapView.as_view()),
-    path('reports/', reportsList.as_view()),
-    path('reports/<int:report_index>', report.as_view()),
+    path('reports/', ReportsList.as_view()),
+    path('reports/<int:report_index>', Report.as_view()),
     path('rank', ranking.as_view()),
-    path('profile/<int:player_id>', playerProfile.as_view()),
-    path('village/<int:village_id>', villageProfile.as_view()),
+    path('profile/<int:player_id>', PlayerProfile.as_view()),
+    path('village/<int:village_id>', VillageProfile.as_view()),
 )

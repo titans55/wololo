@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 gameConfig = getGameConfig()
 
 
-class reportsList(APIView):
+class ReportsList(APIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -92,7 +92,7 @@ class reportsList(APIView):
 #    return render(request, 'reports.html', {'myVillages': my_villages, 'data': data})
 
 
-class report(APIView):
+class Report(APIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
