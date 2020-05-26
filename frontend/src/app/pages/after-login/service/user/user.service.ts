@@ -108,7 +108,12 @@ export class UserService {
   // the token expiration date
   public expires_at: Date;
 
-  public userId: number;
+  get userId(): number {
+    const token_parts = this.token.split(/\./);
+    const token_decoded = JSON.parse(window.atob(token_parts[1]));
+    return token_decoded.user_id;
+  }
+
   public username: string;
 
   constructor(public http: HttpClient, private router: Router) {}
@@ -134,7 +139,6 @@ export class UserService {
   public logout() {
     this.expires_at = null;
     this.username = null;
-    this.userId = null;
     localStorage.removeItem("token");
     localStorage.removeItem("expires_at");
     this.router.navigateByUrl("/");
@@ -149,7 +153,6 @@ export class UserService {
     console.log("token decoded", token_decoded);
     this.expires_at = new Date(token_decoded.exp * 1000);
     this.username = token_decoded.username;
-    this.userId = token_decoded.user_id;
   }
 
   public isAuthenticated(): boolean {

@@ -8,6 +8,7 @@ export class DatagridColumn {
   caption?: string;
   includeHrefConfigs?: IncludeHrefConfigs;
   customCellTemplateEnabled?: boolean = false;
+  isHidden?: boolean = false;
 }
 
 class IncludeHrefConfigs {

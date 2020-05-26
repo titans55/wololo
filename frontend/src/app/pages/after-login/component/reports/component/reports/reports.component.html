@@ -1,5 +1,25 @@
 <wo-datagrid [dataSourceConfigs]="dataSourceConfigs">
-  <ng-template cellTemplate column="isViewed" let-rowData="rowData">
-    {{ rowData }}
+  <ng-template cellTemplate column="type" let-rowData="rowData">
+    {{ rowData.type | humanizeCamelCase }}
+  </ng-template>
+  <ng-template cellTemplate column="content" let-rowData="rowData">
+    <ng-container *ngIf="rowData.content.attacker.userId == userId">
+      We attacked to {{ rowData.content.defender.username }} and
+      {{ rowData.content.attacker.result }}!
+    </ng-container>
+    <ng-container *ngIf="rowData.content.attacker.userId != userId">
+      {{ rowData.content.attacker.userId }}
+      We defended against {{ rowData.content.attacker.username }} and
+      {{ rowData.content.defender.result }}!
+    </ng-container>
+  </ng-template>
+  <ng-template cellTemplate column="detailsButton" let-rowData="rowData">
+    <button
+      class="upgrade btn btn-primary w-100"
+      (click)="redirectToReportDetail(rowData.id)"
+    >
+      Report Details
+      <i *ngIf="!rowData.isViewed" class="fa fa-exclamation text-white"></i>
+    </button>
   </ng-template>
 </wo-datagrid>

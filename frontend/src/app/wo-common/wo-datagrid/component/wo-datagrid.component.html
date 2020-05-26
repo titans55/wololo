@@ -7,9 +7,9 @@
         <th>Points</th>
         <th>Number of villages</th> -->
         <ng-container *ngFor="let column of dataSourceConfigs.columns">
-          <th>
+          <th *ngIf="!column.isHidden">
             {{
-              column.caption
+              column.caption != null
                 ? column.caption
                 : (column.dataKey | humanizeCamelCase)
             }}
@@ -23,43 +23,45 @@
           *ngFor="let column of dataSourceConfigs.columns"
           [ngSwitch]="column.includeHrefConfigs && 'hasHref'"
         >
-          <td *ngSwitchCase="'hasHref'">
-            <a
-              [routerLink]="[
-                '/' +
-                  column.includeHrefConfigs.redirectionUrl +
+          <ng-container *ngIf="!column.isHidden">
+            <td *ngSwitchCase="'hasHref'">
+              <a
+                [routerLink]="[
                   '/' +
-                  rowData[column.includeHrefConfigs.parameterColumn]
-              ]"
-            >
+                    column.includeHrefConfigs.redirectionUrl +
+                    '/' +
+                    rowData[column.includeHrefConfigs.parameterColumn]
+                ]"
+              >
+                <wo-datagrid-cell
+                  [column]="column"
+                  [cellData]="rowData[column.dataKey]"
+                >
+                  <ng-content
+                    *ngTemplateOutlet="
+                      cellTemplatesDict[column.dataKey];
+                      context: { rowData: rowData }
+                    "
+                  >
+                  </ng-content>
+                </wo-datagrid-cell>
+              </a>
+            </td>
+            <td *ngSwitchDefault>
               <wo-datagrid-cell
                 [column]="column"
                 [cellData]="rowData[column.dataKey]"
               >
-                <ng-content
-                  *ngTemplateOutlet="
-                    cellTemplatesDict[column.dataKey];
-                    context: { rowData: rowData }
-                  "
-                >
-                </ng-content>
               </wo-datagrid-cell>
-            </a>
-          </td>
-          <td *ngSwitchDefault>
-            <wo-datagrid-cell
-              [column]="column"
-              [cellData]="rowData[column.dataKey]"
-            >
-            </wo-datagrid-cell>
-            <ng-content
-              *ngTemplateOutlet="
-                cellTemplatesDict[column.dataKey];
-                context: { rowData: rowData }
-              "
-            >
-            </ng-content>
-          </td>
+              <ng-content
+                *ngTemplateOutlet="
+                  cellTemplatesDict[column.dataKey];
+                  context: { rowData: rowData }
+                "
+              >
+              </ng-content>
+            </td>
+          </ng-container>
         </ng-container>
       </tr>
     </tbody>
