@@ -37,11 +37,14 @@ class Users(AbstractUser):
     is_unviewed_reports_exists = models.BooleanField(default=False)
     username = models.CharField(max_length=15, unique=True)
     clan_id = models.SmallIntegerField(blank=True, null=True)
-    number_of_villages = models.PositiveIntegerField(default=0)
     points = models.PositiveIntegerField(default=0)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
+
+    @property
+    def number_of_villages(self):
+        return self.villages.count()
 
     @property
     def ranking(self):
