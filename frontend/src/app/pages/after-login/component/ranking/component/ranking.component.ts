@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { DataSourceConfigs } from "src/app/wo-common/wo-datagrid/service/wo-datagrid.service";
 import { RankingConfigsEnum } from "../enum/ranking-configs.enum";
 import { GlobalService } from "../../../service/global.service";
-import { AfterLoginRoutesEnum } from "../../../after-login.routing";
+import { AfterLoginRoutesEnum } from "../../../enum/after-login-routes.enum";
 
 @Component({
   selector: "wo-ranking",

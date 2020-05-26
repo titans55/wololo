@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { AfterLoginRoutesEnum } from "src/app/pages/after-login/after-login.routing";
 import { UserService } from "src/app/pages/after-login/service/user/user.service";
+import { AfterLoginRoutesEnum } from "src/app/pages/after-login/enum/after-login-routes.enum";
 
 @Component({
   selector: "woo-navbar",

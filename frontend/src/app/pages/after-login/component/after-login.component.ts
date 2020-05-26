@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { WebsocketService } from "../service/websocket/websocket.service";
-import { AfterRouterOutletEnum } from "../enum/after-router-outlet.enum";
+import { AfterRouterOutletEnum } from "../enum/after-login-routes.enum";
 import { VillageResourcesService } from "../partials/component/village-resources/service/village-resources.service";
 
 @Component({
