@@ -11,7 +11,7 @@ export enum AfterLoginRoutesEnum {
   MAP = "map",
   VILLAGE = "village",
   BARRACKS = "barracks",
-  RANKING = "ranking",
+  PLAYER_RANKING = "ranking",
 }
 
 export const AfterLoginRoutes: Routes = [
@@ -33,7 +33,7 @@ export const AfterLoginRoutes: Routes = [
         component: BarracksComponent,
       },
       {
-        path: AfterLoginRoutesEnum.RANKING,
+        path: AfterLoginRoutesEnum.PLAYER_RANKING,
         component: RankingComponent,
       },
     ],

@@ -9,7 +9,7 @@ import { UserService } from "./user/user.service";
 export class GlobalService {
   constructor(public http: HttpClient, private userService: UserService) {}
 
-  private httpOptions() {
+  get httpOptions() {
     return {
       headers: new HttpHeaders({
         "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export class GlobalService {
   get(url: string): Promise<any> {
     if (this.userService.isAuthenticated()) {
       return this.http
-        .get("http://" + Enviroment.BASE_URL + "/" + url, this.httpOptions())
+        .get(this.getEndpointUrl(url), this.httpOptions)
         .toPromise();
     } else {
       return Promise.reject("token missing");
@@ -31,11 +31,7 @@ export class GlobalService {
   post(url: string, data?: any): Promise<any> {
     if (this.userService.isAuthenticated()) {
       return this.http
-        .post(
-          "http://" + Enviroment.BASE_URL + "/" + url,
-          data,
-          this.httpOptions()
-        )
+        .post(this.getEndpointUrl(url), data, this.httpOptions)
         .toPromise();
     } else {
       return Promise.reject("token missing");
@@ -45,4 +41,8 @@ export class GlobalService {
   put() {}
 
   delete() {}
+
+  getEndpointUrl(url: string): string {
+    return "http://" + Enviroment.BASE_URL + "/" + url;
+  }
 }

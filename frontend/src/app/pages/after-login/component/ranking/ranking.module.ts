@@ -2,11 +2,10 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RankingComponent } from "./component/ranking.component";
 import { WoCommonModule } from "../../../../wo-common/wo-common.module";
-import { RankingService } from "./service/ranking.service";
+import { RouterModule } from "@angular/router";
 
 @NgModule({
-  imports: [CommonModule, WoCommonModule],
+  imports: [CommonModule, WoCommonModule, RouterModule],
   declarations: [RankingComponent],
-  providers: [RankingService],
 })
 export class RankingModule {}

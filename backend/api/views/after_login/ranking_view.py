@@ -13,33 +13,25 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework_jwt import authentication
 from django.contrib.auth.models import User
+from rest_framework import generics
+from api.serializers import RankingSerializer
+from wololo.models import Users
 
 gameConfig = getGameConfig()
 
 
-class ranking(APIView):
+class Ranking(generics.ListAPIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
+    queryset = Users.objects.all().order_by('-points')
+    serializer_class = RankingSerializer
 
-    def get(self, request, village_index=None):
+    def list(self, request, *args, **kwargs):
+        response = super(Ranking, self).list(request, args, kwargs)
+        response.data['current_page_number'] = self.paginator.page.number
+        response.data['paginate_by'] = self.paginator.page_size
+        return response
 
-        user = request.user
-        if user.is_region_selected is False:
-            return redirect("selectRegion")
-
-        selected_village_index = getVillageIndex(request, user, village_index)
-        if(selected_village_index is 'outOfList'):
-            return redirect('ranking')
-
-        allPlayers = getAllPlayersOrderedByPoints()
-        print(allPlayers)
-
-        data = {
-            'allPlayers': allPlayers,
-            'unviewedReportExists': user.is_unviewed_reports_exists,
-        }
-
-        return Response(data)
 
 # @login_required
 # def ranking(request, village_index=None):

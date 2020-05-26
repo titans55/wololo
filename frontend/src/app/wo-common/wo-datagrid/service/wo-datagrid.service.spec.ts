@@ -1,16 +1,16 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { RankingService } from './ranking.service';
+import { WoDatagridService } from './wo-datagrid.service';
 
-describe('Service: Ranking', () => {
+describe('Service: WoDatagrid', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RankingService]
+      providers: [WoDatagridService]
     });
   });
 
-  it('should ...', inject([RankingService], (service: RankingService) => {
+  it('should ...', inject([WoDatagridService], (service: WoDatagridService) => {
     expect(service).toBeTruthy();
   }));
 });

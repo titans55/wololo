@@ -1,0 +1,64 @@
+<ng-container *ngIf="dataSource">
+  <table class="row-border table text-center w-100">
+    <thead>
+      <tr>
+        <!-- <th>Username</th>
+        <th class="disabled">Clan</th>
+        <th>Points</th>
+        <th>Number of villages</th> -->
+        <ng-container *ngFor="let column of dataSourceConfigs.columns">
+          <th>{{ column.dataKey | humanizeCamelCase }}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let rowData of dataSource.results">
+        <ng-container
+          *ngFor="let column of dataSourceConfigs.columns"
+          [ngSwitch]="column.includeHrefConfigs && 'hasHref'"
+        >
+          <td *ngSwitchCase="'hasHref'">
+            <a
+              [routerLink]="[
+                '/' +
+                  column.includeHrefConfigs.redirectionUrl +
+                  '/' +
+                  rowData[column.includeHrefConfigs.parameterColumn]
+              ]"
+            >
+              {{ rowData[column.dataKey] }}
+            </a>
+          </td>
+          <td *ngSwitchDefault>
+            {{ rowData[column.dataKey] }}
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pagination float-right">
+      <li
+        class="page-item"
+        [ngClass]="{ disabled: dataSourceConfigs.previous == null }"
+      >
+        <a class="page-link" (click)="service.paginationButtonClicked('prev')">
+          Previous
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link"
+          >{{ dataSource.currentPageNumber }} / {{ totalPages }}
+        </a>
+      </li>
+      <li
+        class="page-item"
+        [ngClass]="{ disabled: dataSourceConfigs.next == null }"
+      >
+        <a class="page-link" (click)="service.paginationButtonClicked('next')">
+          Next
+        </a>
+      </li>
+    </ul>
+  </nav>
+</ng-container>

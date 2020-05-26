@@ -1,3 +1,18 @@
-<p>
-  ranking works!
-</p>
+<div class="row">
+  <div class="col-2">
+    <div class="list-group text-center">
+      <a
+        [routerLink]="PlayerRankingUrl"
+        class="list-group-item list-group-item-action active"
+      >
+        Players
+      </a>
+      <a href="#" class="list-group-item list-group-item-action disabled"
+        >Kingdoms?</a
+      >
+    </div>
+  </div>
+  <div class="col">
+    <wo-datagrid [dataSourceConfigs]="dataSourceConfigs"></wo-datagrid>
+  </div>
+</div>

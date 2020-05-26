@@ -23,6 +23,7 @@ from dateutil import parser
 import pytz
 import datetime
 from wololo.commonFunctions import getGameConfig
+
 gameConfig = getGameConfig()
 
 
@@ -41,6 +42,16 @@ class Users(AbstractUser):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
+
+    @property
+    def ranking(self):
+        rank = Users.objects.filter(points__gt=self.points).count() + 1
+        for p in Users.objects.filter(points=self.points).order_by("points"):
+            if p.id != self.id:
+                rank += 1
+            else:
+                break
+        return rank
 
     class Meta:
         ordering = ('-pk',)

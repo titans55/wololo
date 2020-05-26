@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.db.models.fields import *
 from wololo.models import Villages, Users
-from api.serializers import VillagesSerializer
 
 class UnitToTrainSerializer(serializers.Serializer):
     unit_name = CharField()
