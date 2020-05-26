@@ -49,7 +49,6 @@ export class WoDatagridComponent
     this.cellTemplates.forEach((cellTemplate) => {
       this.cellTemplatesDict[cellTemplate.column] = cellTemplate.template;
     });
-    console.log(this.cellTemplatesDict);
   }
 
   ngOnInit() {
