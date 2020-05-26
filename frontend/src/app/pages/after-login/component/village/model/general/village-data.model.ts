@@ -35,9 +35,9 @@ export class ResourcesModel implements Resources<ResourceModel> {
 
 export class ResourceModel implements ResourceBuildingDetails {
   private _buildingName: keyof ResourcesBuildings;
-  currentSummary: ReplaySubject<
-    VillageResourceDetailModel
-  > = new ReplaySubject();
+  currentSummary: ReplaySubject<VillageResourceDetailModel> = new ReplaySubject(
+    1
+  );
   level: number;
   sum: number;
   lastInteractionDate: Date;

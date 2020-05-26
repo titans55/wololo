@@ -32,7 +32,7 @@ export class WoDataSource {
 @Injectable()
 export class WoDatagridService {
   private _dataSource: WoDataSource;
-  public dataSource: ReplaySubject<WoDataSource> = new ReplaySubject();
+  public dataSource: ReplaySubject<WoDataSource> = new ReplaySubject(1);
   private configs: DataSourceConfigs;
 
   constructor(public http: HttpClient) {}

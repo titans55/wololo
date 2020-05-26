@@ -126,7 +126,7 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   private storageCapacity: number;
-  storageSubject: ReplaySubject<number> = new ReplaySubject();
+  storageSubject: ReplaySubject<number> = new ReplaySubject(1);
   private setAndEmitStorageCapacity(): void {
     this.storageCapacity =
       gameConfigs.buildings.storage.capacity[
@@ -136,7 +136,7 @@ export class VillageResourcesService extends ResourcesModel {
   }
 
   private population: PopulationModel;
-  populationSubject: ReplaySubject<PopulationModel> = new ReplaySubject();
+  populationSubject: ReplaySubject<PopulationModel> = new ReplaySubject(1);
   private setAndEmitPopulationInfo() {
     let populationLimit: number =
       gameConfigs.buildings.farm.populationLimit[
@@ -153,7 +153,7 @@ export class VillageResourcesService extends ResourcesModel {
   private villagesOfPlayer: Array<VillageModel>;
   private _villagesOfPlayerSubject: ReplaySubject<
     Array<VillageModel>
-  > = new ReplaySubject();
+  > = new ReplaySubject(1);
   get villagesOfPlayerSubject(): Observable<VillageModel[]> {
     return this._villagesOfPlayerSubject.asObservable();
   }
