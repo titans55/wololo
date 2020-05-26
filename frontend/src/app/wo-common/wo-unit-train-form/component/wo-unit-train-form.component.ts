@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+} from "@angular/core";
 import { UnitTypeConfig, VillageUnitType } from "../type/unit-types.type";
 import {
   UnitTrainFormModel,
@@ -18,7 +25,7 @@ import { WoUnitTrainService } from "../service/wo-unit-train.service";
   templateUrl: "./wo-unit-train-form.component.html",
   styleUrls: ["./wo-unit-train-form.component.css"],
 })
-export class WoUnitTrainFormComponent implements OnInit {
+export class WoUnitTrainFormComponent implements OnInit, OnChanges {
   @Input() villageId: number;
   @Input() unitTypeConfig: UnitTypeConfig;
   @Input() inVillageUnits: VillageUnitType;
@@ -70,6 +77,10 @@ export class WoUnitTrainFormComponent implements OnInit {
         }
       )
     );
+  }
+
+  ngOnChanges() {
+    this.initUnitTrainForm();
   }
 
   onTrainClick(): void {

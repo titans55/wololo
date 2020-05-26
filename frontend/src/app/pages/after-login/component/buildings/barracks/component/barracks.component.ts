@@ -26,6 +26,7 @@ export class BarracksComponent implements OnInit {
     this.villagesOfPlayerSubscription = this.villageResourcesService.villagesOfPlayerSubject.subscribe(
       (villages) => {
         this.selectedVillage = villages.find((village) => village.selected);
+        console.log("changed village");
       }
     );
   }
