@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { VillageResourcesService } from "src/app/pages/after-login/partials/component/village-resources/service/village-resources.service";
 import { Subscription } from "rxjs";
 import { VillageModel } from "../../../village/model/general/village-data.model";
@@ -14,7 +14,7 @@ export type infantryConfigs = typeof gameConfig.units.infantry;
   templateUrl: "./barracks.component.html",
   styleUrls: ["./barracks.component.css"],
 })
-export class BarracksComponent implements OnInit {
+export class BarracksComponent implements OnInit, OnDestroy {
   readonly infantryConfigs: infantryConfigs = gameConfig.units.infantry;
   public selectedVillage: VillageModel;
   private villagesOfPlayerSubscription: Subscription;
@@ -29,6 +29,10 @@ export class BarracksComponent implements OnInit {
         console.log("changed village");
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.villagesOfPlayerSubscription.unsubscribe();
   }
 
   get BarracksConfigsEnum() {

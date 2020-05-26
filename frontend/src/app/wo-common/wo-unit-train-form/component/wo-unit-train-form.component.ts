@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   OnChanges,
+  OnDestroy,
 } from "@angular/core";
 import { UnitTypeConfig, VillageUnitType } from "../type/unit-types.type";
 import {
@@ -25,7 +26,7 @@ import { WoUnitTrainService } from "../service/wo-unit-train.service";
   templateUrl: "./wo-unit-train-form.component.html",
   styleUrls: ["./wo-unit-train-form.component.css"],
 })
-export class WoUnitTrainFormComponent implements OnInit, OnChanges {
+export class WoUnitTrainFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() villageId: number;
   @Input() unitTypeConfig: UnitTypeConfig;
   @Input() inVillageUnits: VillageUnitType;
@@ -81,6 +82,10 @@ export class WoUnitTrainFormComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.initUnitTrainForm();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   onTrainClick(): void {
