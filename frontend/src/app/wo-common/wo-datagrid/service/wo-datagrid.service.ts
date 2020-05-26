@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ReplaySubject } from "rxjs";
 
-class DatagridColumn {
+export class DatagridColumn {
   dataKey: string;
+  dataType?: "datetime" | "string" | "boolean" = "string";
   caption?: string = this.dataKey;
   includeHrefConfigs?: IncludeHrefConfigs;
 }

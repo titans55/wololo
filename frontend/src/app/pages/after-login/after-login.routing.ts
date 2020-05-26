@@ -6,6 +6,7 @@ import { AfterLoginComponent } from "./component/after-login.component";
 import { AuthGuard } from "./service/user/guard/auth.guard";
 import { BarracksComponent } from "./component/buildings/barracks/component/barracks.component";
 import { RankingComponent } from "./component/ranking/component/ranking.component";
+import { ReportsRoutes } from "./component/reports/reports.routing";
 
 export const AfterLoginRoutes: Routes = [
   {
@@ -28,6 +29,10 @@ export const AfterLoginRoutes: Routes = [
       {
         path: AfterLoginRoutesEnum.PLAYER_RANKING,
         component: RankingComponent,
+      },
+      {
+        path: AfterLoginRoutesEnum.REPORTS,
+        children: ReportsRoutes,
       },
     ],
   },

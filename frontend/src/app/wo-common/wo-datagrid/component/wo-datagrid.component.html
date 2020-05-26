@@ -1,5 +1,5 @@
 <ng-container *ngIf="dataSource">
-  <table class="row-border table text-center w-100">
+  <table class="table table-bordered text-center w-100">
     <thead>
       <tr>
         <!-- <th>Username</th>
@@ -26,11 +26,17 @@
                   rowData[column.includeHrefConfigs.parameterColumn]
               ]"
             >
-              {{ rowData[column.dataKey] }}
+              <wo-datagrid-cell
+                [column]="column"
+                [cellData]="rowData[column.dataKey]"
+              ></wo-datagrid-cell>
             </a>
           </td>
           <td *ngSwitchDefault>
-            {{ rowData[column.dataKey] }}
+            <wo-datagrid-cell
+              [column]="column"
+              [cellData]="rowData[column.dataKey]"
+            ></wo-datagrid-cell>
           </td>
         </ng-container>
       </tr>
@@ -40,9 +46,12 @@
     <ul class="pagination float-right">
       <li
         class="page-item"
-        [ngClass]="{ disabled: dataSourceConfigs.previous == null }"
+        [ngClass]="{ disabled: dataSource.previous == null }"
       >
-        <a class="page-link" (click)="service.paginationButtonClicked('prev')">
+        <a
+          class="page-link btn btn-primary"
+          (click)="service.paginationButtonClicked('prev')"
+        >
           Previous
         </a>
       </li>
@@ -51,11 +60,11 @@
           >{{ dataSource.currentPageNumber }} / {{ totalPages }}
         </a>
       </li>
-      <li
-        class="page-item"
-        [ngClass]="{ disabled: dataSourceConfigs.next == null }"
-      >
-        <a class="page-link" (click)="service.paginationButtonClicked('next')">
+      <li class="page-item" [ngClass]="{ disabled: dataSource.next == null }">
+        <a
+          class="page-link btn btn-primary"
+          (click)="service.paginationButtonClicked('next')"
+        >
           Next
         </a>
       </li>

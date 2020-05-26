@@ -1,0 +1,11 @@
+<ng-container [ngSwitch]="column.dataType">
+  <ng-container *ngSwitchCase="'datetime'">
+    {{ cellData | date: "dd.MM.yyyy hh:mm:ss" }}
+  </ng-container>
+  <ng-container *ngSwitchCase="'boolean'">
+    <input type="checkbox" [checked]="cellData" readonly />
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    {{ cellData }}
+  </ng-container>
+</ng-container>

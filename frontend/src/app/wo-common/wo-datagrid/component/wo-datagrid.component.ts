@@ -33,11 +33,10 @@ export class WoDatagridComponent implements OnInit, OnDestroy {
   }
 
   get totalPages(): number {
+    console.log(this.dataSource);
     if (this.dataSource.count <= this.dataSource.paginateBy) {
       return 1;
     }
-    return parseInt(
-      (this.dataSource.count / this.dataSource.paginateBy).toString()
-    );
+    return Math.ceil(this.dataSource.count / this.dataSource.paginateBy);
   }
 }

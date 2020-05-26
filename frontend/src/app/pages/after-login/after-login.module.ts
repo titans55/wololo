@@ -14,6 +14,7 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { DateConverterInterceptor } from "./service/date-converter-http-interceptor/date-converter-http-interceptor";
 import { BuildingsModule } from "./component/buildings/buildings.module";
 import { RankingModule } from "./component/ranking/ranking.module";
+import { ReportsModule } from "./component/reports/reports.module";
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { RankingModule } from "./component/ranking/ranking.module";
     VillageModule,
     BuildingsModule,
     RankingModule,
+    ReportsModule,
     RouterModule.forChild(AfterLoginRoutes),
   ],
   exports: [AfterLoginComponent],
