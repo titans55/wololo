@@ -1,4 +1,15 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  TemplateRef,
+  Directive,
+  AfterContentInit,
+  AfterViewInit,
+  QueryList,
+  ContentChildren,
+} from "@angular/core";
 import {
   WoDatagridService,
   DataSourceConfigs,
@@ -6,18 +17,40 @@ import {
 } from "../service/wo-datagrid.service";
 import { Subscription } from "rxjs";
 
+@Directive({
+  selector: "[cellTemplate]",
+})
+export class CellTemplate {
+  @Input() column: string;
+  constructor(public template: TemplateRef<any>) {}
+}
+
 @Component({
   selector: "wo-datagrid",
   templateUrl: "./wo-datagrid.component.html",
   styleUrls: ["./wo-datagrid.component.css"],
 })
-export class WoDatagridComponent implements OnInit, OnDestroy {
+export class WoDatagridComponent
+  implements OnInit, OnDestroy, AfterContentInit {
+  @ContentChildren(CellTemplate)
+  cellTemplates: QueryList<CellTemplate>;
+
   @Input() dataSourceConfigs: DataSourceConfigs;
 
   private dataSourceSubscription: Subscription;
   public dataSource: WoDataSource;
 
   constructor(private service: WoDatagridService) {}
+
+  cellTemplatesDict = {};
+
+  ngAfterContentInit() {
+    console.log(this.cellTemplates);
+    this.cellTemplates.forEach((cellTemplate) => {
+      this.cellTemplatesDict[cellTemplate.column] = cellTemplate.template;
+    });
+    console.log(this.cellTemplatesDict);
+  }
 
   ngOnInit() {
     this.service.fetchDataSource(this.dataSourceConfigs);
@@ -33,7 +66,6 @@ export class WoDatagridComponent implements OnInit, OnDestroy {
   }
 
   get totalPages(): number {
-    console.log(this.dataSource);
     if (this.dataSource.count <= this.dataSource.paginateBy) {
       return 1;
     }

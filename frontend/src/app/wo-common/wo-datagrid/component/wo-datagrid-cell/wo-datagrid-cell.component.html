@@ -1,4 +1,7 @@
-<ng-container [ngSwitch]="column.dataType">
+<ng-container
+  *ngIf="!column.customCellTemplateEnabled"
+  [ngSwitch]="column.dataType"
+>
   <ng-container *ngSwitchCase="'datetime'">
     {{ cellData | date: "dd.MM.yyyy hh:mm:ss" }}
   </ng-container>
@@ -9,3 +12,4 @@
     {{ cellData }}
   </ng-container>
 </ng-container>
+<ng-content *ngIf="column.customCellTemplateEnabled"></ng-content>

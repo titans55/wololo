@@ -35,14 +35,30 @@
               <wo-datagrid-cell
                 [column]="column"
                 [cellData]="rowData[column.dataKey]"
-              ></wo-datagrid-cell>
+              >
+                <ng-content
+                  *ngTemplateOutlet="
+                    cellTemplatesDict[column.dataKey];
+                    context: { rowData: rowData }
+                  "
+                >
+                </ng-content>
+              </wo-datagrid-cell>
             </a>
           </td>
           <td *ngSwitchDefault>
             <wo-datagrid-cell
               [column]="column"
               [cellData]="rowData[column.dataKey]"
-            ></wo-datagrid-cell>
+            >
+            </wo-datagrid-cell>
+            <ng-content
+              *ngTemplateOutlet="
+                cellTemplatesDict[column.dataKey];
+                context: { rowData: rowData }
+              "
+            >
+            </ng-content>
           </td>
         </ng-container>
       </tr>

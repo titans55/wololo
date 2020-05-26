@@ -27,6 +27,7 @@ export class ReportsComponent implements OnInit {
       {
         dataKey: "isViewed",
         dataType: "boolean",
+        customCellTemplateEnabled: true,
       },
       {
         dataKey: "createdAt",

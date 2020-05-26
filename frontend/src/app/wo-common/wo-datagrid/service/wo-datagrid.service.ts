@@ -7,6 +7,7 @@ export class DatagridColumn {
   dataType?: "datetime" | "string" | "boolean" = "string";
   caption?: string;
   includeHrefConfigs?: IncludeHrefConfigs;
+  customCellTemplateEnabled?: boolean = false;
 }
 
 class IncludeHrefConfigs {

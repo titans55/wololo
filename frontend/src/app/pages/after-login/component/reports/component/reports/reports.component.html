@@ -1,1 +1,5 @@
-<wo-datagrid [dataSourceConfigs]="dataSourceConfigs"></wo-datagrid>
+<wo-datagrid [dataSourceConfigs]="dataSourceConfigs">
+  <ng-template cellTemplate column="isViewed" let-rowData="rowData">
+    {{ rowData }}
+  </ng-template>
+</wo-datagrid>
