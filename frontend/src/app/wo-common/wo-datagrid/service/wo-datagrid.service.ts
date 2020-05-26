@@ -44,7 +44,7 @@ export class WoDatagridService {
     configs: DataSourceConfigs,
     paginatedUrl?: string
   ): Promise<void> {
-    if (this.configs == null) this.setConfigs(configs);
+    this.setConfigs(configs);
     return this.http
       .get(
         paginatedUrl ? paginatedUrl : this.configs.endpoint,
