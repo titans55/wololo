@@ -12,44 +12,59 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework_jwt import authentication
-from django.contrib.auth.models import User
+from rest_framework import generics
+from wololo.models import Reports
+from api.viewset_serializers import ReportsSerializer
 
 gameConfig = getGameConfig()
 
 
-class ReportsList(APIView):
+class ReportsList(generics.ListAPIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
+    queryset = Reports.objects.all()
+    serializer_class = ReportsSerializer
 
-    def get(self, request, village_index=None):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(sended_to_user=self.request.user)
+        return queryset
 
-        user = request.user
+    def list(self, request, *args, **kwargs):
+        response = super(ReportsList, self).list(request, args, kwargs)
+        response.data['current_page_number'] = self.paginator.page.number
+        response.data['paginate_by'] = self.paginator.page_size
+        return response
 
-        if user.is_region_selected is False:
-            return redirect("selectRegion")
+    # def get(self, request, village_index=None):
 
-        selected_village_index = getVillageIndex(request, user, village_index)
-        if(selected_village_index is 'outOfList'):
-            return redirect('myVillage')
-        print(2, str(datetime.datetime.now()))
+    #     user = request.user
 
-        #
-        # re = Reports.objects.all()[0]
-        # print(re)
-        # print(re.__dict__)
-        #
+    #     if user.is_region_selected is False:
+    #         return redirect("selectRegion")
 
-        reports = user.get_reports()
-        print(reports)
-        print(3, str(datetime.datetime.now()))
+    #     selected_village_index = getVillageIndex(request, user, village_index)
+    #     if(selected_village_index is 'outOfList'):
+    #         return redirect('myVillage')
+    #     print(2, str(datetime.datetime.now()))
 
-        data = {
-            'user_id': user.id,
-            'reports': reports,
-            'unviewedReportExists': user.is_unviewed_reports_exists,
-        }
+    #     #
+    #     # re = Reports.objects.all()[0]
+    #     # print(re)
+    #     # print(re.__dict__)
+    #     #
 
-        return Response(data)
+    #     reports = user.get_reports()
+    #     print(reports)
+    #     print(3, str(datetime.datetime.now()))
+
+    #     data = {
+    #         'user_id': user.id,
+    #         'reports': reports,
+    #         'unviewedReportExists': user.is_unviewed_reports_exists,
+    #     }
+
+    #     return Response(data)
 
 
 ###

@@ -61,11 +61,11 @@ class ReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Reports
         fields = (
-            'pk', 
             'id', 
             'type', 
             'is_viewed', 
-            'created_at', 
+            'created_at',
+            'content' 
         )
 
 
