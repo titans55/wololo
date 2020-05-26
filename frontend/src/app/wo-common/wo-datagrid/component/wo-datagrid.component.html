@@ -7,7 +7,13 @@
         <th>Points</th>
         <th>Number of villages</th> -->
         <ng-container *ngFor="let column of dataSourceConfigs.columns">
-          <th>{{ column.dataKey | humanizeCamelCase }}</th>
+          <th>
+            {{
+              column.caption
+                ? column.caption
+                : (column.dataKey | humanizeCamelCase)
+            }}
+          </th>
         </ng-container>
       </tr>
     </thead>

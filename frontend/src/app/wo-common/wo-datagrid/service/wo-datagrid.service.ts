@@ -5,7 +5,7 @@ import { ReplaySubject } from "rxjs";
 export class DatagridColumn {
   dataKey: string;
   dataType?: "datetime" | "string" | "boolean" = "string";
-  caption?: string = this.dataKey;
+  caption?: string;
   includeHrefConfigs?: IncludeHrefConfigs;
 }
 
