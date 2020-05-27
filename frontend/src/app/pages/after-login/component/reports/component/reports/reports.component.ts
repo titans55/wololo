@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { ReportsService } from "./service/reports.service";
 import { DataSourceConfigs } from "src/app/wo-common/wo-datagrid/service/wo-datagrid.service";
 import { GlobalService } from "src/app/pages/after-login/service/global.service";
 import { UserService } from "src/app/pages/after-login/service/user/user.service";

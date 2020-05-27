@@ -5,7 +5,7 @@ from . import api
 from api.views.after_login.villages_view import VillagesView, UpgradeBuildingView
 from api.views.after_login.map_view import MapView
 from api.views.after_login.buildings.unit_training_buildings.barracks_view import BarracksView
-from api.views.after_login.reports_view import ReportsList, Report
+from api.views.after_login.reports_view import ReportsList, ReportViewed
 from api.views.after_login.ranking_view import Ranking
 from api.views.after_login.profiles.player_profile_view import PlayerProfile
 from api.views.after_login.profiles.village_profile_view import VillageProfile
@@ -37,7 +37,7 @@ urlpatterns = (
     path('barracks/train-units', BarracksView.as_view()),
     path('mapView/', MapView.as_view()),
     path('reports/', ReportsList.as_view()),
-    path('reports/<int:report_index>', Report.as_view()),
+    path('report-viewed/<int:report_id>', ReportViewed.as_view()),
     path('ranking/', Ranking.as_view()),
     path('profile/<int:player_id>', PlayerProfile.as_view()),
     path('village/<int:village_id>', VillageProfile.as_view()),

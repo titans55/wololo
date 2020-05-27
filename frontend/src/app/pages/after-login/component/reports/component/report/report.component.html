@@ -1,3 +1,176 @@
-<p>
-  report works!
-</p>
+<div class="col" *ngIf="report">
+  <table class="table">
+    <thead>
+      <tr>
+        <th colspan="2">Date</th>
+        <th colspan="8">
+          {{ report.createdAt | date: "dd.MM.yyyy hh:mm:ss" }}
+        </th>
+      </tr>
+      <tr>
+        <th class="text-danger" colspan="2">Attacker</th>
+        <th colspan="8">
+          <a href="/game/players/{{ report.content.attacker.user_id }}">
+            {{ report.content.attacker.username }}
+          </a>
+        </th>
+      </tr>
+      <tr>
+        <th class="text-danger" colspan="2">Source</th>
+        <th colspan="8">
+          <a href="/game/villages/{{ report.content.attacker.village_id }}">
+            {{ report.content.attacker.villageName }}
+          </a>
+        </th>
+      </tr>
+      <tr class="text-center">
+        <th></th>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <th>{{ unit.key }}</th>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <th>{{ unit.key }}</th>
+        </ng-container>
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <th>{{ unit.key }}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+      <tr>
+        <td>Quantity</td>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <td>
+            {{
+              report.content.attacker.unitsResult.infantry[unit.key].quantity
+            }}
+          </td>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <td>
+            {{ report.content.attacker.unitsResult.cavalry[unit.key].quantity }}
+          </td>
+        </ng-container>
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <td>
+            {{
+              report.content.attacker.unitsResult.siegeWeapons[unit.key]
+                .quantity
+            }}
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>Lost</td>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <td>
+            {{ report.content.attacker.unitsResult.infantry[unit.key].lost }}
+          </td>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <td>
+            {{ report.content.attacker.unitsResult.cavalry[unit.key].lost }}
+          </td>
+        </ng-container>
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <td>
+            {{
+              report.content.attacker.unitsResult.siegeWeapons[unit.key].lost
+            }}
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="text-info" colspan="2">Defender</th>
+        <th colspan="8">
+          <a href="/game/players/{{ report.content.defender.user_id }}">
+            {{ report.content.defender.username }}
+          </a>
+        </th>
+      </tr>
+      <tr>
+        <th class="text-info" colspan="2">Target</th>
+        <th colspan="8">
+          <a href="/game/villages/{{ report.content.defender.village_id }}">
+            {{ report.content.defender.villageName }}
+          </a>
+        </th>
+      </tr>
+      <tr class="text-center">
+        <th></th>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <th>{{ unit.key }}</th>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <th>{{ unit.key }}</th>
+        </ng-container>
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <th>{{ unit.key }}</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody class="text-center">
+      <tr>
+        <td>Quantity</td>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <td>
+            {{
+              report.content.defender.unitsResult.infantry[unit.key].quantity
+            }}
+          </td>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <td>
+            {{ report.content.defender.unitsResult.cavalry[unit.key].quantity }}
+          </td>
+        </ng-container>
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <td>
+            {{
+              report.content.defender.unitsResult.siegeWeapons[unit.key]
+                .quantity
+            }}
+          </td>
+        </ng-container>
+      </tr>
+      <tr>
+        <td>Lost</td>
+        <ng-container *ngFor="let unit of gameConfig.units.infantry | keyvalue">
+          <td>
+            {{ report.content.defender.unitsResult.infantry[unit.key].lost }}
+          </td>
+        </ng-container>
+        <ng-container *ngFor="let unit of gameConfig.units.cavalry | keyvalue">
+          <td>
+            {{ report.content.defender.unitsResult.cavalry[unit.key].lost }}
+          </td>
+        </ng-container>
+
+        <ng-container
+          *ngFor="let unit of gameConfig.units.siegeWeapons | keyvalue"
+        >
+          <td>
+            {{
+              report.content.defender.unitsResult.siegeWeapons[unit.key].lost
+            }}
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>

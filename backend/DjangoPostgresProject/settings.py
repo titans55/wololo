@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'rest_framework',
     'channels',
+    'django_filters',
     'wololo',
     'api',
     'django.contrib.admin',
