@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GlobalService } from "src/app/pages/after-login/service/global.service";
-import { PlayerProfileInfoDto } from "../dto/player-profile-info.dto";
+import { PlayerProfileDto } from "../dto/player-profile-info.dto";
 
 @Injectable({
   providedIn: "root",
@@ -8,7 +8,7 @@ import { PlayerProfileInfoDto } from "../dto/player-profile-info.dto";
 export class PlayerProfileService {
   constructor(private globalService: GlobalService) {}
 
-  getPlayerInfoByUsername(username: string): Promise<PlayerProfileInfoDto> {
+  getPlayerProfileByUsername(username: string): Promise<PlayerProfileDto> {
     return this.globalService.get("player-profile/" + username);
   }
 }

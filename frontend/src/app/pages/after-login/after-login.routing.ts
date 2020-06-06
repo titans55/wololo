@@ -9,6 +9,8 @@ import { RankingComponent } from "./component/ranking/component/ranking.componen
 import { ReportsRoutes } from "./component/reports/reports.routing";
 import { PlayerProfileComponent } from "./component/profile/component/player-profile/component/player-profile.component";
 import { PlayerProfileRoutesEnum } from "./component/profile/component/player-profile/enum/player-profile-routes.enum";
+import { VillageProfileComponent } from "./component/profile/component/village-profile/component/village-profile.component";
+import { VillageProfileRoutesEnum } from "./component/profile/component/village-profile/enum/village-profile-routes.enum";
 
 export const AfterLoginRoutes: Routes = [
   {
@@ -42,6 +44,13 @@ export const AfterLoginRoutes: Routes = [
           "/:" +
           PlayerProfileRoutesEnum.USERNAME_URL_PARAM,
         component: PlayerProfileComponent,
+      },
+      {
+        path:
+          AfterLoginRoutesEnum.VILLAGE_PROFILE +
+          "/:" +
+          VillageProfileRoutesEnum.VILLAGE_ID_URL_PARAM,
+        component: VillageProfileComponent,
       },
     ],
   },

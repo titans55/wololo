@@ -9,4 +9,5 @@ export enum AfterLoginRoutesEnum {
   PLAYER_RANKING = "ranking",
   REPORTS = "reports",
   PLAYER_PROFILE = "player-profile",
+  VILLAGE_PROFILE = "village-profile",
 }

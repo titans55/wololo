@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PlayerProfileService } from "../service/player-profile.service";
-import { PlayerProfileInfoDto } from "../dto/player-profile-info.dto";
+import { PlayerProfileDto } from "../dto/player-profile-info.dto";
 import { ActivatedRoute } from "@angular/router";
 import { PlayerProfileRoutesEnum } from "../enum/player-profile-routes.enum";
 import { AfterLoginRoutes } from "src/app/pages/after-login/after-login.routing";
@@ -13,7 +13,7 @@ import { AfterLoginRoutesEnum } from "src/app/pages/after-login/enum/after-login
 })
 export class PlayerProfileComponent implements OnInit {
   usernameFromUrlParam: string;
-  playerProfileInfo: PlayerProfileInfoDto;
+  playerProfileInfo: PlayerProfileDto;
   constructor(
     private route: ActivatedRoute,
     private service: PlayerProfileService
@@ -26,12 +26,13 @@ export class PlayerProfileComponent implements OnInit {
           PlayerProfileRoutesEnum.USERNAME_URL_PARAM
         );
         this.service
-          .getPlayerInfoByUsername(this.usernameFromUrlParam)
+          .getPlayerProfileByUsername(this.usernameFromUrlParam)
           .then((playerProfileInfo) => {
             this.playerProfileInfo = playerProfileInfo;
           });
       } catch {
         this.usernameFromUrlParam = undefined;
+        this.playerProfileInfo = undefined;
       }
     });
   }

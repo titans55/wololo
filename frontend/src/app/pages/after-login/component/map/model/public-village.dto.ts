@@ -1,3 +1,5 @@
+import { Coords } from "../../village/model/general/village.dto";
+
 export interface PublicVillageDto {
   userId: number;
   villageId: number;
@@ -6,9 +8,4 @@ export interface PublicVillageDto {
   playerName: string;
   points: number;
   owner?: boolean;
-}
-
-export interface Coords {
-  x: number;
-  y: number;
 }

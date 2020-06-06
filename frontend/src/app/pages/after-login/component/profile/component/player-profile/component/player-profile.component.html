@@ -39,9 +39,16 @@
       <tbody>
         <tr *ngFor="let village of playerProfileInfo.playersVillages">
           <td>
-            <a href="/game/villages/{{ village.village_id }}">{{
-              village.villageName
-            }}</a>
+            <a
+              [routerLink]="[
+                '/game/' +
+                  AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                  '/' +
+                  village.villageId
+              ]"
+            >
+              {{ village.villageName }}
+            </a>
           </td>
           <td>({{ village.coords.x }}, {{ village.coords.y }})</td>
           <td>

@@ -40,5 +40,5 @@ urlpatterns = (
     path('report-viewed/<int:report_id>', ReportViewed.as_view()),
     path('ranking/', Ranking.as_view()),
     path('player-profile/<str:username>', PlayerProfile.as_view()),
-    path('village/<int:village_id>', VillageProfile.as_view()),
+    path('village-profile/<int:village_id>', VillageProfile.as_view()),
 )

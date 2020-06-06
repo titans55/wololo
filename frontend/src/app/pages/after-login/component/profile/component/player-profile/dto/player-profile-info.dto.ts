@@ -1,15 +1,10 @@
-export interface PlayerProfileInfoDto {
-  villageId: number;
-  villageName: string;
-  points: number;
-  userId: number;
-  playerName: string;
-  clan: string;
-  region: string;
-  coords: Coords;
-}
+import { VillageProfileInfoDto } from "../../village-profile/dto/village-profile-info.dto";
 
-export interface Coords {
-  x: number;
-  y: number;
+export interface PlayerProfileDto {
+  clan: string;
+  points: number;
+  regionSelected: boolean;
+  userId: number;
+  playersVillages: VillageProfileInfoDto[];
+  username: string;
 }

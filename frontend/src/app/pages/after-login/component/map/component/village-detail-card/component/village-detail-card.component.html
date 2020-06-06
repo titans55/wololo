@@ -9,7 +9,14 @@
   </div>
   <div class="card-body">
     <h5 class="card-title">
-      <a href="#">
+      <a
+        [routerLink]="[
+          '/game/' +
+            AfterLoginRoutesEnum.VILLAGE_PROFILE +
+            '/' +
+            selectedVillage.villageId
+        ]"
+      >
         {{ selectedVillage.villageName }}({{ selectedVillage.x }},
         {{ selectedVillage.y }})
       </a>
