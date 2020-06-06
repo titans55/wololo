@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework_jwt import authentication
 from django.contrib.auth.models import User
+from django.http import Http404
 
 gameConfig = getGameConfig()
 
@@ -20,72 +21,12 @@ class PlayerProfile(APIView):
     authentication_classes = (authentication.JSONWebTokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request, player_id, village_index=None):
-
-        user = request.user
-        if user.is_region_selected is False:
-            return redirect("selectRegion")
-
-        selected_village_index = getVillageIndex(request, user, village_index)
-        if(selected_village_index == 'outOfList'):
-            return redirect('playerProfile')
-
+    def get(self, request, username):
         try:
-            player = Users.objects.get(id=player_id)
-        except:
-            # TODO Handle this (player_id doesnt exists)
-            return None
+            player = Users.objects.get(username=username)
+        except Users.DoesNotExist:
+            raise Http404
+
         player_info = player.get_player_profile_dict()
-        my_villages = user.get_my_villages()
 
-        data = {
-            'selectedVillage': my_villages[selected_village_index],
-            'profileOfPlayerID': player_id,
-            'profileOfPlayerInfo': player_info,
-            'unviewedReportExists': user.is_unviewed_reports_exists,
-        }
-
-        return Response(data)
-
-
-# @login_required
-# def playerProfile(request, player_id, village_index=None):
-#    user = request.user
-#    if user.is_region_selected is False:
-#        return redirect("selectRegion")
-#
-#    selected_village_index = getVillageIndex(request, user, village_index)
-#    if(selected_village_index == 'outOfList'):
-#        return redirect('playerProfile')
-#
-#    try:
-#        player = Users.objects.get(id=player_id)
-#    except:
-#        # TODO Handle this (player_id doesnt exists)
-#        return None
-#    player_info = player.get_player_profile_dict()
-#    my_villages = player.get_my_villages()
-#
-#    data = {
-#        'selectedVillage': my_villages[selected_village_index],
-#        'gameConfig': gameConfig,
-#        'profileOfPlayerID': player_id,
-#        'profileOfPlayerInfo': player_info,
-#        'unviewedReportExists': user.is_unviewed_reports_exists,
-#        'page': 'playerProfile'
-#    }
-#    current_user = {
-#        'id': user.id
-#    }
-#    data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
-#    my_villages = json.loads(json.dumps(my_villages, cls=DjangoJSONEncoder))
-#    return render(
-#        request,
-#        'profiles/playerProfile.html',
-#        {
-#            'currentUser': current_user,
-#            'myVillages': my_villages,
-#            'data': data
-#        }
-#    )
-#
+        return Response(player_info)
