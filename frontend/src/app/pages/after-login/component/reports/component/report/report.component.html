@@ -25,7 +25,14 @@
       <tr>
         <th class="text-danger" colspan="2">Source</th>
         <th colspan="8">
-          <a href="/game/villages/{{ report.content.attacker.village_id }}">
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                '/' +
+                report.content.attacker.villageId
+            ]"
+          >
             {{ report.content.attacker.villageName }}
           </a>
         </th>
@@ -116,7 +123,14 @@
       <tr>
         <th class="text-info" colspan="2">Target</th>
         <th colspan="8">
-          <a href="/game/villages/{{ report.content.defender.village_id }}">
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                '/' +
+                report.content.defender.villageId
+            ]"
+          >
             {{ report.content.defender.villageName }}
           </a>
         </th>
