@@ -3,6 +3,7 @@ import { DataSourceConfigs } from "src/app/wo-common/wo-datagrid/service/wo-data
 import { GlobalService } from "src/app/pages/after-login/service/global.service";
 import { UserService } from "src/app/pages/after-login/service/user/user.service";
 import { Router } from "@angular/router";
+import { AfterLoginRoutesEnum } from "src/app/pages/after-login/enum/after-login-routes.enum";
 
 @Component({
   selector: "wo-reports",
@@ -63,5 +64,9 @@ export class ReportsComponent implements OnInit {
 
   redirectToReportDetail(reportId: number) {
     this.router.navigateByUrl("/game/reports/" + reportId);
+  }
+
+  get AfterLoginRoutesEnum() {
+    return AfterLoginRoutesEnum;
   }
 }

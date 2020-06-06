@@ -3,6 +3,7 @@ import { WoVillageSprite } from "src/app/wo-common/wo-phaser-sprite/wo-phaser-sp
 import { MapSceneService } from "../../../service/map-scene.service";
 import { VillageDetailCardService } from "../service/village-detail-card.service";
 import { Subscription } from "rxjs";
+import { AfterLoginRoutesEnum } from "src/app/pages/after-login/enum/after-login-routes.enum";
 
 @Component({
   selector: "woo-village-detail-card",
@@ -25,5 +26,9 @@ export class VillageDetailCardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.villageSelectedSubscription.unsubscribe();
+  }
+
+  get AfterLoginRoutesEnum() {
+    return AfterLoginRoutesEnum;
   }
 }

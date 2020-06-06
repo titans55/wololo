@@ -10,7 +10,14 @@
       <tr>
         <th class="text-danger" colspan="2">Attacker</th>
         <th colspan="8">
-          <a href="/game/players/{{ report.content.attacker.user_id }}">
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.PLAYER_PROFILE +
+                '/' +
+                report.content.attacker.username
+            ]"
+          >
             {{ report.content.attacker.username }}
           </a>
         </th>
@@ -94,7 +101,14 @@
       <tr>
         <th class="text-info" colspan="2">Defender</th>
         <th colspan="8">
-          <a href="/game/players/{{ report.content.defender.user_id }}">
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.PLAYER_PROFILE +
+                '/' +
+                report.content.defender.username
+            ]"
+          >
             {{ report.content.defender.username }}
           </a>
         </th>

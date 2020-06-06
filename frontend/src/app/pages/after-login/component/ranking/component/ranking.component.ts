@@ -23,7 +23,7 @@ export class RankingComponent {
         dataKey: "username",
         includeHrefConfigs: {
           enabled: true,
-          redirectionUrl: "game/players",
+          redirectionUrl: "game/" + AfterLoginRoutesEnum.PLAYER_PROFILE,
           parameterColumn: "username",
         },
       },

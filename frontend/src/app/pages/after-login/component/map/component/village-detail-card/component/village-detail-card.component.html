@@ -15,7 +15,17 @@
       </a>
     </h5>
     <p class="card-text">
-      Belongs to <a href="#">{{ selectedVillage.playerName }}</a>
+      Belongs to
+      <a
+        [routerLink]="[
+          '/game/' +
+            AfterLoginRoutesEnum.PLAYER_PROFILE +
+            '/' +
+            selectedVillage.playerName
+        ]"
+      >
+        {{ selectedVillage.playerName }}
+      </a>
       <br />
       Village Points = {{ selectedVillage.villagePoints }}
     </p>

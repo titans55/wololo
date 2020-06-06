@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ReportsRoutesEnum } from "../../enum/reports-routes.enum";
 import { ReportService } from "./service/report.service";
 import * as gameConfig from "../../../../../../../../../gameConfig.json";
+import { AfterLoginRoutesEnum } from "src/app/pages/after-login/enum/after-login-routes.enum";
 
 @Component({
   selector: "wo-report",
@@ -37,5 +38,9 @@ export class ReportComponent implements OnInit {
 
   get gameConfig() {
     return gameConfig[`default`];
+  }
+
+  get AfterLoginRoutesEnum() {
+    return AfterLoginRoutesEnum;
   }
 }

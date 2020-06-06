@@ -7,6 +7,8 @@ import { AuthGuard } from "./service/user/guard/auth.guard";
 import { BarracksComponent } from "./component/buildings/barracks/component/barracks.component";
 import { RankingComponent } from "./component/ranking/component/ranking.component";
 import { ReportsRoutes } from "./component/reports/reports.routing";
+import { PlayerProfileComponent } from "./component/profile/component/player-profile/component/player-profile.component";
+import { PlayerProfileRoutesEnum } from "./component/profile/component/player-profile/enum/player-profile-routes.enum";
 
 export const AfterLoginRoutes: Routes = [
   {
@@ -33,6 +35,13 @@ export const AfterLoginRoutes: Routes = [
       {
         path: AfterLoginRoutesEnum.REPORTS,
         children: ReportsRoutes,
+      },
+      {
+        path:
+          AfterLoginRoutesEnum.PLAYER_PROFILE +
+          "/:" +
+          PlayerProfileRoutesEnum.USERNAME_URL_PARAM,
+        component: PlayerProfileComponent,
       },
     ],
   },

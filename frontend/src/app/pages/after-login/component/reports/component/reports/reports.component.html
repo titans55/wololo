@@ -4,13 +4,33 @@
   </ng-template>
   <ng-template cellTemplate column="content" let-rowData="rowData">
     <ng-container *ngIf="rowData.content.attacker.userId == userId">
-      We attacked to {{ rowData.content.defender.username }} and
-      {{ rowData.content.attacker.result }}!
+      We attacked to
+      <a
+        [routerLink]="[
+          '/game/' +
+            AfterLoginRoutesEnum.PLAYER_PROFILE +
+            '/' +
+            rowData.content.defender.username
+        ]"
+      >
+        {{ rowData.content.defender.username }}
+      </a>
+      and {{ rowData.content.attacker.result }}!
     </ng-container>
     <ng-container *ngIf="rowData.content.attacker.userId != userId">
-      {{ rowData.content.attacker.userId }}
-      We defended against {{ rowData.content.attacker.username }} and
-      {{ rowData.content.defender.result }}!
+      <!-- {{ rowData.content.attacker.userId }} -->
+      We defended against
+      <a
+        [routerLink]="[
+          '/game/' +
+            AfterLoginRoutesEnum.PLAYER_PROFILE +
+            '/' +
+            rowData.content.attacker.username
+        ]"
+      >
+        {{ rowData.content.attacker.username }}
+      </a>
+      and {{ rowData.content.defender.result }}!
     </ng-container>
   </ng-template>
   <ng-template cellTemplate column="detailsButton" let-rowData="rowData">

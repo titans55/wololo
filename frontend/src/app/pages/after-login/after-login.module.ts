@@ -15,6 +15,7 @@ import { DateConverterInterceptor } from "./service/date-converter-http-intercep
 import { BuildingsModule } from "./component/buildings/buildings.module";
 import { RankingModule } from "./component/ranking/ranking.module";
 import { ReportsModule } from "./component/reports/reports.module";
+import { ProfileModule } from "./component/profile/profile.module";
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { ReportsModule } from "./component/reports/reports.module";
     BuildingsModule,
     RankingModule,
     ReportsModule,
+    ProfileModule,
     RouterModule.forChild(AfterLoginRoutes),
   ],
   exports: [AfterLoginComponent],

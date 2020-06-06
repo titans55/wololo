@@ -1,0 +1,54 @@
+<wo-profile-layout *ngIf="playerProfileInfo">
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td>Username</td>
+        <td>
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.PLAYER_PROFILE +
+                '/' +
+                playerProfileInfo.username
+            ]"
+          >
+            {{ playerProfileInfo.username }}
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>Points</td>
+        <td>
+          {{ playerProfileInfo.points }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="card-header">
+    Villages
+  </div>
+  <ul class="list-group list-group-flush">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Village Name</th>
+          <th>Coordinates</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let village of playerProfileInfo.playersVillages">
+          <td>
+            <a href="/game/villages/{{ village.village_id }}">{{
+              village.villageName
+            }}</a>
+          </td>
+          <td>({{ village.coords.x }}, {{ village.coords.y }})</td>
+          <td>
+            {{ village.points }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ul>
+</wo-profile-layout>
