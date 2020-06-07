@@ -11,6 +11,7 @@ import { PlayerProfileComponent } from "./component/profile/component/player-pro
 import { PlayerProfileRoutesEnum } from "./component/profile/component/player-profile/enum/player-profile-routes.enum";
 import { VillageProfileComponent } from "./component/profile/component/village-profile/component/village-profile.component";
 import { VillageProfileRoutesEnum } from "./component/profile/component/village-profile/enum/village-profile-routes.enum";
+import { CommandCenterComponent } from "./component/command-center/component/command-center.component";
 
 export const AfterLoginRoutes: Routes = [
   {
@@ -51,6 +52,13 @@ export const AfterLoginRoutes: Routes = [
           "/:" +
           VillageProfileRoutesEnum.VILLAGE_ID_URL_PARAM,
         component: VillageProfileComponent,
+      },
+      {
+        path:
+          AfterLoginRoutesEnum.COMMAND_CENTER +
+          "/:" +
+          VillageProfileRoutesEnum.VILLAGE_ID_URL_PARAM,
+        component: CommandCenterComponent,
       },
     ],
   },

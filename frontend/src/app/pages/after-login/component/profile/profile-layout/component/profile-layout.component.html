@@ -10,51 +10,9 @@
                   <button type="button" class="btn btn-info">Upload Profile Photo</button>
               {% endif %} -->
     </div>
-    <div class="card">
-      <div class="card-body">
-        <ng-content></ng-content>
-      </div>
-    </div>
+    <ng-content select="[primaryContent]"></ng-content>
   </div>
   <div class="col-md-6 col-sm-12">
-    <div class="card">
-      <div class="card-body">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde,
-        delectus. Consequuntur illum odio iusto cum ratione, perspiciatis
-        corporis consectetur quae aliquam maiores. Reprehenderit quibusdam modi
-        laudantium, ratione veniam ad rem? Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Unde, delectus. Consequuntur illum odio
-        iusto cum ratione, perspiciatis corporis consectetur quae aliquam
-        maiores. Reprehenderit quibusdam modi laudantium, ratione veniam ad rem?
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde,
-        delectus. Consequuntur illum odio iusto cum ratione, perspiciatis
-        corporis consectetur quae aliquam maiores. Reprehenderit quibusdam modi
-        laudantium, ratione veniam ad rem? Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Unde, delectus. Consequuntur illum odio
-        iusto cum ratione, perspiciatis corporis consectetur quae aliquam
-        maiores. Reprehenderit quibusdam modi laudantium, ratione veniam ad rem?
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde,
-        delectus. Consequuntur illum odio iusto cum ratione, perspiciatis
-        corporis consectetur quae aliquam maiores. Reprehenderit quibusdam modi
-        laudantium, ratione veniam ad rem? Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Unde, delectus. Consequuntur illum odio
-        iusto cum ratione, perspiciatis corporis consectetur quae aliquam
-        maiores. Reprehenderit quibusdam modi laudantium, ratione veniam ad rem?
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde,
-        delectus. Consequuntur illum odio iusto cum ratione, perspiciatis
-        corporis consectetur quae aliquam maiores. Reprehenderit quibusdam modi
-        laudantium, ratione veniam ad rem? Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Unde, delectus. Consequuntur illum odio
-        iusto cum ratione, perspiciatis corporis consectetur quae aliquam
-        maiores. Reprehenderit quibusdam modi laudantium, ratione veniam ad rem?
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde,
-        delectus. Consequuntur illum odio iusto cum ratione, perspiciatis
-        corporis consectetur quae aliquam maiores. Reprehenderit quibusdam modi
-        laudantium, ratione veniam ad rem? Lorem ipsum dolor, sit amet
-        consectetur adipisicing elit. Unde, delectus. Consequuntur illum odio
-        iusto cum ratione, perspiciatis corporis consectetur quae aliquam
-        maiores. Reprehenderit quibusdam modi laudantium, ratione veniam ad rem?
-      </div>
-    </div>
+    <ng-content select="[secondaryContent]"></ng-content>
   </div>
 </div>

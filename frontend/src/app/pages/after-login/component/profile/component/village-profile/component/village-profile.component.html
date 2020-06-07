@@ -1,19 +1,20 @@
 <wo-profile-layout *ngIf="villageProfileInfo">
-  <table class="table table-bordered">
+  <table primaryContent class="table table-bordered">
     <tbody>
       <tr>
         <td>Village Name</td>
-        <td>{{ villageProfileInfo.villageName }}</td>
-      </tr>
-      <tr>
-        <td>Coordinates</td>
         <td>
-          ({{ villageProfileInfo.coords.x }}, {{ villageProfileInfo.coords.y }})
+          <a
+            [routerLink]="[
+              '/game/' +
+                AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                '/' +
+                villageProfileInfo.villageId
+            ]"
+          >
+            {{ villageProfileInfo.villageName }}
+          </a>
         </td>
-      </tr>
-      <tr>
-        <td>Points</td>
-        <td>{{ villageProfileInfo.points }}</td>
       </tr>
       <tr>
         <td>Player</td>
@@ -30,6 +31,37 @@
           </a>
         </td>
       </tr>
+      <tr>
+        <td>Coordinates</td>
+        <td>
+          ({{ villageProfileInfo.coords.x }}, {{ villageProfileInfo.coords.y }})
+        </td>
+      </tr>
+      <tr>
+        <td>Points</td>
+        <td>{{ villageProfileInfo.points }}</td>
+      </tr>
     </tbody>
   </table>
+  <ng-container secondaryContent>
+    <div class="card text-center">
+      <div class="card-header">
+        Actions
+      </div>
+      <div class="card-body">
+        <a
+          class="btn btn-primary"
+          role="button"
+          [routerLink]="[
+            '/game/' +
+              AfterLoginRoutesEnum.COMMAND_CENTER +
+              '/' +
+              villageProfileInfo.villageId
+          ]"
+        >
+          Send Troops
+        </a>
+      </div>
+    </div>
+  </ng-container>
 </wo-profile-layout>

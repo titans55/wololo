@@ -7,7 +7,6 @@ import { PartialsModule } from "./partials/partials.module";
 import { WoCommonModule } from "src/app/wo-common/wo-common.module";
 import { MapModule } from "./component/map/map.module";
 import { VillageModule } from "./component/village/village.module";
-import { GlobalService } from "./service/global.service";
 import { AuthGuard } from "./service/user/guard/auth.guard";
 import { UserService } from "./service/user/user.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
@@ -16,6 +15,7 @@ import { BuildingsModule } from "./component/buildings/buildings.module";
 import { RankingModule } from "./component/ranking/ranking.module";
 import { ReportsModule } from "./component/reports/reports.module";
 import { ProfileModule } from "./component/profile/profile.module";
+import { CommandCenterModule } from "./component/command-center/command-center.module";
 
 @NgModule({
   imports: [
@@ -28,6 +28,7 @@ import { ProfileModule } from "./component/profile/profile.module";
     RankingModule,
     ReportsModule,
     ProfileModule,
+    CommandCenterModule,
     RouterModule.forChild(AfterLoginRoutes),
   ],
   exports: [AfterLoginComponent],

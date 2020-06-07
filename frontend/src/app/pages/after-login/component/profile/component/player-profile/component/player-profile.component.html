@@ -1,61 +1,120 @@
 <wo-profile-layout *ngIf="playerProfileInfo">
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td>Username</td>
-        <td>
-          <a
-            [routerLink]="[
-              '/game/' +
-                AfterLoginRoutesEnum.PLAYER_PROFILE +
-                '/' +
-                playerProfileInfo.username
-            ]"
-          >
-            {{ playerProfileInfo.username }}
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td>Points</td>
-        <td>
-          {{ playerProfileInfo.points }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="card-header">
-    Villages
-  </div>
-  <ul class="list-group list-group-flush">
+  <ng-container primaryContent>
     <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Village Name</th>
-          <th>Coordinates</th>
-          <th>Points</th>
-        </tr>
-      </thead>
       <tbody>
-        <tr *ngFor="let village of playerProfileInfo.playersVillages">
+        <tr>
+          <td>Player</td>
           <td>
             <a
               [routerLink]="[
                 '/game/' +
-                  AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                  AfterLoginRoutesEnum.PLAYER_PROFILE +
                   '/' +
-                  village.villageId
+                  playerProfileInfo.username
               ]"
             >
-              {{ village.villageName }}
+              {{ playerProfileInfo.username }}
             </a>
           </td>
-          <td>({{ village.coords.x }}, {{ village.coords.y }})</td>
+        </tr>
+        <tr>
+          <td>Points</td>
           <td>
-            {{ village.points }}
+            {{ playerProfileInfo.points }}
           </td>
         </tr>
       </tbody>
     </table>
-  </ul>
+    <div class="card-header">
+      Villages
+    </div>
+    <ul class="list-group list-group-flush">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Village Name</th>
+            <th>Coordinates</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let village of playerProfileInfo.playersVillages">
+            <td>
+              <a
+                [routerLink]="[
+                  '/game/' +
+                    AfterLoginRoutesEnum.VILLAGE_PROFILE +
+                    '/' +
+                    village.villageId
+                ]"
+              >
+                {{ village.villageName }}
+              </a>
+            </td>
+            <td>({{ village.coords.x }}, {{ village.coords.y }})</td>
+            <td>
+              {{ village.points }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ul>
+  </ng-container>
+  <ng-container secondaryContent>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis ad quis
+    dolorum impedit quidem commodi cupiditate error saepe neque aut, similique
+    voluptat Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
+    ad quis dolorum impedit quidem commodi cupiditate error saepe neque aut,
+    similique voluptatum numquam, in aperiam accusantium inventore officia
+    deleniti! A. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    Reiciendis ad quis dolorum impedit quidem commodi cupiditate error saepe
+    neque aut, similique voluptatum numquam, in aperiam accusantium inventore
+    officia deleniti! A. Lorem ipsum dolor sit amet consectetur adipisicing
+    elit. Reiciendis ad quis dolorum impedit quidem commodi cupiditate error
+    saepe neque aut, similique voluptatum numquam, in aperiam accusantium
+    inventore officia deleniti! A. Lorem ipsum dolor sit amet consectetur
+    adipisicing elit. Reiciendis ad quis dolorum impedit quidem commodi
+    cupiditate error saepe neque aut, similique voluptatum numquam, in aperiam
+    accusantium inventore officia deleniti! A. Lorem ipsum dolor sit amet
+    consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. Lorem ipsum dolor sit
+    amet consectetur adipisicing elit. Reiciendis ad quis dolorum impedit quidem
+    commodi cupiditate error saepe neque aut, similique voluptatum numquam, in
+    aperiam accusantium inventore officia deleniti! A. um numquam, in aperiam
+    accusantium inventore officia deleniti! A.
+  </ng-container>
 </wo-profile-layout>

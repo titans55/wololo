@@ -10,4 +10,5 @@ export enum AfterLoginRoutesEnum {
   REPORTS = "reports",
   PLAYER_PROFILE = "player-profile",
   VILLAGE_PROFILE = "village-profile",
+  COMMAND_CENTER = "command-center",
 }

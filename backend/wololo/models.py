@@ -363,6 +363,12 @@ class Villages(models.Model):
             tq.units_left -= 1
             tq.save()
 
+    def get_coords_dict(self):
+        return {
+            'x': self.coords_x,
+            'y': self.coords_y
+        }
+
     def get_last_training_queue_by_unit_type(self, unit_type):
         tq = self.training_queues.filter(unit_type=unit_type)
         # return last added element if exists
@@ -413,10 +419,7 @@ class Villages(models.Model):
             'playerName': self.user.username,
             'clan': '',
             'region': self.region.name,
-            'coords': {
-                'x': self.coords_x,
-                'y': self.coords_y
-            }
+            'coords': self.get_coords_dict()
         }
 
 

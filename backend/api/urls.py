@@ -9,6 +9,8 @@ from api.views.after_login.reports_view import ReportsList, ReportViewed
 from api.views.after_login.ranking_view import Ranking
 from api.views.after_login.profiles.player_profile_view import PlayerProfile
 from api.views.after_login.profiles.village_profile_view import VillageProfile
+from api.views.after_login.command_center.command_center_view import \
+    AttackView, CalculateDistanceBetweenTwoVillages
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
@@ -41,4 +43,7 @@ urlpatterns = (
     path('ranking/', Ranking.as_view()),
     path('player-profile/<str:username>', PlayerProfile.as_view()),
     path('village-profile/<int:village_id>', VillageProfile.as_view()),
+    path('command-center/calculate-distance',
+         CalculateDistanceBetweenTwoVillages.as_view()),
+    path('command-center/attack', AttackView.as_view()),
 )
