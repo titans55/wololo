@@ -4,7 +4,7 @@ psycopg2==2.8.4
 python-dateutil==2.8.1
 celery==4.3.0
 kombu==4.6.8
-numpy==1.17.3
+numpy==1.22.0
 pathfinding==0.0.4
 django-extensions==2.1.7
 channels-redis==2.4.2
