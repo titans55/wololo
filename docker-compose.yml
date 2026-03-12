@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: wololodjango
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: '5428'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    command: >
+      sh -c "python manage.py migrate &&
+             daphne -b 0.0.0.0 -p 8000 DjangoPostgresProject.asgi:application"
+    volumes:
+      - ./backend:/app
+      - ./gameConfig.json:/gameConfig.json
+    environment:
+      DB_HOST: db
+      DB_NAME: wololodjango
+      DB_USER: postgres
+      DB_PASSWORD: '5428'
+      DB_PORT: '5432'
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -1,7 +1,7 @@
 import { isDevMode } from "@angular/core";
 
 enum EnviromentHostEnum {
-  DEV = "localhost:8000/",
+  DEV = "localhost:4200/",
   PROD = "",
 }
 

@@ -1,51 +1,53 @@
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-  <h2 class="text-center">Log in</h2>
-  <div class="form-group">
-    <input type="text" class="form-control" formControlName="username" />
-  </div>
-  <div class="form-group">
-    <input type="password" class="form-control" formControlName="password" />
-  </div>
-  <div class="form-group">
-    <button
-      type="submit"
-      class="btn btn-primary btn-block"
-      [disabled]="loginForm.pristine"
-    >
-      Log in
-    </button>
-  </div>
-  <div class="clearfix">
-    <label class="float-left checkbox-inline"
-      ><input type="checkbox" /> Remember me</label
-    >
-    <a href="#" class="float-right">Forgot Password?</a>
-    <ng-container *ngIf="serversideErrors && serversideErrors.nonFieldErrors">
-      <p *ngFor="let msg of serversideErrors.nonFieldErrors">
-        <ngb-alert type="danger" [dismissible]="false">{{ msg }}</ngb-alert>
-      </p>
-    </ng-container>
-  </div>
-</form>
-<p class="text-center"><a href="/register">Create an Account</a></p>
+  <div class="wo-login-card__title">Sign In</div>
 
-<!-- <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
-  <div formGroupName="personalData" novalidate>
-    <input formControlName="email" /> <input formControlName="mobile" />
-    <select formControlName="country">
-      <option *ngFor="let country of countries" [value]="country">{{
-        country
-      }}</option>
-    </select>
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input
+      id="username"
+      type="text"
+      class="form-control"
+      formControlName="username"
+      placeholder="Enter your username"
+      autocomplete="username"
+    />
   </div>
-  <select formControlName="requestType">
-    <option *ngFor="let requestType of requestTypes" [value]="requestType">{{
-      requestType
-    }}</option>
-  </select>
-  <input formControlName="text" />
-  <button type="submit" [disabled]="contactForm.pristine">Save</button>
-  <button type="reset" (click)="revert()" [disabled]="contactForm.pristine">
-    Revert
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      class="form-control"
+      formControlName="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
+    />
+  </div>
+
+  <button
+    type="submit"
+    class="btn btn-gold btn-block"
+    style="margin-top: 0.5rem;"
+    [disabled]="loginForm.pristine"
+  >
+    Enter the Kingdom
   </button>
-</form> -->
+
+  <div class="wo-login-card__footer" style="margin-top: 0.9rem;">
+    <label style="margin:0; display:flex; align-items:center; gap:0.4rem; text-transform:none; letter-spacing:0;">
+      <input type="checkbox" /> Remember me
+    </label>
+    <a href="#">Forgot Password?</a>
+  </div>
+
+  <ng-container *ngIf="serversideErrors && serversideErrors.nonFieldErrors">
+    <div *ngFor="let msg of serversideErrors.nonFieldErrors" style="margin-top: 0.75rem;">
+      <ngb-alert type="danger" [dismissible]="false">{{ msg }}</ngb-alert>
+    </div>
+  </ng-container>
+</form>
+
+<div class="wo-login-card__register">
+  Don't have an account? &nbsp;<a href="/register">Create one →</a>
+</div>

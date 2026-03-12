@@ -1,5 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="game#">Wololo</a>
+<nav class="navbar navbar-expand-lg">
+  <a class="navbar-brand" [routerLink]="['/game']">⚔ Wololo</a>
+
   <button
     class="navbar-toggler"
     type="button"
@@ -16,41 +17,28 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="nav-link" [routerLink]="['/game']">
-          Village
+          🏰 Village
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          [routerLink]="['/game/' + AfterLoginRoutesEnum.MAP]"
-        >
-          Map
+        <a class="nav-link" [routerLink]="['/game/' + AfterLoginRoutesEnum.MAP]">
+          🗺 Map
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          [routerLink]="['/game/' + AfterLoginRoutesEnum.PLAYER_RANKING]"
-        >
-          Ranking
+        <a class="nav-link" [routerLink]="['/game/' + AfterLoginRoutesEnum.PLAYER_RANKING]">
+          🏆 Ranking
         </a>
       </li>
       <li class="nav-item">
-        <a
-          class="nav-link"
-          [routerLink]="['/game/' + AfterLoginRoutesEnum.REPORTS]"
-        >
-          Reports
+        <a class="nav-link" [routerLink]="['/game/' + AfterLoginRoutesEnum.REPORTS]">
+          📜 Reports
         </a>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <button
-          _ngcontent-gsd-c10=""
-          class="upgrade btn btn-secondary"
-          (click)="logout()"
-        >
+        <button class="btn btn-secondary" style="margin: 0.6rem 0;" (click)="logout()">
           Logout
         </button>
       </li>

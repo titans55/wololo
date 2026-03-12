@@ -101,7 +101,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('localhost', 6379)],
+            "hosts": [(os.environ.get('REDIS_HOST', 'localhost'), 6379)],
         },
     },
 }
@@ -132,11 +132,11 @@ WSGI_APPLICATION = 'DjangoPostgresProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'wololodjango',
-        'USER': 'postgres',
-        'PASSWORD': '5428',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'wololodjango'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', '5428'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -186,7 +186,9 @@ SESSION_COOKIE_AGE = 60 * 60 * 4  # 4hours
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:4200',
-    'http://127.0.0.1:4200'
+    'http://127.0.0.1:4200',
+    'http://localhost',
+    'http://localhost:80',
 ]
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"

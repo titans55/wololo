@@ -1,0 +1,43 @@
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Python / Django ───────────────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv/
+venv/
+env/
+*.sqlite3
+db.sqlite3
+
+# ── Node / Angular ────────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.angular/
+npm-debug.log*
+yarn-error.log
+.npm
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# (Dockerfiles are committed intentionally)
+
+# ── Secrets ───────────────────────────────────────────────────────────────────
+*.env
+.env.*
+secrets.json

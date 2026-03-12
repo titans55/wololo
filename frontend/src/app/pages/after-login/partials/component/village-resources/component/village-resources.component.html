@@ -1,83 +1,53 @@
-<!-- <span class="badge badge-warning">Wood <div id="wood">X</div></span>
-<span class="badge badge-warning">Iron <div id="iron">Y</div></span>
-<span class="badge badge-warning">Clay <div id="clay">Z</div></span>
-<span class="badge badge-warning">Storage <div id="storage">T</div></span> -->
-
-<div class="card">
-  <div class="row mt-3 mb-3 ml-2">
-    <div class="col">
-      <woo-switch-village></woo-switch-village>
-    </div>
-    <div class="col">
-      <!-- {% if data.page == 'myVillages' %}
-      <div class="toggleVisualVillage custom-control custom-switch">
-        <input
-          type="checkbox"
-          class="custom-control-input"
-          id="toggleVisualVillage"
-        />
-        <label class="custom-control-label" for="toggleVisualVillage"
-          >Toggle Visual Village</label
-        >
-      </div>
-      {% endif %} -->
-    </div>
-    <div class="col" *ngIf="currentWood">
-      <span class="badge badge-warning">
-        Wood
-        <div [class]="currentWood.isCapacityReached ? 'text-danger' : ''">
-          {{ currentWood.quantity }}
-        </div>
-      </span>
-      <span class="badge badge-warning" *ngIf="currentIron">
-        Iron
-        <div [class]="currentIron.isCapacityReached ? 'text-danger' : ''">
-          {{ currentIron.quantity }}
-        </div>
-      </span>
-      <span class="badge badge-warning" *ngIf="currentClay">
-        Clay
-        <div [class]="currentClay.isCapacityReached ? 'text-danger' : ''">
-          {{ currentClay.quantity }}
-        </div>
-      </span>
-      <span class="badge badge-info" *ngIf="storageCapacity">
-        Storage
-        <div>{{ storageCapacity }}</div></span
-      >
-      <span class="badge badge-success" *ngIf="populationInfo">
-        Population
-        <div
-          [class]="
-            populationInfo.currentPopulation >= populationInfo.populationLimit
-              ? 'text-warning'
-              : ''
-          "
-        >
-          {{ populationInfo.currentPopulation }}/{{
-            populationInfo.populationLimit
-          }}
-        </div>
-      </span>
-    </div>
+<div class="wo-resource-bar" *ngIf="currentWood">
+  <div class="wo-village-switcher">
+    <woo-switch-village></woo-switch-village>
   </div>
+
+  <span class="wo-resource-item res-wood">
+    <span class="ri">🪵</span>
+    <span class="wo-res-label">Wood</span>
+    <span class="wo-res-value" [class.at-cap]="currentWood.isCapacityReached">
+      {{ currentWood.quantity }}
+    </span>
+  </span>
+
+  <span class="wo-resource-item res-iron" *ngIf="currentIron">
+    <span class="ri">⛏</span>
+    <span class="wo-res-label">Iron</span>
+    <span class="wo-res-value" [class.at-cap]="currentIron.isCapacityReached">
+      {{ currentIron.quantity }}
+    </span>
+  </span>
+
+  <span class="wo-resource-item res-clay" *ngIf="currentClay">
+    <span class="ri">🧱</span>
+    <span class="wo-res-label">Clay</span>
+    <span class="wo-res-value" [class.at-cap]="currentClay.isCapacityReached">
+      {{ currentClay.quantity }}
+    </span>
+  </span>
+
+  <span class="wo-resource-item res-storage" *ngIf="storageCapacity">
+    <span class="ri">🏛</span>
+    <span class="wo-res-label">Storage</span>
+    <span class="wo-res-value">{{ storageCapacity }}</span>
+  </span>
+
+  <span class="wo-resource-item res-pop"
+    [class.over-cap]="populationInfo && populationInfo.currentPopulation >= populationInfo.populationLimit"
+    *ngIf="populationInfo">
+    <span class="ri">👥</span>
+    <span class="wo-res-label">Pop</span>
+    <span class="wo-res-value">
+      {{ populationInfo.currentPopulation }}/{{ populationInfo.populationLimit }}
+    </span>
+  </span>
+
   <div class="building" buildingName="townCenter"></div>
   <div class="building" buildingName="storage"></div>
   <div class="building" buildingName="farm"></div>
   <div class="building" buildingName="barracks"></div>
-  <div
-    class="resources"
-    resourceBuildingName="woodCamp"
-    reseourceType="wood"
-  ></div>
-  <div
-    class="resources"
-    resourceBuildingName="ironMine"
-    reseourceType="iron"
-  ></div>
-  <div
-    class="resources"
-    resourceBuildingName="clayPit"
-    reseourceType="clay"
-  ></div>
+  <div class="resources" resourceBuildingName="woodCamp" reseourceType="wood"></div>
+  <div class="resources" resourceBuildingName="ironMine" reseourceType="iron"></div>
+  <div class="resources" resourceBuildingName="clayPit" reseourceType="clay"></div>
 </div>
